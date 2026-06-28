@@ -1,11 +1,16 @@
-# CLAUDE.md — Broadcast Console
+# CLAUDE.md — WhatsApp Hub (V2)
 
 Context for Claude Code working in this repo. Read this first.
 
 ## What this is
-A self-hosted **WhatsApp broadcast system** on Meta's **Cloud API**. Upload contacts → send approved template messages to lists → track delivery in real time → honor opt-outs. WATI/Infobip-style core. Brand: **NazzilVideo** (dark, teal→green, Inter/Cairo).
+**WhatsApp Hub** is a self-hosted, **multi-tenant** messaging platform on Meta's **Cloud API** — the **Phase 2** product. It is a **clean-slate fork seeded from the V1 `wa-broadcast` codebase** (broadcasting + two-way inbox + rich templates, all working and green), now evolving from a *broadcast tool* into a *conversational engagement hub*.
 
-> Status: built but **never compiled or run in this environment**. Your first job is to make it pass `typecheck` + tests. Treat any error as expected mechanical cleanup, not a redesign.
+> **The full V1 feature catalog and the V2 roadmap live in [`whatsapphub-V2.md`](./whatsapphub-V2.md)** (and a styled HTML mirror at `public/whatsapphub-v2.html` / Arabic `…-ar.html`). Treat that document as the **source of truth** for scope and sequencing.
+
+Brand: **NazzilVideo** (dark, teal→green, Inter/Cairo, bilingual EN/AR).
+
+## Status
+Seeded from a **green** V1 tree (typecheck · unit tests · build all passed there). Before building V2 features, run the gate below to confirm the seed still builds in this environment, then implement features per `whatsapphub-V2.md`. New migrations continue from **0016**.
 
 ## Stack
 Next.js 15 (App Router) · TypeScript strict (`noUncheckedIndexedAccess`) · Prisma + Postgres · BullMQ + Redis · jose + bcryptjs (auth) · Zod (validation) · Vitest (unit) · Playwright (e2e) · Docker Compose. Two processes from one image: **web** (Next) and **worker** (BullMQ consumer + recurring scheduler).
@@ -15,7 +20,7 @@ A change isn't done until **all three** pass:
 1. `npm run typecheck`
 2. `npm test`
 3. `npm run build` (or `docker compose up --build` boots clean)
-Do not mark work complete with failing types or tests.
+Do not mark work complete with failing types or tests. Add positive **and** negative tests for new logic; e2e for new routes/pages.
 
 ## Commands
 ```
@@ -23,88 +28,51 @@ npm install && npm run prisma:generate   # generate Prisma client (required afte
 npm run typecheck                         # tsc --noEmit  ← run this FIRST
 npm test                                  # vitest unit (no DB/Redis needed)
 npm run dev / npm run worker:dev          # local: web :3000 / worker (separate terminals)
-npm run prisma:migrate -- --name <name>   # create+apply a migration
+npm run prisma:migrate -- --name <name>   # create+apply a migration (continue numbering from 0016)
 npm run seed:admin                        # seed first ADMIN from env
 docker compose up --build                 # full stack (postgres+redis+app+worker), app runs migrate deploy
 npm run test:e2e                          # Playwright (needs the app running)
 ./verify.sh                               # install → generate → typecheck → unit tests
 ```
 
-## Project structure
+## V2 roadmap (build order — see whatsapphub-V2.md for full detail)
+1. **Meta Embedded Signup** — one-click WhatsApp onboarding (removes the manual WABA/token friction).
+2. **Omnichannel inbox** — add `channel` to `Conversation`/`Message`; WhatsApp + Instagram DM + Messenger in one view.
+3. **Team collaboration** — conversation status, assignment, internal notes, canned replies, SLA.
+4. **AI assist (Claude)** + **Automation/Flows** — suggested replies, summaries, AR↔EN translate, rules engine, WhatsApp Flows.
+5. **Monetization:** Governance (RBAC/audit/consent) + Billing (Stripe, usage-metered) **or** Commerce (catalog/orders).
+Supporting: Contact-360, dynamic segments/A-B, growth (wa.me/QR/widget/CTWA), analytics+deliverability, integrations/API.
+
+## Project structure (inherited from V1)
 ```
-wa-broadcast/
-├─ ARCHITECTURE.md            # design + compliance (read for "why")
-├─ README.md                  # setup + feature docs
-├─ Dockerfile                 # multi-stage, non-root, healthcheck
-├─ docker-compose.yml         # postgres · redis · app · worker
-├─ next.config.mjs            # security headers, standalone output
-├─ tsconfig.json              # strict + "@/*" path alias → src/*
-├─ vitest.config.ts · playwright.config.ts
-├─ verify.sh                  # offline verification (install→typecheck→unit)
-├─ sample-contacts.csv        # demo upload
-├─ prisma/
-│  ├─ schema.prisma           # Contact, ContactList(+Membership), Template, Broadcast,
-│  │                          #   BroadcastRecipient, MessageEvent, OptOut, User, RecurringCampaign
-│  └─ migrations/             # 0001_init → 0004_recurring_campaign (hand-written SQL)
-├─ scripts/
-│  ├─ hash-password.mjs       # bcrypt hash for ADMIN_PASSWORD_HASH
-│  └─ seed-admin.mjs          # upsert first ADMIN user
-├─ theme/                     # design system docs (THEME.md, design-tokens.json, theme.css, palette.svg)
-├─ public/tutorial.html       # standalone interactive tutorial (also served at /tutorial.html)
-├─ load/webhook-load.js       # k6 HMAC-signed webhook load test
-├─ e2e/                       # Playwright specs + DashboardPage POM
-└─ src/
-   ├─ middleware.ts           # EDGE: verifies access token only (no Redis here — see Gotchas)
-   ├─ worker/index.ts         # send worker (rate-limited) + recurring scheduler + boot sync
-   ├─ lib/
-   │  ├─ env.ts               # Zod-validated process.env (fail-fast at boot)
-   │  ├─ db.ts                # Prisma singleton
-   │  ├─ queue.ts             # BullMQ send queue + ioredis connection
-   │  ├─ recurring.ts         # BullMQ job-scheduler queue (cron) + upsert/remove
-   │  ├─ whatsapp.ts          # Cloud API client + buildTemplatePayload (unit-tested)
-   │  ├─ broadcast.ts         # createAndEnqueueBroadcast + resolveBodyParams (SHARED by API + worker)
-   │  ├─ validation.ts        # all Zod schemas
-   │  ├─ auth.ts              # jose sign/verify (EDGE-SAFE: no Redis/DB)
-   │  ├─ tokenStore.ts        # Redis: refresh jti + version (NODE only)
-   │  ├─ users.ts             # DB users + bcrypt + requireAdmin (NODE only)
-   │  ├─ ratelimit.ts         # Redis fixed-window limiter
-   │  ├─ apiFetch.ts          # client fetch wrapper w/ one-shot silent refresh
-   │  └─ *.test.ts            # vitest: payload builder + phone validation
-   ├─ app/
-   │  ├─ layout.tsx · globals.css   # design system (single source of truth)
-   │  ├─ page.tsx                   # dashboard (RSC)
-   │  ├─ login/ contacts/ campaigns/ settings/   # pages
-   │  ├─ broadcasts/[id]/page.tsx   # live detail
-   │  └─ api/
-   │     ├─ auth/{login,refresh,logout,logout-all}/
-   │     ├─ broadcasts/  + [id]/  + [id]/retry/
-   │     ├─ contacts/ (GET) + upload/ + [id]/ (PATCH/DELETE)
-   │     ├─ lists/ · templates/ · users/ · recurring/ + [id]/
-   │     ├─ webhooks/whatsapp/      # GET verify + POST (HMAC-verified)
-   │     └─ health/
-   └─ components/             # Nav, forms, LiveProgress, ContactsTable, CampaignsManager, UsersManager, LogoutButton
+src/
+├─ middleware.ts           # EDGE: verifies access token only (no Redis/DB here)
+├─ worker/index.ts         # send worker (rate-limited) + recurring scheduler + boot sync
+├─ lib/                    # env, db, queue, recurring, whatsapp, broadcast, validation,
+│                          #   auth (edge-safe), tokenStore, users, ratelimit, waConfig, tenancy
+├─ app/                    # App Router pages + /api/* route handlers
+└─ components/             # Nav, forms, LiveProgress, ContactsTable, CampaignsManager, etc.
+prisma/                    # schema.prisma + hand-written SQL migrations (0001 → 0015 from V1; V2 starts 0016)
 ```
 
 ## Conventions
 - **Imports:** use `@/...` everywhere EXCEPT `src/worker/index.ts`, which runs under `tsx` and uses relative `../lib/...` (tsx doesn't resolve tsconfig `paths`).
 - **Validation:** every API body / CSV row / webhook payload goes through a Zod schema in `lib/validation.ts`.
 - **DB:** Prisma only, no raw string SQL.
-- **Auth split:** access token = short, stateless, edge-verified. Refresh = stateful (jti+version in Redis), rotated + revocation-checked only in `/api/auth/refresh` (Node). Roles ride in the access token.
+- **Multi-tenancy:** every entity carries `clientId`; always scope queries via the tenant resolver (`lib/tenancy.ts`); a SUPERADMIN's acting-client cookie (`acid`) overrides their own `cid`.
+- **Auth split:** access token = short, stateless, edge-verified. Refresh = stateful (jti+version in Redis), rotated + revocation-checked only in `/api/auth/refresh` (Node). Roles + client id ride in the access token.
 - **Styling:** classes from `globals.css` (`.card .btn .badge--<STATUS>` etc.). Avoid new inline hex — use CSS vars.
-- **Tests:** add positive AND negative cases. Unit-test pure logic (`lib/`), e2e for routes/pages.
 
-## Gotchas / likely first-fix areas (nothing has compiled yet)
-- **Prisma types:** after `prisma generate`, confirm imports like `RecipientStatus`, `Prisma.*WhereInput` resolve.
-- **BullMQ version:** `recurring.ts` uses `upsertJobScheduler` / `removeJobScheduler` (v5 API). Verify against the installed `bullmq` version; older v5 used `upsertJobScheduler` differently or `addRepeatable`.
-- **Migrations are hand-written.** If they drift from `schema.prisma`, prefer `prisma migrate dev` to regenerate, or reconcile.
-- **`src/components/ui.ts`** is now unused (legacy) — safe to delete.
+## Gotchas
 - **Middleware must stay edge-safe** — never import `tokenStore`, `users`, or Prisma into `middleware.ts`.
-- **`strict` + `noUncheckedIndexedAccess`** will flag array indexing — expect a few small guards.
+- **`strict` + `noUncheckedIndexedAccess`** will flag array indexing — expect small guards.
+- **Per-worker rate limiting:** running N workers can exceed your Meta tier (keep `WA_MPS × workers ≤ tier`).
+- **WhatsApp IDs:** the **Phone number ID** and **WhatsApp Business Account ID (WABA)** come from *WhatsApp → API Setup* — the WABA is **not** the Business Portfolio / Business Manager id. Template endpoints (`/{WABA}/message_templates`) fail on the wrong id; messaging uses the Phone number ID.
+- **Builds without secrets:** `SKIP_ENV_VALIDATION=1 npm run build`.
 
-## Known limitations (by design / roadmap — not bugs to "fix" silently)
-- Authorization is mostly authentication-only; only `/api/users` is role-gated. Per-action RBAC is a roadmap item.
-- No actor attribution / audit log on broadcasts or deletions.
-- Opt-in consent is trusted from the uploaded CSV, not structurally enforced.
+## Known limitations carried from V1 (each targeted by a V2 feature)
+- Authorization mostly authentication-only; only `/api/users` is role-gated → V2 RBAC.
+- No actor attribution / audit log on broadcasts or deletions → V2 audit.
+- Opt-in consent trusted from the CSV, not structurally enforced → V2 consent/double opt-in.
 - Contact delete is a no-op if the contact has broadcast history (FK `RESTRICT`).
 - Access-token revocation lags ≤15 min by design; login rate-limit fails open.
-- Per-worker rate limiting: running N workers can exceed your Meta tier (keep `WA_MPS × workers ≤ tier`).
