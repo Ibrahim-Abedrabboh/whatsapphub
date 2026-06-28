@@ -1,0 +1,24 @@
+# Build artifacts and host-platform deps must not leak into the Linux image.
+# node_modules (Windows-built, incl. wrong Prisma engine) is rebuilt via npm ci.
+node_modules
+.next
+dist
+
+# Secrets — never copy into the image. The build skips env validation
+# (SKIP_ENV_VALIDATION in the Dockerfile); runtime env comes from compose
+# env_file / Railway service variables.
+.env
+.env.local
+.env.*.local
+
+# VCS and tooling
+.git
+.gitignore
+*.log
+npm-debug.log*
+
+# Tests / reports not needed at build time
+playwright-report
+test-results
+e2e
+load

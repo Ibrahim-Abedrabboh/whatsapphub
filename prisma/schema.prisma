@@ -1,0 +1,274 @@
+// Prisma schema — WhatsApp Broadcast System
+// Single-business v1. `tenantId` can be added to top-level models for multi-tenant later.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A tenant. Every top-level record carries a clientId (defaults to the bootstrap
+// "default" client so existing single-tenant data keeps working). Per-client
+// uniqueness + query scoping is layered on as multi-tenant is rolled out.
+model Client {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String?  @unique
+  createdAt DateTime @default(now())
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  clientId  String   @default("default")
+  // E.164 without '+', e.g. 9665XXXXXXXX — unique per client (tenant)
+  phone     String
+  name      String?
+  // Free-form template variables + opt-in metadata (source, date)
+  attributes Json    @default("{}")
+  optedOut  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  memberships ContactListMembership[]
+  recipients  BroadcastRecipient[]
+  conversations Conversation[]
+
+  @@unique([clientId, phone])
+  @@index([optedOut])
+}
+
+model ContactList {
+  id        String   @id @default(cuid())
+  clientId  String   @default("default")
+  name      String
+  createdAt DateTime @default(now())
+
+  memberships ContactListMembership[]
+  broadcasts  Broadcast[]
+  snapshots   ContactListSnapshot[]
+
+  // No two lists in the same client may share a name (exact-case backstop; the
+  // API additionally rejects case-insensitive clashes).
+  @@unique([clientId, name])
+}
+
+// Point-in-time backup of a list's membership, so a change can be restored.
+model ContactListSnapshot {
+  id          String      @id @default(cuid())
+  list        ContactList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId      String
+  listName    String      // list name when the snapshot was taken
+  memberIds   Json        // array of contactIds in the list at snapshot time
+  memberCount Int
+  reason      String      @default("manual") // manual | pre-import
+  createdAt   DateTime    @default(now())
+
+  @@index([listId])
+}
+
+model ContactListMembership {
+  contact   Contact     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  contactId String
+  list      ContactList @relation(fields: [listId], references: [id], onDelete: Cascade)
+  listId    String
+  addedAt   DateTime    @default(now())
+
+  @@id([contactId, listId])
+  @@index([listId])
+}
+
+model Template {
+  id            String   @id @default(cuid())
+  clientId      String   @default("default")
+  // Meta template name (must be approved)
+  name          String
+  language      String   @default("en")
+  category      String   // MARKETING | UTILITY | AUTHENTICATION
+  // Number of {{n}} body variables this template expects
+  variableCount Int      @default(0)
+  // Media header format if the template has one: IMAGE | DOCUMENT | VIDEO (null = none/text)
+  headerFormat  String?
+  // True if the template has a COPY_CODE (coupon) button — the broadcast must supply a code.
+  copyCode      Boolean  @default(false)
+  // Carousel card definitions (media URL + format per card) so sends can reuse them.
+  // [{ format: "IMAGE"|"VIDEO", mediaUrl, body, buttonText?, buttonUrl? }]
+  cards         Json?
+  status        String   @default("APPROVED") // mirror of Meta status
+  createdAt     DateTime @default(now())
+
+  broadcasts Broadcast[]
+
+  @@unique([clientId, name, language])
+  @@index([clientId])
+}
+
+model Broadcast {
+  id          String   @id @default(cuid())
+  clientId    String   @default("default")
+  template    Template @relation(fields: [templateId], references: [id])
+  templateId  String
+  list        ContactList @relation(fields: [listId], references: [id])
+  listId      String
+  status      BroadcastStatus @default(DRAFT)
+  totalCount  Int      @default(0)
+  sentCount   Int      @default(0)
+  failedCount Int      @default(0)
+  // Saved so failed recipients can be recomputed + retried later.
+  variableMap Json     @default("[]")
+  // Media URL for the template's header (when the template has a media header).
+  headerMediaUrl String?
+  // Coupon code for a COPY_CODE button template.
+  couponCode  String?
+  scheduledAt DateTime?           // null = send immediately
+  createdAt   DateTime @default(now())
+  startedAt   DateTime?
+  completedAt DateTime?
+
+  recipients BroadcastRecipient[]
+
+  @@index([status])
+}
+
+enum BroadcastStatus {
+  DRAFT
+  SCHEDULED
+  QUEUED
+  SENDING
+  COMPLETED
+  FAILED
+}
+
+model BroadcastRecipient {
+  id          String   @id @default(cuid())
+  broadcast   Broadcast @relation(fields: [broadcastId], references: [id], onDelete: Cascade)
+  broadcastId String
+  contact     Contact   @relation(fields: [contactId], references: [id])
+  contactId   String
+  // Meta message id returned on send; key for matching webhook status
+  wamid       String?  @unique
+  status      RecipientStatus @default(PENDING)
+  error       String?
+  updatedAt   DateTime @updatedAt
+
+  events MessageEvent[]
+
+  @@unique([broadcastId, contactId]) // idempotency
+  @@index([status])
+}
+
+enum RecipientStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+model MessageEvent {
+  id          String   @id @default(cuid())
+  recipient   BroadcastRecipient? @relation(fields: [recipientId], references: [id])
+  recipientId String?
+  wamid       String?
+  // status callback or inbound message
+  type        String   // status:sent|delivered|read|failed | inbound
+  payload     Json
+  createdAt   DateTime @default(now())
+
+  @@index([wamid])
+}
+
+model RecurringCampaign {
+  id          String   @id @default(cuid())
+  clientId    String   @default("default")
+  name        String
+  templateId  String   // plain ids (no FK) to keep it decoupled
+  listId      String
+  variableMap Json     @default("[]")
+  cron        String   // 5-field cron, evaluated in UTC by the scheduler
+  active      Boolean  @default(true)
+  lastRunAt   DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([active])
+}
+
+model User {
+  id           String   @id @default(cuid())
+  clientId     String   @default("default")
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("MEMBER") // SUPERADMIN | ADMIN | MEMBER
+  createdAt    DateTime @default(now())
+
+  @@index([clientId])
+}
+
+// No-code WhatsApp Cloud API connection settings (single row, id="default").
+// Values here override the env defaults at runtime — see lib/waConfig.ts.
+model WhatsAppConfig {
+  id                 String   @id @default(cuid())
+  clientId           String   @unique @default("default")
+  phoneNumberId      String?
+  businessAccountId  String?
+  appId              String? // Meta App ID — needed for resumable media upload (template header samples)
+  accessToken        String?
+  appSecret          String?
+  webhookVerifyToken String?
+  graphApiVersion    String?
+  updatedAt          DateTime @updatedAt
+}
+
+// A two-way conversation thread with one phone number (per client). The 24h
+// customer-service window is derived from lastInboundAt.
+model Conversation {
+  id            String    @id @default(cuid())
+  clientId      String
+  phone         String
+  contact       Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
+  contactId     String?
+  lastInboundAt DateTime? // last message FROM the customer → drives the 24h window
+  lastMessageAt DateTime  @default(now())
+  lastPreview   String?
+  unread        Int       @default(0)
+  createdAt     DateTime  @default(now())
+
+  messages Message[]
+
+  @@unique([clientId, phone])
+  @@index([clientId, lastMessageAt])
+}
+
+model Message {
+  id             String   @id @default(cuid())
+  clientId       String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  conversationId String
+  direction      String   // IN | OUT
+  type           String   @default("text") // text|image|document|audio|video|sticker|interactive|reaction|location|template
+  text           String?
+  mediaId        String?
+  mediaMime      String?
+  mediaFilename  String?
+  wamid          String?  @unique
+  status         String?  // OUT only: SENT|DELIVERED|READ|FAILED
+  error          String?
+  createdAt      DateTime @default(now())
+
+  @@index([conversationId, createdAt])
+  @@index([wamid])
+}
+
+model OptOut {
+  id        String   @id @default(cuid())
+  clientId  String   @default("default")
+  phone     String
+  source    String   @default("keyword") // keyword | manual | api
+  createdAt DateTime @default(now())
+
+  @@unique([clientId, phone])
+  @@index([clientId])
+}
