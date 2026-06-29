@@ -2,8 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
+import { parseMentions } from "@/lib/mentions";
 
 interface Assignee { id: string; name: string | null; email: string }
+interface Note { id: string; body: string; authorId: string | null; authorName: string | null; createdAt: string }
 interface Convo {
   id: string; phone: string; channel: string; name: string | null;
   lastPreview: string | null; lastMessageAt: string; lastInboundAt: string | null; unread: number;
@@ -59,6 +61,29 @@ function bodyOf(m: Msg): string {
 }
 const hhmm = (s: string) => new Date(s).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 
+/** Render note text with @mentions highlighted (safe — segment-by-segment). */
+function MentionText({ body }: { body: string }) {
+  return (
+    <>
+      {parseMentions(body).map((seg, i) =>
+        seg.type === "mention"
+          ? <span key={i} className="mention">{seg.value}</span>
+          : <span key={i}>{seg.value}</span>,
+      )}
+    </>
+  );
+}
+
+// One unified, time-ordered timeline of messages + internal notes.
+type TimelineItem = { kind: "msg"; at: string; msg: Msg } | { kind: "note"; at: string; note: Note };
+function buildTimeline(messages: Msg[], notes: Note[]): TimelineItem[] {
+  const items: TimelineItem[] = [
+    ...messages.map((m) => ({ kind: "msg" as const, at: m.createdAt, msg: m })),
+    ...notes.map((n) => ({ kind: "note" as const, at: n.createdAt, note: n })),
+  ];
+  return items.sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime());
+}
+
 /** Render a bubble's content — media is streamed (token-safe) via /api/media/:id. */
 function MessageContent({ m }: { m: Msg }) {
   const src = `/api/media/${m.id}`;
@@ -90,6 +115,8 @@ export default function InboxClient() {
   const [convos, setConvos] = useState<Convo[]>([]);
   const [activeId, setActiveId] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
+  const [notes, setNotes] = useState<Note[]>([]);
+  const [noteMode, setNoteMode] = useState(false);
   const [windowOpen, setWindowOpen] = useState(false);
   const [head, setHead] = useState<Head | null>(null);
   const [channelFilter, setChannelFilter] = useState<"ALL" | ChannelKey>("ALL");
@@ -113,6 +140,7 @@ export default function InboxClient() {
     const j = await r.json();
     const c = j.conversation;
     setMessages(j.messages);
+    setNotes(j.notes ?? []);
     setWindowOpen(c.windowOpen);
     setHead({ name: c.name, phone: c.phone, channel: c.channel, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee });
   }, []);
@@ -167,6 +195,18 @@ export default function InboxClient() {
     if (!text || !activeId) return;
     setBusy(true);
     setErr(null);
+
+    if (noteMode) {
+      const r = await apiFetch(`/api/conversations/${activeId}/notes`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body: text }),
+      });
+      const j = await r.json().catch(() => ({}));
+      setBusy(false);
+      if (r.ok) { setReply(""); setNotes((n) => [...n, j.note]); }
+      else setErr(j.error ?? "Could not add note");
+      return;
+    }
+
     const r = await apiFetch(`/api/conversations/${activeId}/messages`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -304,19 +344,30 @@ export default function InboxClient() {
             </header>
 
             <div className="thread__body" ref={threadRef}>
-              {messages.map((m) => (
-                <div key={m.id} className={`bubble bubble--${m.direction === "OUT" ? "out" : "in"}`}>
-                  <MessageContent m={m} />
-                  <div className="bubble__meta">
-                    {hhmm(m.createdAt)}
-                    {m.direction === "OUT" && m.status ? ` · ${m.status.toLowerCase()}` : ""}
+              {buildTimeline(messages, notes).map((it) =>
+                it.kind === "note" ? (
+                  <div key={`n-${it.note.id}`} className="note-bubble">
+                    <div className="note-bubble__meta">📝 Internal note{it.note.authorName ? ` · ${it.note.authorName}` : ""} · {hhmm(it.note.createdAt)}</div>
+                    <div className="note-bubble__text"><MentionText body={it.note.body} /></div>
                   </div>
-                </div>
-              ))}
+                ) : (
+                  <div key={it.msg.id} className={`bubble bubble--${it.msg.direction === "OUT" ? "out" : "in"}`}>
+                    <MessageContent m={it.msg} />
+                    <div className="bubble__meta">
+                      {hhmm(it.msg.createdAt)}
+                      {it.msg.direction === "OUT" && it.msg.status ? ` · ${it.msg.status.toLowerCase()}` : ""}
+                    </div>
+                  </div>
+                ),
+              )}
             </div>
 
-            <form className="thread__reply" onSubmit={send}>
-              {!windowOpen && (
+            <form className={`thread__reply${noteMode ? " thread__reply--note" : ""}`} onSubmit={send}>
+              <div className="thread__mode" style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                <button type="button" className={`btn ${noteMode ? "btn--ghost" : ""}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(false)}>Reply</button>
+                <button type="button" className={`btn ${noteMode ? "" : "btn--ghost"}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(true)}>📝 Internal note</button>
+              </div>
+              {!noteMode && !windowOpen && (
                 <div className="thread__closed">
                   The 24-hour reply window is closed. Send an approved <b>template</b> to re-open the conversation.
                 </div>
@@ -332,24 +383,30 @@ export default function InboxClient() {
                     e.target.value = "";
                   }}
                 />
-                <button
-                  type="button"
-                  className="btn btn--ghost thread__attach"
-                  onClick={() => fileRef.current?.click()}
-                  disabled={busy}
-                  title="Attach a file"
-                  aria-label="Attach a file"
-                >
-                  📎
-                </button>
+                {!noteMode && (
+                  <button
+                    type="button"
+                    className="btn btn--ghost thread__attach"
+                    onClick={() => fileRef.current?.click()}
+                    disabled={busy}
+                    title="Attach a file"
+                    aria-label="Attach a file"
+                  >
+                    📎
+                  </button>
+                )}
                 <input
                   className="input"
-                  placeholder={windowOpen ? "Type a reply…" : "Window closed — a free-form reply may be rejected"}
+                  placeholder={
+                    noteMode
+                      ? "Add an internal note… use @name to mention a teammate"
+                      : windowOpen ? "Type a reply…" : "Window closed — a free-form reply may be rejected"
+                  }
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                 />
                 <button className="btn" type="submit" disabled={busy || !reply.trim()} aria-busy={busy}>
-                  {busy ? "Sending…" : "Send"}
+                  {busy ? "Saving…" : noteMode ? "Add note" : "Send"}
                 </button>
               </div>
               {err && <p className="note" style={{ color: "var(--danger)", marginTop: 8 }}>{err}</p>}

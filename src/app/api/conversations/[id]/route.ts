@@ -33,6 +33,12 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
     take: 300,
   });
 
+  const notes = await prisma.internalNote.findMany({
+    where: { conversationId: id, clientId },
+    orderBy: { createdAt: "asc" },
+    include: { author: { select: { name: true, email: true } } },
+  });
+
   // Opening the thread clears the unread badge + sends a WhatsApp read receipt
   // for the latest inbound message (only on the unread→read transition, so polls
   // don't spam Meta).
@@ -69,6 +75,10 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       id: m.id, direction: m.direction, type: m.type, text: m.text,
       mediaMime: m.mediaMime, mediaFilename: m.mediaFilename,
       status: m.status, error: m.error, createdAt: m.createdAt,
+    })),
+    notes: notes.map((n) => ({
+      id: n.id, body: n.body, authorId: n.authorId,
+      authorName: n.author ? (n.author.name ?? n.author.email) : null, createdAt: n.createdAt,
     })),
   });
 }
