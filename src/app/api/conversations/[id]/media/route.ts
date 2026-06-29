@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getClientId } from "@/lib/users";
+import { getClientId, getCurrentUserId } from "@/lib/users";
 import { WhatsAppError } from "@/lib/whatsapp";
 import { getChannel } from "@/lib/channels";
+import { autoAssignee, isFirstResponse } from "@/lib/conversationStatus";
 
 export const runtime = "nodejs";
 
@@ -21,7 +22,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   const clientId = await getClientId(req);
   const { id } = await ctx.params;
 
-  const convo = await prisma.conversation.findFirst({ where: { id, clientId }, select: { id: true, phone: true, channel: true } });
+  const convo = await prisma.conversation.findFirst({
+    where: { id, clientId },
+    select: { id: true, phone: true, channel: true, assignedToId: true, firstResponseAt: true, lastInboundAt: true },
+  });
   if (!convo) return NextResponse.json({ error: "not found" }, { status: 404 });
   const adapter = getChannel(convo.channel);
 
@@ -52,9 +56,14 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
       mediaFilename: type === "document" ? filename : null, wamid, status: "SENT",
     },
   });
+  const newAssignee = autoAssignee(convo.assignedToId, await getCurrentUserId(req));
   await prisma.conversation.update({
     where: { id },
-    data: { lastMessageAt: created.createdAt, lastPreview: caption || `📎 ${filename}`, unread: 0 },
+    data: {
+      lastMessageAt: created.createdAt, lastPreview: caption || `📎 ${filename}`, unread: 0,
+      ...(newAssignee ? { assignedToId: newAssignee } : {}),
+      ...(isFirstResponse(convo.firstResponseAt, convo.lastInboundAt) ? { firstResponseAt: created.createdAt } : {}),
+    },
   });
 
   return NextResponse.json({

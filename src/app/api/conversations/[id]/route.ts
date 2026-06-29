@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getClientId } from "@/lib/users";
+import { getClientId, getCurrentUserId } from "@/lib/users";
 import { sendReadReceipt } from "@/lib/whatsapp";
 import { getChannel } from "@/lib/channels";
+import { UpdateConversationSchema } from "@/lib/validation";
+import { closedAtFor } from "@/lib/conversationStatus";
 
 export const runtime = "nodejs";
+
+/** Shape an assignee relation for JSON (or null when unassigned). */
+function assigneeJson(a: { id: string; name: string | null; email: string } | null) {
+  return a ? { id: a.id, name: a.name, email: a.email } : null;
+}
 
 /** GET /api/conversations/:id — thread + 24h-window status. Marks it read. */
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -13,7 +20,10 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
 
   const convo = await prisma.conversation.findFirst({
     where: { id, clientId },
-    include: { contact: { select: { name: true } } },
+    include: {
+      contact: { select: { name: true } },
+      assignedTo: { select: { id: true, name: true, email: true } },
+    },
   });
   if (!convo) return NextResponse.json({ error: "not found" }, { status: 404 });
 
@@ -49,11 +59,66 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       name: convo.contact?.name ?? null,
       lastInboundAt: convo.lastInboundAt,
       windowOpen,
+      status: convo.status,
+      assignedToId: convo.assignedToId,
+      assignee: assigneeJson(convo.assignedTo),
+      firstResponseAt: convo.firstResponseAt,
+      closedAt: convo.closedAt,
     },
     messages: messages.map((m) => ({
       id: m.id, direction: m.direction, type: m.type, text: m.text,
       mediaMime: m.mediaMime, mediaFilename: m.mediaFilename,
       status: m.status, error: m.error, createdAt: m.createdAt,
     })),
+  });
+}
+
+/** PATCH /api/conversations/:id — set helpdesk status and/or assignee (V2 §2.3). */
+export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  const clientId = await getClientId(req);
+  const { id } = await ctx.params;
+
+  const parsed = UpdateConversationSchema.safeParse(await req.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "invalid" }, { status: 400 });
+  }
+
+  const convo = await prisma.conversation.findFirst({ where: { id, clientId }, select: { id: true } });
+  if (!convo) return NextResponse.json({ error: "not found" }, { status: 404 });
+
+  const data: { status?: string; closedAt?: Date | null; assignedToId?: string | null } = {};
+
+  if (parsed.data.status !== undefined) {
+    data.status = parsed.data.status;
+    data.closedAt = closedAtFor(parsed.data.status, new Date());
+  }
+
+  if (parsed.data.assignedToId !== undefined) {
+    let assigneeId: string | null = parsed.data.assignedToId;
+    if (assigneeId === "me") {
+      assigneeId = await getCurrentUserId(req);
+      if (!assigneeId) return NextResponse.json({ error: "your account has no team-member record" }, { status: 400 });
+    }
+    if (assigneeId) {
+      const member = await prisma.user.findFirst({ where: { id: assigneeId, clientId }, select: { id: true } });
+      if (!member) return NextResponse.json({ error: "assignee is not in this client" }, { status: 400 });
+    }
+    data.assignedToId = assigneeId; // string (assign) or null (unassign)
+  }
+
+  const updated = await prisma.conversation.update({
+    where: { id },
+    data,
+    include: { assignedTo: { select: { id: true, name: true, email: true } } },
+  });
+
+  return NextResponse.json({
+    conversation: {
+      id: updated.id,
+      status: updated.status,
+      assignedToId: updated.assignedToId,
+      assignee: assigneeJson(updated.assignedTo),
+      closedAt: updated.closedAt,
+    },
   });
 }

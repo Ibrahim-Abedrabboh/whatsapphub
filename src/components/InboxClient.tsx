@@ -3,13 +3,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
 
+interface Assignee { id: string; name: string | null; email: string }
 interface Convo {
   id: string; phone: string; channel: string; name: string | null;
   lastPreview: string | null; lastMessageAt: string; lastInboundAt: string | null; unread: number;
+  status: string; assignedToId: string | null; assignee: Assignee | null;
 }
 interface Msg {
   id: string; direction: "IN" | "OUT"; type: string; text: string | null;
   mediaMime: string | null; mediaFilename: string | null; status: string | null; error: string | null; createdAt: string;
+}
+interface Head {
+  name: string | null; phone: string; channel: string;
+  status: string; assignedToId: string | null; assignee: Assignee | null;
 }
 
 // Channel display metadata. New channels (Instagram/Messenger) light up here once
@@ -25,6 +31,22 @@ function ChannelChip({ channel }: { channel: string }) {
   const meta = CHANNEL_META[channel] ?? { label: channel, icon: "💬" };
   return <span className="badge" title={meta.label}>{meta.icon} {meta.label}</span>;
 }
+
+const STATUSES = ["OPEN", "PENDING", "CLOSED"] as const;
+type StatusKey = (typeof STATUSES)[number];
+function StatusBadge({ status }: { status: string }) {
+  return <span className={`badge badge--${status}`}>{status}</span>;
+}
+function assigneeName(a: Assignee | null): string {
+  return a ? (a.name ?? a.email) : "Unassigned";
+}
+
+// Conversation-list view filters, applied on top of the channel filter.
+const VIEWS = ["ALL", "MINE", "UNASSIGNED", "OPEN", "PENDING", "CLOSED"] as const;
+type ViewKey = (typeof VIEWS)[number];
+const VIEW_LABEL: Record<ViewKey, string> = {
+  ALL: "All", MINE: "Mine", UNASSIGNED: "Unassigned", OPEN: "Open", PENDING: "Pending", CLOSED: "Closed",
+};
 
 const MEDIA_LABEL: Record<string, string> = {
   image: "📷 Photo", audio: "🎙️ Voice message", video: "🎬 Video",
@@ -69,8 +91,11 @@ export default function InboxClient() {
   const [activeId, setActiveId] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [windowOpen, setWindowOpen] = useState(false);
-  const [head, setHead] = useState<{ name: string | null; phone: string; channel: string } | null>(null);
-  const [filter, setFilter] = useState<"ALL" | ChannelKey>("ALL");
+  const [head, setHead] = useState<Head | null>(null);
+  const [channelFilter, setChannelFilter] = useState<"ALL" | ChannelKey>("ALL");
+  const [view, setView] = useState<ViewKey>("ALL");
+  const [members, setMembers] = useState<Assignee[]>([]);
+  const [meId, setMeId] = useState<string | null>(null);
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -86,9 +111,17 @@ export default function InboxClient() {
     const r = await apiFetch(`/api/conversations/${id}`);
     if (!r.ok) return;
     const j = await r.json();
+    const c = j.conversation;
     setMessages(j.messages);
-    setWindowOpen(j.conversation.windowOpen);
-    setHead({ name: j.conversation.name, phone: j.conversation.phone, channel: j.conversation.channel });
+    setWindowOpen(c.windowOpen);
+    setHead({ name: c.name, phone: c.phone, channel: c.channel, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee });
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      const r = await apiFetch("/api/team");
+      if (r.ok) { const j = await r.json(); setMembers(j.members); setMeId(j.meId ?? null); }
+    })();
   }, []);
 
   useEffect(() => {
@@ -115,6 +148,19 @@ export default function InboxClient() {
     setConvos((cs) => cs.map((c) => (c.id === id ? { ...c, unread: 0 } : c)));
   }
 
+  // Patch status / assignment, then reflect it in the head + list without a reload.
+  async function patchConvo(body: { status?: string; assignedToId?: string | null }) {
+    if (!activeId) return;
+    const r = await apiFetch(`/api/conversations/${activeId}`, {
+      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
+    });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) { setErr(j.error ?? "Could not update"); return; }
+    const c = j.conversation;
+    setHead((h) => (h ? { ...h, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee } : h));
+    setConvos((cs) => cs.map((x) => (x.id === activeId ? { ...x, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee } : x)));
+  }
+
   async function send(e: React.FormEvent) {
     e.preventDefault();
     const text = reply.trim();
@@ -132,6 +178,7 @@ export default function InboxClient() {
       setReply("");
       setMessages((m) => [...m, j.message]);
       loadConvos();
+      loadThread(activeId); // pick up any auto-assignment
     } else {
       setErr(j.error ?? "Could not send");
     }
@@ -151,10 +198,21 @@ export default function InboxClient() {
       setReply("");
       setMessages((m) => [...m, j.message]);
       loadConvos();
+      loadThread(activeId);
     } else {
       setErr(j.error ?? "Could not send file");
     }
   }
+
+  function matchesView(c: Convo): boolean {
+    switch (view) {
+      case "ALL": return true;
+      case "MINE": return !!meId && c.assignedToId === meId;
+      case "UNASSIGNED": return c.assignedToId == null;
+      default: return c.status === view; // OPEN | PENDING | CLOSED
+    }
+  }
+  const shown = convos.filter((c) => (channelFilter === "ALL" || c.channel === channelFilter) && matchesView(c));
 
   return (
     <div className="inbox">
@@ -164,36 +222,49 @@ export default function InboxClient() {
             <button
               key={f}
               type="button"
-              className={`btn ${filter === f ? "" : "btn--ghost"}`}
+              className={`btn ${channelFilter === f ? "" : "btn--ghost"}`}
               style={{ minHeight: 32, padding: "4px 10px", fontSize: 12 }}
-              onClick={() => setFilter(f)}
+              onClick={() => setChannelFilter(f)}
             >
               {f === "ALL" ? "All" : `${CHANNEL_META[f]?.icon ?? ""} ${CHANNEL_META[f]?.label ?? f}`}
             </button>
           ))}
         </div>
-        {(() => {
-          const shown = convos.filter((c) => filter === "ALL" || c.channel === filter);
-          if (shown.length === 0) {
-            return (
-              <p className="muted" style={{ padding: 16 }}>
-                {convos.length === 0
-                  ? "No conversations yet — they appear here when a contact messages you back."
-                  : "No conversations on this channel."}
-              </p>
-            );
-          }
-          return shown.map((c) => (
+        <div className="inbox__filters" style={{ display: "flex", gap: 6, padding: "0 8px 8px", flexWrap: "wrap" }}>
+          {VIEWS.map((v) => (
+            <button
+              key={v}
+              type="button"
+              className={`btn ${view === v ? "" : "btn--ghost"}`}
+              style={{ minHeight: 28, padding: "3px 9px", fontSize: 12 }}
+              onClick={() => setView(v)}
+            >
+              {VIEW_LABEL[v]}
+            </button>
+          ))}
+        </div>
+        {shown.length === 0 ? (
+          <p className="muted" style={{ padding: 16 }}>
+            {convos.length === 0
+              ? "No conversations yet — they appear here when a contact messages you back."
+              : "No conversations match this filter."}
+          </p>
+        ) : (
+          shown.map((c) => (
             <button key={c.id} type="button" className={`convo${c.id === activeId ? " convo--active" : ""}`} onClick={() => open(c.id)}>
               <div className="convo__top">
                 <span className="convo__name">{c.name ?? c.phone}</span>
                 {c.unread > 0 && <span className="convo__badge">{c.unread}</span>}
               </div>
               <div className="convo__preview">{c.lastPreview ?? ""}</div>
-              <div style={{ marginTop: 4 }}><ChannelChip channel={c.channel} /></div>
+              <div style={{ marginTop: 4, display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
+                <ChannelChip channel={c.channel} />
+                <StatusBadge status={c.status} />
+                <span className="muted" style={{ fontSize: 11 }}>· {assigneeName(c.assignee)}</span>
+              </div>
             </button>
-          ));
-        })()}
+          ))
+        )}
       </aside>
 
       <section className="inbox__thread">
@@ -202,9 +273,34 @@ export default function InboxClient() {
         ) : (
           <>
             <header className="thread__head">
-              <strong>{head?.name ?? head?.phone}</strong>
-              {head?.name && <span className="muted"> · {head?.phone}</span>}
-              {head?.channel && <span style={{ marginLeft: 8 }}><ChannelChip channel={head.channel} /></span>}
+              <div>
+                <strong>{head?.name ?? head?.phone}</strong>
+                {head?.name && <span className="muted"> · {head?.phone}</span>}
+                {head?.channel && <span style={{ marginLeft: 8 }}><ChannelChip channel={head.channel} /></span>}
+              </div>
+              <div className="thread__controls" style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto" }}>
+                <select
+                  className="input"
+                  style={{ minHeight: 34, width: "auto", padding: "4px 8px", fontSize: 13 }}
+                  aria-label="Status"
+                  value={head?.status ?? "OPEN"}
+                  onChange={(e) => patchConvo({ status: e.target.value as StatusKey })}
+                >
+                  {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <select
+                  className="input"
+                  style={{ minHeight: 34, width: "auto", padding: "4px 8px", fontSize: 13 }}
+                  aria-label="Assignee"
+                  value={head?.assignedToId ?? ""}
+                  onChange={(e) => patchConvo({ assignedToId: e.target.value === "" ? null : e.target.value })}
+                >
+                  <option value="">Unassigned</option>
+                  {members.map((m) => (
+                    <option key={m.id} value={m.id}>{(m.name ?? m.email) + (m.id === meId ? " (me)" : "")}</option>
+                  ))}
+                </select>
+              </div>
             </header>
 
             <div className="thread__body" ref={threadRef}>

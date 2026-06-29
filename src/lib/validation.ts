@@ -151,6 +151,18 @@ export const SendMessageSchema = z.object({
   text: z.string().trim().min(1, "Message can't be empty").max(4096),
 });
 
+// Update a conversation's helpdesk status and/or assignment (V2 §2.3).
+// assignedToId: a User id, the literal "me", or null to unassign; omit to leave
+// unchanged. status: omit to leave unchanged. At least one field is required.
+export const UpdateConversationSchema = z
+  .object({
+    status: z.enum(["OPEN", "PENDING", "CLOSED"]).optional(),
+    assignedToId: z.union([z.string().trim().min(1), z.null()]).optional(),
+  })
+  .refine((d) => d.status !== undefined || d.assignedToId !== undefined, {
+    message: "nothing to update",
+  });
+
 export const CreateClientSchema = z.object({
   name: z.string().trim().min(1, "Client name is required").max(120),
   slug: z.string().trim().regex(/^[a-z0-9-]{2,40}$/, "Slug: 2–40 lowercase letters, numbers, or hyphens").optional(),

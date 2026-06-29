@@ -94,6 +94,15 @@ export async function getClientId(req: NextRequest): Promise<string> {
   return (await getAuthContext(req))?.clientId ?? DEFAULT_CLIENT_ID;
 }
 
+/** The caller's User.id — for conversation assignment / note authorship. Null for
+ *  the bootstrap env-admin (no DB row yet); callers should treat null as "no actor". */
+export async function getCurrentUserId(req: NextRequest): Promise<string | null> {
+  const auth = await getAuthContext(req);
+  if (!auth?.email) return null;
+  const user = await prisma.user.findUnique({ where: { email: auth.email.toLowerCase() }, select: { id: true } });
+  return user?.id ?? null;
+}
+
 /** Server-component variant: read the caller's effective clientId from cookies. */
 export async function getClientIdFromCookies(): Promise<string> {
   const { cookies } = await import("next/headers");

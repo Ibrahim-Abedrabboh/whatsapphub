@@ -178,6 +178,9 @@ html[lang="ar"] .table th { letter-spacing:normal; text-transform:none; font-fam
 .badge--FAILED { color:var(--st-failed); }
 .badge--SCHEDULED { color:var(--st-scheduled); }
 .badge--SENDING,.badge--QUEUED { color:var(--st-sending); }
+/* Conversation helpdesk status (V2 §2.3) */
+.badge--OPEN { color:var(--st-sent); }
+.badge--CLOSED { color:var(--st-read); }
 
 /* progress bar */
 .progress { background:var(--bg2); border:1px solid var(--line2); border-radius:var(--r-pill);
