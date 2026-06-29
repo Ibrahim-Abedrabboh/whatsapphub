@@ -10,7 +10,10 @@ export async function GET(req: NextRequest) {
     where: { clientId: await getClientId(req) },
     orderBy: { lastMessageAt: "desc" },
     take: 100,
-    include: { contact: { select: { name: true } } },
+    include: {
+      contact: { select: { name: true } },
+      assignedTo: { select: { id: true, name: true, email: true } },
+    },
   });
 
   return NextResponse.json({
@@ -23,6 +26,11 @@ export async function GET(req: NextRequest) {
       lastMessageAt: c.lastMessageAt,
       lastInboundAt: c.lastInboundAt,
       unread: c.unread,
+      status: c.status,
+      assignedToId: c.assignedToId,
+      assignee: c.assignedTo ? { id: c.assignedTo.id, name: c.assignedTo.name, email: c.assignedTo.email } : null,
+      firstResponseAt: c.firstResponseAt,
+      closedAt: c.closedAt,
     })),
   });
 }

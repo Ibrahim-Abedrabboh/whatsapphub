@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { getClientId } from "@/lib/users";
+import { getClientId, getCurrentUserId } from "@/lib/users";
 import { SendMessageSchema } from "@/lib/validation";
 import { WhatsAppError } from "@/lib/whatsapp";
 import { getChannel } from "@/lib/channels";
+import { autoAssignee, isFirstResponse } from "@/lib/conversationStatus";
 
 export const runtime = "nodejs";
 
@@ -18,7 +19,10 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "invalid" }, { status: 400 });
   }
 
-  const convo = await prisma.conversation.findFirst({ where: { id, clientId }, select: { id: true, phone: true, channel: true } });
+  const convo = await prisma.conversation.findFirst({
+    where: { id, clientId },
+    select: { id: true, phone: true, channel: true, assignedToId: true, firstResponseAt: true, lastInboundAt: true },
+  });
   if (!convo) return NextResponse.json({ error: "not found" }, { status: 404 });
 
   let wamid: string;
@@ -34,9 +38,15 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   const created = await prisma.message.create({
     data: { clientId, conversationId: id, channel: convo.channel, direction: "OUT", type: "text", text: parsed.data.text, wamid, status: "SENT" },
   });
+  // Replying claims an unassigned thread for the agent + starts the first-response clock.
+  const newAssignee = autoAssignee(convo.assignedToId, await getCurrentUserId(req));
   await prisma.conversation.update({
     where: { id },
-    data: { lastMessageAt: created.createdAt, lastPreview: parsed.data.text, unread: 0 },
+    data: {
+      lastMessageAt: created.createdAt, lastPreview: parsed.data.text, unread: 0,
+      ...(newAssignee ? { assignedToId: newAssignee } : {}),
+      ...(isFirstResponse(convo.firstResponseAt, convo.lastInboundAt) ? { firstResponseAt: created.createdAt } : {}),
+    },
   });
 
   return NextResponse.json({

@@ -204,6 +204,8 @@ model User {
   role         String   @default("MEMBER") // SUPERADMIN | ADMIN | MEMBER
   createdAt    DateTime @default(now())
 
+  assignedConversations Conversation[] @relation("ConversationAssignee")
+
   @@index([clientId])
 }
 
@@ -244,10 +246,20 @@ model Conversation {
   unread        Int       @default(0)
   createdAt     DateTime  @default(now())
 
+  // Team collaboration (V2 §2.3): helpdesk status + agent assignment. closedAt
+  // and firstResponseAt also feed the (compute-on-read) SLA timers.
+  status          String    @default("OPEN") // OPEN | PENDING | CLOSED
+  assignedTo      User?     @relation("ConversationAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  assignedToId    String?
+  firstResponseAt DateTime? // first OUT message after an inbound → first-response SLA
+  closedAt        DateTime? // set when status → CLOSED, cleared on reopen
+
   messages Message[]
 
   @@unique([clientId, channel, phone])
   @@index([clientId, lastMessageAt])
+  @@index([clientId, status])
+  @@index([clientId, assignedToId])
 }
 
 model Message {
