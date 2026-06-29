@@ -5,9 +5,11 @@
 
 import { type Channel, type ChannelAdapter } from "./types";
 import { whatsappAdapter } from "./whatsapp";
+import { instagramAdapter } from "./instagram";
 
 const REGISTRY: Partial<Record<Channel, ChannelAdapter>> = {
   WHATSAPP: whatsappAdapter,
+  INSTAGRAM: instagramAdapter,
 };
 
 /** Resolve the adapter for a channel string. Throws on unknown/unconfigured. */
