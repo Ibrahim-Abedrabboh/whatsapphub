@@ -82,6 +82,20 @@ export async function saveWaConfig(
   });
 }
 
+/**
+ * Mark a connection as established via Embedded Signup (V2 M1). Run after
+ * saveWaConfig has upserted the row, so it always exists.
+ */
+export async function markWabaAutoConnected(
+  clientId: string,
+  opts: { tokenExpiresAt: Date | null },
+): Promise<void> {
+  await prisma.whatsAppConfig.update({
+    where: { clientId },
+    data: { wabaAutoConnected: true, tokenExpiresAt: opts.tokenExpiresAt },
+  });
+}
+
 /** What the no-code UI shows: non-secret values + whether each secret is set. */
 export async function getWaConfigStatus(clientId: string = DEFAULT_CLIENT_ID): Promise<{
   phoneNumberId: string;
@@ -91,6 +105,8 @@ export async function getWaConfigStatus(clientId: string = DEFAULT_CLIENT_ID): P
   graphApiVersion: string;
   hasAccessToken: boolean;
   hasAppSecret: boolean;
+  wabaAutoConnected: boolean;
+  tokenExpiresAt: string | null;
   savedAt: string | null;
 }> {
   const row = await prisma.whatsAppConfig.findUnique({ where: { clientId } }).catch(() => null);
@@ -103,6 +119,8 @@ export async function getWaConfigStatus(clientId: string = DEFAULT_CLIENT_ID): P
     graphApiVersion: row?.graphApiVersion || env.GRAPH_API_VERSION,
     hasAccessToken: Boolean(cfg.accessToken),
     hasAppSecret: Boolean(cfg.appSecret),
+    wabaAutoConnected: row?.wabaAutoConnected ?? false,
+    tokenExpiresAt: row?.tokenExpiresAt?.toISOString() ?? null,
     savedAt: row?.updatedAt.toISOString() ?? null,
   };
 }

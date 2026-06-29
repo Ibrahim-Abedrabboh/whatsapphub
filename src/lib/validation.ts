@@ -225,3 +225,14 @@ export const WebhookSchema = z.object({
   ),
 });
 export type WebhookPayload = z.infer<typeof WebhookSchema>;
+
+// ─── Embedded Signup (V2 M1) ────────────────────────────────────────
+// Body posted by the client after Meta's popup returns. The phone number id
+// is optional — when the popup doesn't surface it, the server discovers it
+// from the WABA. Meta ids are numeric strings; the code is an opaque token.
+export const EmbeddedSignupSchema = z.object({
+  code: z.string().trim().min(1, "Authorization code is required").max(2048),
+  wabaId: z.string().trim().regex(/^\d{5,32}$/, "Invalid WhatsApp Business Account id"),
+  phoneNumberId: z.string().trim().regex(/^\d{5,32}$/, "Invalid phone number id").optional(),
+});
+export type EmbeddedSignupInput = z.infer<typeof EmbeddedSignupSchema>;
