@@ -3,6 +3,7 @@ import UsersManager from "@/components/UsersManager";
 import WhatsAppSetup from "@/components/WhatsAppSetup";
 import EmbeddedSignup from "@/components/EmbeddedSignup";
 import ClientsManager from "@/components/ClientsManager";
+import CannedRepliesManager from "@/components/CannedRepliesManager";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +24,8 @@ export default function SettingsPage() {
         <WhatsAppSetup />
         <h2 style={{ marginTop: 32 }}>Team members</h2>
         <UsersManager />
+        <h2 style={{ marginTop: 32 }}>Canned replies</h2>
+        <CannedRepliesManager />
       </main>
     </>
   );

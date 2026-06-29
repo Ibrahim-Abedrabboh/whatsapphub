@@ -3,9 +3,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
 import { parseMentions } from "@/lib/mentions";
+import { substituteVars } from "@/lib/cannedReplies";
 
 interface Assignee { id: string; name: string | null; email: string }
 interface Note { id: string; body: string; authorId: string | null; authorName: string | null; createdAt: string }
+interface CannedReply { id: string; title: string; shortcut: string | null; body: string }
 interface Convo {
   id: string; phone: string; channel: string; name: string | null;
   lastPreview: string | null; lastMessageAt: string; lastInboundAt: string | null; unread: number;
@@ -123,6 +125,7 @@ export default function InboxClient() {
   const [view, setView] = useState<ViewKey>("ALL");
   const [members, setMembers] = useState<Assignee[]>([]);
   const [meId, setMeId] = useState<string | null>(null);
+  const [cannedReplies, setCannedReplies] = useState<CannedReply[]>([]);
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -149,8 +152,17 @@ export default function InboxClient() {
     void (async () => {
       const r = await apiFetch("/api/team");
       if (r.ok) { const j = await r.json(); setMembers(j.members); setMeId(j.meId ?? null); }
+      const rc = await apiFetch("/api/canned-replies");
+      if (rc.ok) setCannedReplies((await rc.json()).replies);
     })();
   }, []);
+
+  // Insert a canned reply, substituting {{name}}/{{phone}} from the active contact.
+  function insertCanned(replyId: string) {
+    const c = cannedReplies.find((x) => x.id === replyId);
+    if (!c) return;
+    setReply(substituteVars(c.body, { name: head?.name ?? null, phone: head?.phone ?? null }));
+  }
 
   useEffect(() => {
     loadConvos();
@@ -367,6 +379,20 @@ export default function InboxClient() {
                 <button type="button" className={`btn ${noteMode ? "btn--ghost" : ""}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(false)}>Reply</button>
                 <button type="button" className={`btn ${noteMode ? "" : "btn--ghost"}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(true)}>📝 Internal note</button>
               </div>
+              {!noteMode && cannedReplies.length > 0 && (
+                <select
+                  className="input"
+                  aria-label="Insert canned reply"
+                  style={{ minHeight: 32, fontSize: 13, marginBottom: 8, maxWidth: 280 }}
+                  value=""
+                  onChange={(e) => { if (e.target.value) insertCanned(e.target.value); e.target.value = ""; }}
+                >
+                  <option value="">⚡ Insert canned reply…</option>
+                  {cannedReplies.map((c) => (
+                    <option key={c.id} value={c.id}>{c.shortcut ? `${c.shortcut} — ${c.title}` : c.title}</option>
+                  ))}
+                </select>
+              )}
               {!noteMode && !windowOpen && (
                 <div className="thread__closed">
                   The 24-hour reply window is closed. Send an approved <b>template</b> to re-open the conversation.
