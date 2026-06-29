@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getClientId } from "@/lib/users";
-import { fetchMediaBytes } from "@/lib/whatsapp";
+import { getChannel } from "@/lib/channels";
 
 export const runtime = "nodejs";
 
@@ -14,11 +14,11 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   const { id } = await ctx.params;
   const msg = await prisma.message.findFirst({
     where: { id, clientId: await getClientId(req) },
-    select: { mediaId: true, mediaMime: true, mediaFilename: true, type: true, clientId: true },
+    select: { mediaId: true, mediaMime: true, mediaFilename: true, type: true, channel: true, clientId: true },
   });
   if (!msg?.mediaId) return new NextResponse("not found", { status: 404 });
 
-  const media = await fetchMediaBytes(msg.mediaId, msg.clientId);
+  const media = await getChannel(msg.channel).fetchMediaBytes(msg.mediaId, msg.clientId);
   if (!media) return new NextResponse("media unavailable", { status: 502 });
 
   const mime = msg.mediaMime || media.mime;

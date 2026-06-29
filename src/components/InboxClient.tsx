@@ -4,12 +4,26 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
 
 interface Convo {
-  id: string; phone: string; name: string | null;
+  id: string; phone: string; channel: string; name: string | null;
   lastPreview: string | null; lastMessageAt: string; lastInboundAt: string | null; unread: number;
 }
 interface Msg {
   id: string; direction: "IN" | "OUT"; type: string; text: string | null;
   mediaMime: string | null; mediaFilename: string | null; status: string | null; error: string | null; createdAt: string;
+}
+
+// Channel display metadata. New channels (Instagram/Messenger) light up here once
+// their adapters + connections go live; until then only WhatsApp threads appear.
+const CHANNELS = ["WHATSAPP", "INSTAGRAM", "MESSENGER"] as const;
+type ChannelKey = (typeof CHANNELS)[number];
+const CHANNEL_META: Record<string, { label: string; icon: string }> = {
+  WHATSAPP: { label: "WhatsApp", icon: "🟢" },
+  INSTAGRAM: { label: "Instagram", icon: "📸" },
+  MESSENGER: { label: "Messenger", icon: "💬" },
+};
+function ChannelChip({ channel }: { channel: string }) {
+  const meta = CHANNEL_META[channel] ?? { label: channel, icon: "💬" };
+  return <span className="badge" title={meta.label}>{meta.icon} {meta.label}</span>;
 }
 
 const MEDIA_LABEL: Record<string, string> = {
@@ -55,7 +69,8 @@ export default function InboxClient() {
   const [activeId, setActiveId] = useState("");
   const [messages, setMessages] = useState<Msg[]>([]);
   const [windowOpen, setWindowOpen] = useState(false);
-  const [head, setHead] = useState<{ name: string | null; phone: string } | null>(null);
+  const [head, setHead] = useState<{ name: string | null; phone: string; channel: string } | null>(null);
+  const [filter, setFilter] = useState<"ALL" | ChannelKey>("ALL");
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -73,7 +88,7 @@ export default function InboxClient() {
     const j = await r.json();
     setMessages(j.messages);
     setWindowOpen(j.conversation.windowOpen);
-    setHead({ name: j.conversation.name, phone: j.conversation.phone });
+    setHead({ name: j.conversation.name, phone: j.conversation.phone, channel: j.conversation.channel });
   }, []);
 
   useEffect(() => {
@@ -144,18 +159,41 @@ export default function InboxClient() {
   return (
     <div className="inbox">
       <aside className="inbox__list">
-        {convos.length === 0 && (
-          <p className="muted" style={{ padding: 16 }}>No conversations yet — they appear here when a contact messages you back.</p>
-        )}
-        {convos.map((c) => (
-          <button key={c.id} type="button" className={`convo${c.id === activeId ? " convo--active" : ""}`} onClick={() => open(c.id)}>
-            <div className="convo__top">
-              <span className="convo__name">{c.name ?? c.phone}</span>
-              {c.unread > 0 && <span className="convo__badge">{c.unread}</span>}
-            </div>
-            <div className="convo__preview">{c.lastPreview ?? ""}</div>
-          </button>
-        ))}
+        <div className="inbox__filters" style={{ display: "flex", gap: 6, padding: 8, flexWrap: "wrap" }}>
+          {(["ALL", ...CHANNELS] as const).map((f) => (
+            <button
+              key={f}
+              type="button"
+              className={`btn ${filter === f ? "" : "btn--ghost"}`}
+              style={{ minHeight: 32, padding: "4px 10px", fontSize: 12 }}
+              onClick={() => setFilter(f)}
+            >
+              {f === "ALL" ? "All" : `${CHANNEL_META[f]?.icon ?? ""} ${CHANNEL_META[f]?.label ?? f}`}
+            </button>
+          ))}
+        </div>
+        {(() => {
+          const shown = convos.filter((c) => filter === "ALL" || c.channel === filter);
+          if (shown.length === 0) {
+            return (
+              <p className="muted" style={{ padding: 16 }}>
+                {convos.length === 0
+                  ? "No conversations yet — they appear here when a contact messages you back."
+                  : "No conversations on this channel."}
+              </p>
+            );
+          }
+          return shown.map((c) => (
+            <button key={c.id} type="button" className={`convo${c.id === activeId ? " convo--active" : ""}`} onClick={() => open(c.id)}>
+              <div className="convo__top">
+                <span className="convo__name">{c.name ?? c.phone}</span>
+                {c.unread > 0 && <span className="convo__badge">{c.unread}</span>}
+              </div>
+              <div className="convo__preview">{c.lastPreview ?? ""}</div>
+              <div style={{ marginTop: 4 }}><ChannelChip channel={c.channel} /></div>
+            </button>
+          ));
+        })()}
       </aside>
 
       <section className="inbox__thread">
@@ -166,6 +204,7 @@ export default function InboxClient() {
             <header className="thread__head">
               <strong>{head?.name ?? head?.phone}</strong>
               {head?.name && <span className="muted"> · {head?.phone}</span>}
+              {head?.channel && <span style={{ marginLeft: 8 }}><ChannelChip channel={head.channel} /></span>}
             </header>
 
             <div className="thread__body" ref={threadRef}>

@@ -227,12 +227,15 @@ model WhatsAppConfig {
   updatedAt          DateTime  @updatedAt
 }
 
-// A two-way conversation thread with one phone number (per client). The 24h
+// A two-way conversation thread with one peer (per client, per channel). The 24h
 // customer-service window is derived from lastInboundAt.
 model Conversation {
   id            String    @id @default(cuid())
   clientId      String
+  // Per-channel peer identifier: E.164 (WhatsApp), IGSID (Instagram), PSID
+  // (Messenger). Opaque string; uniqueness is scoped by (clientId, channel).
   phone         String
+  channel       String    @default("WHATSAPP") // WHATSAPP | INSTAGRAM | MESSENGER
   contact       Contact?  @relation(fields: [contactId], references: [id], onDelete: SetNull)
   contactId     String?
   lastInboundAt DateTime? // last message FROM the customer → drives the 24h window
@@ -243,7 +246,7 @@ model Conversation {
 
   messages Message[]
 
-  @@unique([clientId, phone])
+  @@unique([clientId, channel, phone])
   @@index([clientId, lastMessageAt])
 }
 
@@ -252,19 +255,42 @@ model Message {
   clientId       String
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   conversationId String
+  channel        String   @default("WHATSAPP") // WHATSAPP | INSTAGRAM | MESSENGER
   direction      String   // IN | OUT
   type           String   @default("text") // text|image|document|audio|video|sticker|interactive|reaction|location|template
   text           String?
-  mediaId        String?
+  mediaId        String?  // WhatsApp: Graph media id; Instagram/Messenger: inbound CDN URL
   mediaMime      String?
   mediaFilename  String?
-  wamid          String?  @unique
+  wamid          String?  @unique // generic external message id (WhatsApp wamid / IG · Messenger mid)
   status         String?  // OUT only: SENT|DELIVERED|READ|FAILED
   error          String?
   createdAt      DateTime @default(now())
 
   @@index([conversationId, createdAt])
   @@index([wamid])
+}
+
+// Per-client connection of a non-WhatsApp Meta messaging asset (Instagram
+// business account / Facebook Page). WhatsApp keeps its own WhatsAppConfig.
+// Used to route inbound webhooks (by assetId) and authorize outbound sends.
+model ChannelConnection {
+  id              String   @id @default(cuid())
+  clientId        String   @default("default")
+  channel         String   // INSTAGRAM | MESSENGER
+  assetId         String   // entry.id we route inbound by (IG business id / Page id)
+  pageId          String?
+  igBusinessId    String?
+  accessToken     String?
+  appSecret       String?
+  verifyToken     String?
+  graphApiVersion String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([clientId, channel])
+  @@unique([channel, assetId])
+  @@index([clientId])
 }
 
 model OptOut {
