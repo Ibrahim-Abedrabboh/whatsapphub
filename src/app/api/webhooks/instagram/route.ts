@@ -3,6 +3,7 @@ import { getClientByInstagramAsset, isInstagramVerifyToken } from "@/lib/igConfi
 import { InstagramWebhookSchema } from "@/lib/validation";
 import { verifyWebhookSignature } from "@/lib/webhookSig";
 import { recordInboundMessage } from "@/lib/conversations";
+import { runAutomation } from "@/lib/automationRun";
 import { normalizeInstagramInbound } from "@/lib/channels/instagram";
 
 export const runtime = "nodejs";
@@ -45,7 +46,10 @@ export async function POST(req: NextRequest) {
     const clientId = entryRouted?.clientId ?? routed.clientId;
     for (const messaging of entry.messaging ?? []) {
       const m = normalizeInstagramInbound(messaging);
-      if (m) await recordInboundMessage(clientId, m, "INSTAGRAM");
+      if (m) {
+        await recordInboundMessage(clientId, m, "INSTAGRAM");
+        await runAutomation(clientId, "INSTAGRAM", m.from, m.text?.body ?? "").catch(() => {});
+      }
     }
   }
 

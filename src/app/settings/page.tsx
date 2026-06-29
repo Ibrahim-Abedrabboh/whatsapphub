@@ -5,6 +5,7 @@ import EmbeddedSignup from "@/components/EmbeddedSignup";
 import ClientsManager from "@/components/ClientsManager";
 import CannedRepliesManager from "@/components/CannedRepliesManager";
 import KnowledgeManager from "@/components/KnowledgeManager";
+import AutomationRulesManager from "@/components/AutomationRulesManager";
 
 export const dynamic = "force-dynamic";
 
@@ -29,6 +30,8 @@ export default function SettingsPage() {
         <CannedRepliesManager />
         <h2 style={{ marginTop: 32 }}>AI knowledge base</h2>
         <KnowledgeManager />
+        <h2 style={{ marginTop: 32 }}>Automation</h2>
+        <AutomationRulesManager />
       </main>
     </>
   );

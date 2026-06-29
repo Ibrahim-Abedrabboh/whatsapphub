@@ -288,6 +288,21 @@ model Message {
   @@index([wamid])
 }
 
+// No-code inbound automation rule (V2 M3 §2.5): trigger (keyword | away) →
+// action (sendText). Evaluated best-effort in the inbound webhook.
+model AutomationRule {
+  id        String   @id @default(cuid())
+  clientId  String
+  name      String
+  enabled   Boolean  @default(true)
+  trigger   Json
+  action    Json
+  createdAt DateTime @default(now())
+
+  @@unique([clientId, name])
+  @@index([clientId, enabled])
+}
+
 // Per-client FAQ / knowledge base used to ground AI FAQ answers (V2 M3 §2.4).
 model KnowledgeDoc {
   id        String   @id @default(cuid())

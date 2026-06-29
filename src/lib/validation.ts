@@ -174,6 +174,23 @@ export const TranslateSchema = z.object({
   target: z.enum(["AR", "EN"]),
 });
 
+// No-code inbound automation rule (V2 M3 §2.5). Create + full update.
+export const AutomationRuleSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(80),
+  enabled: z.boolean().default(true),
+  trigger: z.discriminatedUnion("type", [
+    z.object({ type: z.literal("keyword"), keywords: z.array(z.string().trim().min(1)).min(1, "Add a keyword").max(20) }),
+    z.object({
+      type: z.literal("away"),
+      days: z.array(z.number().int().min(0).max(6)).min(1, "Pick at least one day"),
+      start: z.string().regex(/^\d{2}:\d{2}$/, "Use HH:MM"),
+      end: z.string().regex(/^\d{2}:\d{2}$/, "Use HH:MM"),
+      tzOffset: z.number().int().min(-720).max(840).optional(),
+    }),
+  ]),
+  action: z.object({ type: z.literal("sendText"), body: z.string().trim().min(1, "Reply body is required").max(1000) }),
+});
+
 // FAQ knowledge-base document (V2 M3 §2.4). Used for create + full update.
 export const KnowledgeSchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(120),
