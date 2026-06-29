@@ -1,22 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db";
-import { PhoneSchema } from "@/lib/validation";
+import { UpdateContactSchema } from "@/lib/validation";
 import { getClientId } from "@/lib/users";
+import { buildTimeline } from "@/lib/contactTimeline";
 
 export const runtime = "nodejs";
 
-// All fields optional — used both for the opt-out toggle and for editing details.
-const PatchSchema = z
-  .object({
-    optedOut: z.boolean().optional(),
-    name: z.string().trim().max(120).optional(),
-    phone: PhoneSchema.optional(),
-  })
-  .refine((o) => o.optedOut !== undefined || o.name !== undefined || o.phone !== undefined, {
-    message: "Nothing to update",
+/** GET /api/contacts/:id — Contact 360 profile + unified cross-channel timeline. */
+export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
+  const clientId = await getClientId(req);
+  const { id } = await ctx.params;
+
+  const contact = await prisma.contact.findFirst({
+    where: { id, clientId },
+    include: { memberships: { include: { list: { select: { id: true, name: true } } } } },
   });
+  if (!contact) return NextResponse.json({ error: "not found" }, { status: 404 });
+
+  // Cross-channel inbox messages (the contact may have a thread per channel).
+  const convos = await prisma.conversation.findMany({
+    where: { clientId, contactId: id },
+    select: {
+      id: true,
+      messages: { orderBy: { createdAt: "asc" }, take: 200, select: { id: true, channel: true, direction: true, text: true, type: true, createdAt: true } },
+      notes: { select: { id: true, body: true, createdAt: true, author: { select: { name: true, email: true } } } },
+    },
+  });
+  const messages = convos.flatMap((c) => c.messages.map((m) => ({ ...m, direction: m.direction === "OUT" ? ("OUT" as const) : ("IN" as const) })));
+  const notes = convos.flatMap((c) => c.notes.map((n) => ({ id: n.id, body: n.body, createdAt: n.createdAt, authorName: n.author ? (n.author.name ?? n.author.email) : null })));
+
+  // Broadcasts this contact received.
+  const recipients = await prisma.broadcastRecipient.findMany({
+    where: { contactId: id, broadcast: { clientId } },
+    select: { broadcast: { select: { id: true, status: true, createdAt: true, template: { select: { name: true } } } } },
+    take: 100,
+  });
+  const broadcasts = recipients.map((r) => ({ id: r.broadcast.id, templateName: r.broadcast.template.name, status: r.broadcast.status, createdAt: r.broadcast.createdAt }));
+
+  return NextResponse.json({
+    contact: {
+      id: contact.id, phone: contact.phone, name: contact.name,
+      attributes: contact.attributes, tags: contact.tags, optedOut: contact.optedOut,
+      createdAt: contact.createdAt,
+      lists: contact.memberships.map((m) => ({ id: m.list.id, name: m.list.name })),
+    },
+    timeline: buildTimeline({ messages, broadcasts, notes }),
+  });
+}
 
 /**
  * PATCH /api/contacts/:id — edit a contact (name/phone) and/or toggle opt-out.
@@ -24,7 +55,7 @@ const PatchSchema = z
  */
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
   const { id } = await ctx.params;
-  const parsed = PatchSchema.safeParse(await req.json().catch(() => null));
+  const parsed = UpdateContactSchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "invalid" }, { status: 400 });
   }
@@ -33,7 +64,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   const contact = await prisma.contact.findFirst({ where: { id, clientId } });
   if (!contact) return NextResponse.json({ error: "not found" }, { status: 404 });
 
-  const { optedOut, name, phone } = parsed.data;
+  const { optedOut, name, phone, tags, attributes } = parsed.data;
 
   // Reject a phone change that would collide with another contact (same client).
   if (phone !== undefined && phone !== contact.phone) {
@@ -47,6 +78,8 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
   if (name !== undefined) data.name = name === "" ? null : name;
   if (phone !== undefined) data.phone = phone;
   if (optedOut !== undefined) data.optedOut = optedOut;
+  if (tags !== undefined) data.tags = tags;
+  if (attributes !== undefined) data.attributes = attributes;
 
   const updated = await prisma.contact.update({ where: { id }, data });
 
@@ -66,7 +99,7 @@ export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: strin
 
   return NextResponse.json({
     ok: true,
-    contact: { id: updated.id, phone: updated.phone, name: updated.name, optedOut: updated.optedOut },
+    contact: { id: updated.id, phone: updated.phone, name: updated.name, optedOut: updated.optedOut, tags: updated.tags, attributes: updated.attributes },
   });
 }
 

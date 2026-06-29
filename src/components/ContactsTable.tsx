@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { apiFetch } from "@/lib/apiFetch";
 
 interface Contact { id: string; phone: string; name: string | null; optedOut: boolean }
@@ -163,7 +164,7 @@ export default function ContactsTable() {
                   {editing
                     ? <input className="input input--sm" value={editName} placeholder="Name"
                         onChange={(e) => setEditName(e.target.value)} />
-                    : (c.name ?? "—")}
+                    : <Link href={`/contacts/${c.id}`} className="contact-link">{c.name ?? "View"}</Link>}
                   {editing && editErr && <div className="error-text">{editErr}</div>}
                 </td>
                 <td>
