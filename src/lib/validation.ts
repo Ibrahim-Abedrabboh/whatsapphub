@@ -168,6 +168,17 @@ export const CreateNoteSchema = z.object({
   body: z.string().trim().min(1, "Note can't be empty").max(4000),
 });
 
+// Edit a contact (V2 M4 §2.6 adds tags + attributes to the existing fields).
+export const UpdateContactSchema = z
+  .object({
+    optedOut: z.boolean().optional(),
+    name: z.string().trim().max(120).optional(),
+    phone: PhoneSchema.optional(),
+    tags: z.array(z.string().trim().min(1).max(40)).max(50).optional(),
+    attributes: z.record(z.string()).optional(),
+  })
+  .refine((o) => Object.values(o).some((v) => v !== undefined), { message: "Nothing to update" });
+
 // AI translate request (V2 M3 §2.4).
 export const TranslateSchema = z.object({
   text: z.string().trim().min(1, "Nothing to translate").max(8000),

@@ -28,6 +28,7 @@ model Contact {
   name      String?
   // Free-form template variables + opt-in metadata (source, date)
   attributes Json    @default("{}")
+  tags      Json     @default("[]") // V2 M4 §2.6: string array, editable in Contact 360
   optedOut  Boolean  @default(false)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
