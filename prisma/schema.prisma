@@ -288,6 +288,22 @@ model Message {
   @@index([wamid])
 }
 
+// WhatsApp Flow (V2 M3 §2.5): native in-chat form, submitted to Meta like a
+// template. Dark until the Meta app has Flows access.
+model Flow {
+  id         String   @id @default(cuid())
+  clientId   String
+  name       String
+  definition Json
+  metaId     String?  // Meta-returned flow id once submitted
+  status     String   @default("DRAFT") // DRAFT | PENDING | APPROVED | REJECTED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([clientId, name])
+  @@index([clientId])
+}
+
 // No-code inbound automation rule (V2 M3 §2.5): trigger (keyword | away) →
 // action (sendText). Evaluated best-effort in the inbound webhook.
 model AutomationRule {
