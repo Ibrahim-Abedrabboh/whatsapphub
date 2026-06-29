@@ -1,8 +1,8 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Broadcast Console",
-  description: "WhatsApp broadcast console — NazzilVideo",
+  title: "WhatsApp Hub",
+  description: "WhatsApp Hub — multi-tenant messaging on Meta's Cloud API · NazzilVideo",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

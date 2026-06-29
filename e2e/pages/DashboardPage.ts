@@ -8,7 +8,7 @@ export class DashboardPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = page.getByRole("heading", { name: "WhatsApp Broadcast Console" });
+    this.heading = page.getByRole("heading", { name: "WhatsApp Hub" });
     this.broadcastsTable = page.locator('[data-test-id="broadcasts-table"]');
   }
 
