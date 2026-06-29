@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
 import { parseMentions } from "@/lib/mentions";
 import { substituteVars } from "@/lib/cannedReplies";
+import { slaState, formatRemaining } from "@/lib/sla";
 
 interface Assignee { id: string; name: string | null; email: string }
 interface Note { id: string; body: string; authorId: string | null; authorName: string | null; createdAt: string }
@@ -11,7 +12,7 @@ interface CannedReply { id: string; title: string; shortcut: string | null; body
 interface Convo {
   id: string; phone: string; channel: string; name: string | null;
   lastPreview: string | null; lastMessageAt: string; lastInboundAt: string | null; unread: number;
-  status: string; assignedToId: string | null; assignee: Assignee | null;
+  status: string; assignedToId: string | null; assignee: Assignee | null; firstResponseAt: string | null;
 }
 interface Msg {
   id: string; direction: "IN" | "OUT"; type: string; text: string | null;
@@ -20,6 +21,17 @@ interface Msg {
 interface Head {
   name: string | null; phone: string; channel: string;
   status: string; assignedToId: string | null; assignee: Assignee | null;
+  lastInboundAt: string | null; firstResponseAt: string | null;
+}
+
+// First-response SLA badge (compute-on-read). Renders only while the clock is
+// active (open + awaiting first reply): a countdown, or a breach marker.
+function SlaBadge({ status, lastInboundAt, firstResponseAt }: { status: string; lastInboundAt: string | null; firstResponseAt: string | null }) {
+  const fr = slaState({ status, lastInboundAt, firstResponseAt, now: new Date() }).firstResponse;
+  if (!fr.active) return null;
+  return fr.breached
+    ? <span className="badge badge--FAILED" title="First-response SLA breached">🔴 SLA</span>
+    : <span className="badge badge--PENDING" title="First response due">⏱ {formatRemaining(fr.remainingMs ?? 0)}</span>;
 }
 
 // Channel display metadata. New channels (Instagram/Messenger) light up here once
@@ -46,10 +58,11 @@ function assigneeName(a: Assignee | null): string {
 }
 
 // Conversation-list view filters, applied on top of the channel filter.
-const VIEWS = ["ALL", "MINE", "UNASSIGNED", "OPEN", "PENDING", "CLOSED"] as const;
+const VIEWS = ["ALL", "MINE", "UNASSIGNED", "BREACHING", "OPEN", "PENDING", "CLOSED"] as const;
 type ViewKey = (typeof VIEWS)[number];
 const VIEW_LABEL: Record<ViewKey, string> = {
-  ALL: "All", MINE: "Mine", UNASSIGNED: "Unassigned", OPEN: "Open", PENDING: "Pending", CLOSED: "Closed",
+  ALL: "All", MINE: "Mine", UNASSIGNED: "Unassigned", BREACHING: "🔴 Breaching",
+  OPEN: "Open", PENDING: "Pending", CLOSED: "Closed",
 };
 
 const MEDIA_LABEL: Record<string, string> = {
@@ -145,7 +158,7 @@ export default function InboxClient() {
     setMessages(j.messages);
     setNotes(j.notes ?? []);
     setWindowOpen(c.windowOpen);
-    setHead({ name: c.name, phone: c.phone, channel: c.channel, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee });
+    setHead({ name: c.name, phone: c.phone, channel: c.channel, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee, lastInboundAt: c.lastInboundAt, firstResponseAt: c.firstResponseAt });
   }, []);
 
   useEffect(() => {
@@ -261,6 +274,8 @@ export default function InboxClient() {
       case "ALL": return true;
       case "MINE": return !!meId && c.assignedToId === meId;
       case "UNASSIGNED": return c.assignedToId == null;
+      case "BREACHING":
+        return slaState({ status: c.status, lastInboundAt: c.lastInboundAt, firstResponseAt: c.firstResponseAt, now: new Date() }).firstResponse.breached;
       default: return c.status === view; // OPEN | PENDING | CLOSED
     }
   }
@@ -312,6 +327,7 @@ export default function InboxClient() {
               <div style={{ marginTop: 4, display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" }}>
                 <ChannelChip channel={c.channel} />
                 <StatusBadge status={c.status} />
+                <SlaBadge status={c.status} lastInboundAt={c.lastInboundAt} firstResponseAt={c.firstResponseAt} />
                 <span className="muted" style={{ fontSize: 11 }}>· {assigneeName(c.assignee)}</span>
               </div>
             </button>
@@ -329,6 +345,7 @@ export default function InboxClient() {
                 <strong>{head?.name ?? head?.phone}</strong>
                 {head?.name && <span className="muted"> · {head?.phone}</span>}
                 {head?.channel && <span style={{ marginLeft: 8 }}><ChannelChip channel={head.channel} /></span>}
+                {head && <span style={{ marginLeft: 6 }}><SlaBadge status={head.status} lastInboundAt={head.lastInboundAt} firstResponseAt={head.firstResponseAt} /></span>}
               </div>
               <div className="thread__controls" style={{ display: "flex", gap: 8, alignItems: "center", marginLeft: "auto" }}>
                 <select
