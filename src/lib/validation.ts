@@ -174,6 +174,12 @@ export const TranslateSchema = z.object({
   target: z.enum(["AR", "EN"]),
 });
 
+// WhatsApp Flow (V2 M3 §2.5). Create + full update.
+export const FlowSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(80),
+  definition: z.record(z.unknown()),
+});
+
 // No-code inbound automation rule (V2 M3 §2.5). Create + full update.
 export const AutomationRuleSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(80),

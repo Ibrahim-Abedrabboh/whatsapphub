@@ -6,6 +6,7 @@ import ClientsManager from "@/components/ClientsManager";
 import CannedRepliesManager from "@/components/CannedRepliesManager";
 import KnowledgeManager from "@/components/KnowledgeManager";
 import AutomationRulesManager from "@/components/AutomationRulesManager";
+import FlowsManager from "@/components/FlowsManager";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,8 @@ export default function SettingsPage() {
         <KnowledgeManager />
         <h2 style={{ marginTop: 32 }}>Automation</h2>
         <AutomationRulesManager />
+        <h2 style={{ marginTop: 32 }}>WhatsApp Flows</h2>
+        <FlowsManager />
       </main>
     </>
   );
