@@ -10,9 +10,12 @@ describe("getChannel registry", () => {
     expect(a.windowMs).toBe(DAY_MS);
   });
 
-  // NEGATIVE — IG/Messenger are not yet registered (dark until Phases 2/3 + a connection)
+  it("resolves the Instagram adapter", () => {
+    expect(getChannel("INSTAGRAM").channel).toBe("INSTAGRAM");
+  });
+
+  // NEGATIVE — Messenger isn't registered yet (Phase 3); unknown channels throw.
   it("throws for an unconfigured channel", () => {
-    expect(() => getChannel("INSTAGRAM")).toThrow(/not configured/);
     expect(() => getChannel("MESSENGER")).toThrow(/not configured/);
     expect(() => getChannel("NONSENSE")).toThrow(/not configured/);
   });

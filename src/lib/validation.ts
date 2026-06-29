@@ -226,6 +226,36 @@ export const WebhookSchema = z.object({
 });
 export type WebhookPayload = z.infer<typeof WebhookSchema>;
 
+// Instagram Messaging / Messenger webhooks share the Meta Platform "messaging"
+// shape (object differs: "instagram" vs "page"). Defensive + optional-chaining
+// safe: route handlers re-check `object` and verify the HMAC signature.
+const MessagingEventSchema = z.object({
+  sender: z.object({ id: z.string().optional() }).optional(),
+  recipient: z.object({ id: z.string().optional() }).optional(),
+  timestamp: z.number().optional(),
+  message: z
+    .object({
+      mid: z.string().optional(),
+      text: z.string().optional(),
+      is_echo: z.boolean().optional(),
+      attachments: z
+        .array(z.object({ type: z.string().optional(), payload: z.object({ url: z.string().optional() }).optional() }))
+        .optional(),
+    })
+    .optional(),
+});
+
+export const InstagramWebhookSchema = z.object({
+  object: z.string(),
+  entry: z
+    .array(z.object({ id: z.string().optional(), messaging: z.array(MessagingEventSchema).optional() }))
+    .default([]),
+});
+export type InstagramWebhookPayload = z.infer<typeof InstagramWebhookSchema>;
+
+export const MessengerWebhookSchema = InstagramWebhookSchema;
+export type MessengerWebhookPayload = z.infer<typeof MessengerWebhookSchema>;
+
 // ─── Embedded Signup (V2 M1) ────────────────────────────────────────
 // Body posted by the client after Meta's popup returns. The phone number id
 // is optional — when the popup doesn't surface it, the server discovers it
