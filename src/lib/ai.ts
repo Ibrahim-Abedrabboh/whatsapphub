@@ -94,3 +94,67 @@ export async function summarizeThread(messages: ThreadMsg[]): Promise<string> {
 export async function translateText(text: string, target: "AR" | "EN"): Promise<string> {
   return complete({ system: buildTranslateSystem(target), user: text, maxTokens: 1024 });
 }
+
+// ── FAQ knowledge base (RAG) + message tagging (V2 M3 §2.4 Phase 2) ──
+
+export interface KbDoc { id: string; title: string; content: string }
+
+/** Word tokens (≥3 chars), Latin + Arabic. Pure. */
+function tokenize(s: string): string[] {
+  return (s.toLowerCase().match(/[\p{L}\p{N}]+/gu) ?? []).filter((w) => w.length >= 3);
+}
+
+/** Rank KB docs by query-term overlap, return the top-k matches. Pure (keyword
+ *  retrieval; embeddings are a later enhancement). */
+export function rankDocs(query: string, docs: KbDoc[], k = 3): KbDoc[] {
+  const terms = tokenize(query);
+  if (terms.length === 0) return docs.slice(0, k);
+  return docs
+    .map((d) => {
+      const hay = new Set(tokenize(`${d.title} ${d.content}`));
+      const score = terms.reduce((n, t) => n + (hay.has(t) ? 1 : 0), 0);
+      return { d, score };
+    })
+    .filter((s) => s.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, k)
+    .map((s) => s.d);
+}
+
+/** Draft a KB-grounded answer for the agent to review (suggest-not-send). */
+export async function faqAnswer(question: string, docs: KbDoc[]): Promise<string> {
+  const kb = docs.map((d, i) => `[Doc ${i + 1}: ${d.title}]\n${d.content}`).join("\n\n") || "(empty)";
+  const system =
+    "You are an assistant to a human support agent. Using ONLY the knowledge base below, draft a concise, " +
+    "friendly reply to the customer's question for the agent to review and send. If the answer is not in the " +
+    "knowledge base, say you don't have that information. Reply with only the draft.\n\n" +
+    "=== Knowledge base ===\n" + kb;
+  return complete({ system, user: question, maxTokens: 600 });
+}
+
+export interface AiTags { intent: string; sentiment: string }
+
+const TAG_SYSTEM =
+  'Classify the customer\'s message. Reply ONLY a JSON object: {"intent": one of ' +
+  '"question"|"complaint"|"request"|"feedback"|"greeting"|"other", "sentiment": one of ' +
+  '"positive"|"neutral"|"negative"}. No prose.';
+
+/** Tolerant parse of the tag JSON → {intent, sentiment} with safe defaults. Pure. */
+export function parseTags(text: string): AiTags {
+  const s = text.indexOf("{");
+  const e = text.lastIndexOf("}");
+  if (s !== -1 && e > s) {
+    try {
+      const obj = JSON.parse(text.slice(s, e + 1)) as Record<string, unknown>;
+      return {
+        intent: typeof obj.intent === "string" ? obj.intent : "other",
+        sentiment: typeof obj.sentiment === "string" ? obj.sentiment : "neutral",
+      };
+    } catch { /* fall through */ }
+  }
+  return { intent: "other", sentiment: "neutral" };
+}
+
+export async function tagMessage(text: string): Promise<AiTags> {
+  return parseTags(await complete({ system: TAG_SYSTEM, user: text, maxTokens: 60 }));
+}

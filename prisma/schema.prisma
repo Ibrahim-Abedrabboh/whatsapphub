@@ -281,10 +281,25 @@ model Message {
   wamid          String?  @unique // generic external message id (WhatsApp wamid / IG · Messenger mid)
   status         String?  // OUT only: SENT|DELIVERED|READ|FAILED
   error          String?
+  aiTags         Json?    // V2 M3 §2.4: { intent, sentiment } from on-demand classification
   createdAt      DateTime @default(now())
 
   @@index([conversationId, createdAt])
   @@index([wamid])
+}
+
+// Per-client FAQ / knowledge base used to ground AI FAQ answers (V2 M3 §2.4).
+model KnowledgeDoc {
+  id        String   @id @default(cuid())
+  clientId  String
+  title     String
+  content   String
+  source    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clientId, title])
+  @@index([clientId])
 }
 
 // Reusable per-client reply snippet (V2 §2.3). Body may contain {{name}}/{{phone}}

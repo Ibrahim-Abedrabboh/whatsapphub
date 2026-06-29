@@ -17,6 +17,12 @@ interface Convo {
 interface Msg {
   id: string; direction: "IN" | "OUT"; type: string; text: string | null;
   mediaMime: string | null; mediaFilename: string | null; status: string | null; error: string | null; createdAt: string;
+  aiTags?: { intent: string; sentiment: string } | null;
+}
+
+// Map an AI sentiment to an existing status-badge color.
+function sentimentBadge(s: string): string {
+  return s === "positive" ? "COMPLETED" : s === "negative" ? "FAILED" : "PENDING";
 }
 interface Head {
   name: string | null; phone: string; channel: string;
@@ -242,6 +248,28 @@ export default function InboxClient() {
     else setErr(j.error ?? "Could not translate");
   }
 
+  async function aiFaq() {
+    if (!activeId) return;
+    setAiBusy("faq"); setErr(null);
+    const r = await apiFetch(`/api/conversations/${activeId}/ai/faq`, { method: "POST" });
+    const j = await r.json().catch(() => ({}));
+    setAiBusy(null);
+    if (r.ok) setReply(j.answer);
+    else setErr(j.error ?? "Could not draft an answer");
+  }
+
+  async function aiTag(messageId: string) {
+    if (!activeId) return;
+    setAiBusy(`tag:${messageId}`); setErr(null);
+    const r = await apiFetch(`/api/conversations/${activeId}/ai/tag`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ messageId }),
+    });
+    const j = await r.json().catch(() => ({}));
+    setAiBusy(null);
+    if (r.ok) loadThread(activeId); // persisted aiTags come back on reload
+    else setErr(j.error ?? "Could not tag");
+  }
+
   // Patch status / assignment, then reflect it in the head + list without a reload.
   async function patchConvo(body: { status?: string; assignedToId?: string | null }) {
     if (!activeId) return;
@@ -444,18 +472,28 @@ export default function InboxClient() {
                       {it.msg.direction === "OUT" && it.msg.status ? ` · ${it.msg.status.toLowerCase()}` : ""}
                     </div>
                     {aiOn && it.msg.text && (
-                      translations[it.msg.id] ? (
-                        <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>🌐 {translations[it.msg.id]}</div>
-                      ) : (
-                        <button
-                          type="button"
-                          style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", padding: 0, marginTop: 4, fontSize: 11 }}
-                          disabled={aiBusy === `tr:${it.msg.id}`}
-                          onClick={() => void aiTranslate(it.msg.id, it.msg.text!, it.msg.direction === "IN" ? "EN" : "AR")}
-                        >
-                          {aiBusy === `tr:${it.msg.id}` ? "Translating…" : "🌐 Translate"}
-                        </button>
-                      )
+                      <div style={{ marginTop: 4, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap", fontSize: 11 }}>
+                        {translations[it.msg.id] ? (
+                          <span className="muted">🌐 {translations[it.msg.id]}</span>
+                        ) : (
+                          <button type="button" className="bubble__ai-btn" disabled={aiBusy === `tr:${it.msg.id}`}
+                            onClick={() => void aiTranslate(it.msg.id, it.msg.text!, it.msg.direction === "IN" ? "EN" : "AR")}>
+                            {aiBusy === `tr:${it.msg.id}` ? "Translating…" : "🌐 Translate"}
+                          </button>
+                        )}
+                        {it.msg.direction === "IN" && (
+                          it.msg.aiTags ? (
+                            <span style={{ display: "inline-flex", gap: 4 }}>
+                              <span className="badge badge--READ">{it.msg.aiTags.intent}</span>
+                              <span className={`badge badge--${sentimentBadge(it.msg.aiTags.sentiment)}`}>{it.msg.aiTags.sentiment}</span>
+                            </span>
+                          ) : (
+                            <button type="button" className="bubble__ai-btn" disabled={aiBusy === `tag:${it.msg.id}`} onClick={() => void aiTag(it.msg.id)}>
+                              {aiBusy === `tag:${it.msg.id}` ? "Tagging…" : "🏷 Tag"}
+                            </button>
+                          )
+                        )}
+                      </div>
                     )}
                   </div>
                 ),
@@ -467,9 +505,14 @@ export default function InboxClient() {
                 <button type="button" className={`btn ${noteMode ? "btn--ghost" : ""}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(false)}>Reply</button>
                 <button type="button" className={`btn ${noteMode ? "" : "btn--ghost"}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(true)}>📝 Internal note</button>
                 {aiOn && !noteMode && (
-                  <button type="button" className="btn btn--ghost" style={{ minHeight: 30, padding: "3px 12px", fontSize: 12, marginLeft: "auto" }} disabled={aiBusy === "suggest"} onClick={() => void aiSuggest()}>
-                    {aiBusy === "suggest" ? "Thinking…" : "✨ Suggest"}
-                  </button>
+                  <>
+                    <button type="button" className="btn btn--ghost" style={{ minHeight: 30, padding: "3px 12px", fontSize: 12, marginLeft: "auto" }} disabled={aiBusy === "suggest"} onClick={() => void aiSuggest()}>
+                      {aiBusy === "suggest" ? "Thinking…" : "✨ Suggest"}
+                    </button>
+                    <button type="button" className="btn btn--ghost" style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} disabled={aiBusy === "faq"} onClick={() => void aiFaq()}>
+                      {aiBusy === "faq" ? "Drafting…" : "💡 FAQ"}
+                    </button>
+                  </>
                 )}
               </div>
               {!noteMode && suggestions.length > 0 && (

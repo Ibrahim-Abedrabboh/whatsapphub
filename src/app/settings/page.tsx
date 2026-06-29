@@ -4,6 +4,7 @@ import WhatsAppSetup from "@/components/WhatsAppSetup";
 import EmbeddedSignup from "@/components/EmbeddedSignup";
 import ClientsManager from "@/components/ClientsManager";
 import CannedRepliesManager from "@/components/CannedRepliesManager";
+import KnowledgeManager from "@/components/KnowledgeManager";
 
 export const dynamic = "force-dynamic";
 
@@ -26,6 +27,8 @@ export default function SettingsPage() {
         <UsersManager />
         <h2 style={{ marginTop: 32 }}>Canned replies</h2>
         <CannedRepliesManager />
+        <h2 style={{ marginTop: 32 }}>AI knowledge base</h2>
+        <KnowledgeManager />
       </main>
     </>
   );
