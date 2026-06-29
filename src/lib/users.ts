@@ -52,6 +52,17 @@ export async function createUser(input: { email: string; name?: string; password
   });
 }
 
+/** Set (reset) a user's password by id. Caller authorization is enforced by the
+ *  route via canSetPassword(); this only hashes + persists. */
+export async function setUserPassword(userId: string, password: string) {
+  const passwordHash = await bcrypt.hash(password, 12);
+  return prisma.user.update({
+    where: { id: userId },
+    data: { passwordHash },
+    select: { id: true, email: true, role: true },
+  });
+}
+
 /** Generate a strong, human-typeable random password (no ambiguous chars). */
 export function generatePassword(length = 16): string {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";

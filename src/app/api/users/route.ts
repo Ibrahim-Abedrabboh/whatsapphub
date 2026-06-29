@@ -14,7 +14,8 @@ const CreateUserSchema = z.object({
 
 /** GET /api/users — list teammates in the caller's (acting) client (ADMIN only). */
 export async function GET(req: NextRequest) {
-  if (!(await requireAdmin(req))) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  const claims = await requireAdmin(req);
+  if (!claims) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   // getClientId honors a super-admin's acting-client, so the team list matches
   // whichever client they're managing.
   const users = await prisma.user.findMany({
@@ -22,7 +23,8 @@ export async function GET(req: NextRequest) {
     orderBy: { createdAt: "asc" },
     select: { id: true, email: true, name: true, role: true, createdAt: true },
   });
-  return NextResponse.json({ users });
+  // `me` lets the UI decide which rows the caller may reset (see passwordPolicy).
+  return NextResponse.json({ users, me: { email: claims.sub, role: claims.role ?? "MEMBER" } });
 }
 
 /** POST /api/users — invite a teammate into the caller's (acting) client (ADMIN only). */
