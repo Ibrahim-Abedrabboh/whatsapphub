@@ -163,6 +163,11 @@ export const UpdateConversationSchema = z
     message: "nothing to update",
   });
 
+// Internal note on a conversation (V2 §2.3) — agent-only, never sent.
+export const CreateNoteSchema = z.object({
+  body: z.string().trim().min(1, "Note can't be empty").max(4000),
+});
+
 export const CreateClientSchema = z.object({
   name: z.string().trim().min(1, "Client name is required").max(120),
   slug: z.string().trim().regex(/^[a-z0-9-]{2,40}$/, "Slug: 2–40 lowercase letters, numbers, or hyphens").optional(),
