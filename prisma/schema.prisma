@@ -285,6 +285,20 @@ model Message {
   @@index([wamid])
 }
 
+// Reusable per-client reply snippet (V2 §2.3). Body may contain {{name}}/{{phone}}
+// placeholders substituted from the conversation's contact when inserted.
+model CannedReply {
+  id        String   @id @default(cuid())
+  clientId  String
+  title     String
+  shortcut  String?
+  body      String
+  createdAt DateTime @default(now())
+
+  @@unique([clientId, title])
+  @@index([clientId])
+}
+
 // Agent-only note on a conversation (V2 §2.3). Never sent to the customer.
 model InternalNote {
   id             String   @id @default(cuid())
