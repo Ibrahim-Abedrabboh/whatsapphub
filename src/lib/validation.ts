@@ -174,6 +174,13 @@ export const TranslateSchema = z.object({
   target: z.enum(["AR", "EN"]),
 });
 
+// FAQ knowledge-base document (V2 M3 §2.4). Used for create + full update.
+export const KnowledgeSchema = z.object({
+  title: z.string().trim().min(1, "Title is required").max(120),
+  content: z.string().trim().min(1, "Content is required").max(20000),
+  source: z.string().trim().max(40).optional(),
+});
+
 // Per-client canned reply (V2 §2.3). Used for both create and full update.
 export const CannedReplySchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(80),

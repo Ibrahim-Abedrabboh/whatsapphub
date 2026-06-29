@@ -75,7 +75,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
     messages: messages.map((m) => ({
       id: m.id, direction: m.direction, type: m.type, text: m.text,
       mediaMime: m.mediaMime, mediaFilename: m.mediaFilename,
-      status: m.status, error: m.error, createdAt: m.createdAt,
+      status: m.status, error: m.error, createdAt: m.createdAt, aiTags: m.aiTags,
     })),
     notes: notes.map((n) => ({
       id: n.id, body: n.body, authorId: n.authorId,

@@ -191,6 +191,11 @@ html[lang="ar"] .table th { letter-spacing:normal; text-transform:none; font-fam
 .mention { color:var(--ember); font-weight:600; }
 .thread__reply--note .input { border-color:color-mix(in oklab, var(--ember) 40%, var(--line2)); }
 
+/* AI assist per-message controls (V2 M3 §2.4) */
+.bubble__ai-btn { background:none; border:none; color:var(--muted); cursor:pointer; padding:0; font-size:11px; }
+.bubble__ai-btn:hover { color:var(--ink); }
+.bubble__ai-btn:disabled { opacity:.6; cursor:default; }
+
 /* progress bar */
 .progress { background:var(--bg2); border:1px solid var(--line2); border-radius:var(--r-pill);
   height:12px; overflow:hidden; }
