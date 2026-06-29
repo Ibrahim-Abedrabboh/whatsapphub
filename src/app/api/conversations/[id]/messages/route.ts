@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getClientId } from "@/lib/users";
 import { SendMessageSchema } from "@/lib/validation";
-import { sendText, WhatsAppError } from "@/lib/whatsapp";
+import { WhatsAppError } from "@/lib/whatsapp";
+import { getChannel } from "@/lib/channels";
 
 export const runtime = "nodejs";
 
@@ -17,12 +18,12 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "invalid" }, { status: 400 });
   }
 
-  const convo = await prisma.conversation.findFirst({ where: { id, clientId }, select: { id: true, phone: true } });
+  const convo = await prisma.conversation.findFirst({ where: { id, clientId }, select: { id: true, phone: true, channel: true } });
   if (!convo) return NextResponse.json({ error: "not found" }, { status: 404 });
 
   let wamid: string;
   try {
-    wamid = await sendText({ to: convo.phone, body: parsed.data.text, clientId });
+    wamid = await getChannel(convo.channel).sendText({ to: convo.phone, body: parsed.data.text, clientId });
   } catch (e) {
     // 131047 = outside the 24h window → tell the agent to use a template instead.
     const message = e instanceof Error ? e.message : "send failed";
@@ -31,7 +32,7 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
   }
 
   const created = await prisma.message.create({
-    data: { clientId, conversationId: id, direction: "OUT", type: "text", text: parsed.data.text, wamid, status: "SENT" },
+    data: { clientId, conversationId: id, channel: convo.channel, direction: "OUT", type: "text", text: parsed.data.text, wamid, status: "SENT" },
   });
   await prisma.conversation.update({
     where: { id },

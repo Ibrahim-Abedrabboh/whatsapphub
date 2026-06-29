@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getClientId } from "@/lib/users";
 import { sendReadReceipt } from "@/lib/whatsapp";
+import { getChannel } from "@/lib/channels";
 
 export const runtime = "nodejs";
-
-const WINDOW_MS = 24 * 60 * 60 * 1000;
 
 /** GET /api/conversations/:id — thread + 24h-window status. Marks it read. */
 export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
@@ -29,20 +28,24 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
   // don't spam Meta).
   if (convo.unread > 0) {
     await prisma.conversation.update({ where: { id }, data: { unread: 0 } });
-    const lastIn = await prisma.message.findFirst({
-      where: { conversationId: id, direction: "IN", wamid: { not: null } },
-      orderBy: { createdAt: "desc" },
-      select: { wamid: true },
-    });
-    if (lastIn?.wamid) await sendReadReceipt(lastIn.wamid, clientId);
+    // Read receipts are WhatsApp-specific (Meta IG/Messenger use a different ack).
+    if (convo.channel === "WHATSAPP") {
+      const lastIn = await prisma.message.findFirst({
+        where: { conversationId: id, direction: "IN", wamid: { not: null } },
+        orderBy: { createdAt: "desc" },
+        select: { wamid: true },
+      });
+      if (lastIn?.wamid) await sendReadReceipt(lastIn.wamid, clientId);
+    }
   }
 
-  const windowOpen = convo.lastInboundAt ? Date.now() - new Date(convo.lastInboundAt).getTime() < WINDOW_MS : false;
+  const windowOpen = getChannel(convo.channel).isWindowOpen(convo.lastInboundAt);
 
   return NextResponse.json({
     conversation: {
       id: convo.id,
       phone: convo.phone,
+      channel: convo.channel,
       name: convo.contact?.name ?? null,
       lastInboundAt: convo.lastInboundAt,
       windowOpen,

@@ -135,7 +135,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Thread the message into the two-way inbox for this client.
-        await recordInboundMessage(clientId, m);
+        await recordInboundMessage(clientId, m, "WHATSAPP");
 
         const text = m.text?.body?.trim().toUpperCase() ?? "";
         if (optOutKeywords.includes(text)) {

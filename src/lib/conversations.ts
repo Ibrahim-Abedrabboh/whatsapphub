@@ -1,14 +1,21 @@
 import { prisma } from "./db";
 import { normalizeInbound, previewFor, type InboundMessage } from "./inboundMessage";
+import { type Channel } from "./channels/types";
+import { buildInboundWrites, shouldLinkContact } from "./inboundWrites";
 
 export type { InboundMessage };
+export { buildInboundWrites, shouldLinkContact } from "./inboundWrites";
 
 /**
- * Record an inbound customer message into its conversation thread (per client).
- * Idempotent on the message wamid — Meta retries webhooks, and a retry must not
- * double-count unread or duplicate the message.
+ * Record an inbound customer message into its conversation thread (per client,
+ * per channel). Idempotent on the external message id — Meta retries webhooks,
+ * and a retry must not double-count unread or duplicate the message.
  */
-export async function recordInboundMessage(clientId: string, m: InboundMessage): Promise<void> {
+export async function recordInboundMessage(
+  clientId: string,
+  m: InboundMessage,
+  channel: Channel = "WHATSAPP",
+): Promise<void> {
   if (m.id) {
     const existing = await prisma.message.findUnique({ where: { wamid: m.id }, select: { id: true } });
     if (existing) return;
@@ -16,27 +23,16 @@ export async function recordInboundMessage(clientId: string, m: InboundMessage):
 
   const n = normalizeInbound(m);
   const preview = previewFor(n);
-  const contact = await prisma.contact.findFirst({ where: { clientId, phone: m.from }, select: { id: true } });
+  const contact = shouldLinkContact(channel)
+    ? await prisma.contact.findFirst({ where: { clientId, phone: m.from }, select: { id: true } })
+    : null;
   const now = new Date();
 
-  const convo = await prisma.conversation.upsert({
-    where: { clientId_phone: { clientId, phone: m.from } },
-    create: {
-      clientId, phone: m.from, contactId: contact?.id ?? null,
-      lastInboundAt: now, lastMessageAt: now, lastPreview: preview, unread: 1,
-    },
-    update: {
-      lastInboundAt: now, lastMessageAt: now, lastPreview: preview,
-      unread: { increment: 1 },
-      ...(contact ? { contactId: contact.id } : {}),
-    },
+  const w = buildInboundWrites({
+    clientId, channel, from: m.from, externalId: m.id ?? null,
+    normalized: n, preview, contactId: contact?.id ?? null, now,
   });
 
-  await prisma.message.create({
-    data: {
-      clientId, conversationId: convo.id, direction: "IN",
-      type: n.type, text: n.text, mediaId: n.mediaId, mediaMime: n.mediaMime,
-      mediaFilename: n.mediaFilename, wamid: m.id ?? null,
-    },
-  });
+  const convo = await prisma.conversation.upsert({ where: w.where, create: w.create, update: w.update });
+  await prisma.message.create({ data: w.message(convo.id) });
 }

@@ -17,6 +17,7 @@ export async function GET(req: NextRequest) {
     conversations: conversations.map((c) => ({
       id: c.id,
       phone: c.phone,
+      channel: c.channel,
       name: c.contact?.name ?? null,
       lastPreview: c.lastPreview,
       lastMessageAt: c.lastMessageAt,
