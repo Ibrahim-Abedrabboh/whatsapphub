@@ -219,7 +219,12 @@ model WhatsAppConfig {
   appSecret          String?
   webhookVerifyToken String?
   graphApiVersion    String?
-  updatedAt          DateTime @updatedAt
+  // Embedded Signup (V2 M1): set when the connection was established via Meta's
+  // one-click OAuth flow rather than manual entry. tokenExpiresAt is null for a
+  // long-lived system-user token (no expiry reported by Graph).
+  wabaAutoConnected  Boolean   @default(false)
+  tokenExpiresAt     DateTime?
+  updatedAt          DateTime  @updatedAt
 }
 
 // A two-way conversation thread with one phone number (per client). The 24h

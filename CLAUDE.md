@@ -10,7 +10,7 @@ Context for Claude Code working in this repo. Read this first.
 Brand: **NazzilVideo** (dark, teal→green, Inter/Cairo, bilingual EN/AR).
 
 ## Status
-Seeded from a **green** V1 tree (typecheck · unit tests · build all passed there). Before building V2 features, run the gate below to confirm the seed still builds in this environment, then implement features per `whatsapphub-V2.md`. New migrations continue from **0016**.
+Seeded from a **green** V1 tree (typecheck · unit tests · build all passed there). **M1 — Meta Embedded Signup (§2.2)** is implemented (one-click WhatsApp onboarding; migration 0016). Next V2 milestone is M2 (omnichannel inbox). New migrations continue from **0017**.
 
 ## Stack
 Next.js 15 (App Router) · TypeScript strict (`noUncheckedIndexedAccess`) · Prisma + Postgres · BullMQ + Redis · jose + bcryptjs (auth) · Zod (validation) · Vitest (unit) · Playwright (e2e) · Docker Compose. Two processes from one image: **web** (Next) and **worker** (BullMQ consumer + recurring scheduler).
@@ -28,7 +28,7 @@ npm install && npm run prisma:generate   # generate Prisma client (required afte
 npm run typecheck                         # tsc --noEmit  ← run this FIRST
 npm test                                  # vitest unit (no DB/Redis needed)
 npm run dev / npm run worker:dev          # local: web :3000 / worker (separate terminals)
-npm run prisma:migrate -- --name <name>   # create+apply a migration (continue numbering from 0016)
+npm run prisma:migrate -- --name <name>   # create+apply a migration (continue numbering from 0017)
 npm run seed:admin                        # seed first ADMIN from env
 docker compose up --build                 # full stack (postgres+redis+app+worker), app runs migrate deploy
 npm run test:e2e                          # Playwright (needs the app running)
@@ -52,7 +52,7 @@ src/
 │                          #   auth (edge-safe), tokenStore, users, ratelimit, waConfig, tenancy
 ├─ app/                    # App Router pages + /api/* route handlers
 └─ components/             # Nav, forms, LiveProgress, ContactsTable, CampaignsManager, etc.
-prisma/                    # schema.prisma + hand-written SQL migrations (0001 → 0015 from V1; V2 starts 0016)
+prisma/                    # schema.prisma + hand-written SQL migrations (0001 → 0015 from V1; 0016 = Embedded Signup)
 ```
 
 ## Conventions

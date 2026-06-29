@@ -7,6 +7,12 @@ const EnvSchema = z.object({
   WA_BUSINESS_ACCOUNT_ID: z.string().min(1),
   WA_APP_ID: z.string().default(""), // Meta App ID; only needed for media (template header) uploads
 
+  // ─── Embedded Signup (V2 M1) — platform-level Meta app running the
+  // one-click onboarding flow. META_APP_ID falls back to WA_APP_ID; both
+  // config id and secret are required for the flow to be offered. ───
+  META_APP_ID: z.string().default(""),
+  META_CONFIG_ID: z.string().default(""), // Embedded Signup configuration id
+
   WA_ACCESS_TOKEN: z.string().min(1),
   META_APP_SECRET: z.string().min(1),
   WA_WEBHOOK_VERIFY_TOKEN: z.string().min(1),
