@@ -168,6 +168,12 @@ export const CreateNoteSchema = z.object({
   body: z.string().trim().min(1, "Note can't be empty").max(4000),
 });
 
+// AI translate request (V2 M3 §2.4).
+export const TranslateSchema = z.object({
+  text: z.string().trim().min(1, "Nothing to translate").max(8000),
+  target: z.enum(["AR", "EN"]),
+});
+
 // Per-client canned reply (V2 §2.3). Used for both create and full update.
 export const CannedReplySchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(80),

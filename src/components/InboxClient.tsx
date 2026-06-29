@@ -21,7 +21,7 @@ interface Msg {
 interface Head {
   name: string | null; phone: string; channel: string;
   status: string; assignedToId: string | null; assignee: Assignee | null;
-  lastInboundAt: string | null; firstResponseAt: string | null;
+  lastInboundAt: string | null; firstResponseAt: string | null; aiSummary: string | null;
 }
 
 // First-response SLA badge (compute-on-read). Renders only while the clock is
@@ -139,6 +139,10 @@ export default function InboxClient() {
   const [members, setMembers] = useState<Assignee[]>([]);
   const [meId, setMeId] = useState<string | null>(null);
   const [cannedReplies, setCannedReplies] = useState<CannedReply[]>([]);
+  const [aiOn, setAiOn] = useState(false);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+  const [aiBusy, setAiBusy] = useState<string | null>(null);
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -158,7 +162,7 @@ export default function InboxClient() {
     setMessages(j.messages);
     setNotes(j.notes ?? []);
     setWindowOpen(c.windowOpen);
-    setHead({ name: c.name, phone: c.phone, channel: c.channel, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee, lastInboundAt: c.lastInboundAt, firstResponseAt: c.firstResponseAt });
+    setHead({ name: c.name, phone: c.phone, channel: c.channel, status: c.status, assignedToId: c.assignedToId, assignee: c.assignee, lastInboundAt: c.lastInboundAt, firstResponseAt: c.firstResponseAt, aiSummary: c.aiSummary ?? null });
   }, []);
 
   useEffect(() => {
@@ -167,6 +171,8 @@ export default function InboxClient() {
       if (r.ok) { const j = await r.json(); setMembers(j.members); setMeId(j.meId ?? null); }
       const rc = await apiFetch("/api/canned-replies");
       if (rc.ok) setCannedReplies((await rc.json()).replies);
+      const ra = await apiFetch("/api/ai/status");
+      if (ra.ok) setAiOn(!!(await ra.json()).configured);
     })();
   }, []);
 
@@ -198,7 +204,42 @@ export default function InboxClient() {
   function open(id: string) {
     setActiveId(id);
     setErr(null);
+    setSuggestions([]);
+    setTranslations({});
     setConvos((cs) => cs.map((c) => (c.id === id ? { ...c, unread: 0 } : c)));
+  }
+
+  // ── AI assist (V2 M3 §2.4): suggest / summarize / translate. Suggest-not-send. ──
+  async function aiSuggest() {
+    if (!activeId) return;
+    setAiBusy("suggest"); setErr(null);
+    const r = await apiFetch(`/api/conversations/${activeId}/ai/suggest`, { method: "POST" });
+    const j = await r.json().catch(() => ({}));
+    setAiBusy(null);
+    if (r.ok) setSuggestions(j.suggestions ?? []);
+    else setErr(j.error ?? "Could not get suggestions");
+  }
+
+  async function aiSummarize() {
+    if (!activeId) return;
+    setAiBusy("summary"); setErr(null);
+    const r = await apiFetch(`/api/conversations/${activeId}/ai/summary`, { method: "POST" });
+    const j = await r.json().catch(() => ({}));
+    setAiBusy(null);
+    if (r.ok) setHead((h) => (h ? { ...h, aiSummary: j.summary } : h));
+    else setErr(j.error ?? "Could not summarize");
+  }
+
+  async function aiTranslate(msgId: string, text: string, target: "AR" | "EN") {
+    if (!activeId) return;
+    setAiBusy(`tr:${msgId}`); setErr(null);
+    const r = await apiFetch(`/api/conversations/${activeId}/ai/translate`, {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ text, target }),
+    });
+    const j = await r.json().catch(() => ({}));
+    setAiBusy(null);
+    if (r.ok) setTranslations((t) => ({ ...t, [msgId]: j.translation }));
+    else setErr(j.error ?? "Could not translate");
   }
 
   // Patch status / assignment, then reflect it in the head + list without a reload.
@@ -369,8 +410,24 @@ export default function InboxClient() {
                     <option key={m.id} value={m.id}>{(m.name ?? m.email) + (m.id === meId ? " (me)" : "")}</option>
                   ))}
                 </select>
+                {aiOn && (
+                  <button
+                    type="button" className="btn btn--ghost"
+                    style={{ minHeight: 34, padding: "4px 10px", fontSize: 13 }}
+                    disabled={aiBusy === "summary"} onClick={() => void aiSummarize()}
+                  >
+                    {aiBusy === "summary" ? "Summarizing…" : "✨ Summarize"}
+                  </button>
+                )}
               </div>
             </header>
+
+            {head?.aiSummary && (
+              <div className="note" style={{ margin: "8px 12px", padding: "8px 12px", borderRadius: 8, border: "1px solid var(--line2)", background: "color-mix(in oklab, var(--ember) 8%, transparent)" }}>
+                <strong style={{ fontSize: 11 }}>✨ Summary</strong>
+                <div style={{ fontSize: 13, marginTop: 4, color: "var(--ink)" }}>{head.aiSummary}</div>
+              </div>
+            )}
 
             <div className="thread__body" ref={threadRef}>
               {buildTimeline(messages, notes).map((it) =>
@@ -386,6 +443,20 @@ export default function InboxClient() {
                       {hhmm(it.msg.createdAt)}
                       {it.msg.direction === "OUT" && it.msg.status ? ` · ${it.msg.status.toLowerCase()}` : ""}
                     </div>
+                    {aiOn && it.msg.text && (
+                      translations[it.msg.id] ? (
+                        <div className="muted" style={{ fontSize: 12, marginTop: 4 }}>🌐 {translations[it.msg.id]}</div>
+                      ) : (
+                        <button
+                          type="button"
+                          style={{ background: "none", border: "none", color: "var(--muted)", cursor: "pointer", padding: 0, marginTop: 4, fontSize: 11 }}
+                          disabled={aiBusy === `tr:${it.msg.id}`}
+                          onClick={() => void aiTranslate(it.msg.id, it.msg.text!, it.msg.direction === "IN" ? "EN" : "AR")}
+                        >
+                          {aiBusy === `tr:${it.msg.id}` ? "Translating…" : "🌐 Translate"}
+                        </button>
+                      )
+                    )}
                   </div>
                 ),
               )}
@@ -395,7 +466,25 @@ export default function InboxClient() {
               <div className="thread__mode" style={{ display: "flex", gap: 6, marginBottom: 8 }}>
                 <button type="button" className={`btn ${noteMode ? "btn--ghost" : ""}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(false)}>Reply</button>
                 <button type="button" className={`btn ${noteMode ? "" : "btn--ghost"}`} style={{ minHeight: 30, padding: "3px 12px", fontSize: 12 }} onClick={() => setNoteMode(true)}>📝 Internal note</button>
+                {aiOn && !noteMode && (
+                  <button type="button" className="btn btn--ghost" style={{ minHeight: 30, padding: "3px 12px", fontSize: 12, marginLeft: "auto" }} disabled={aiBusy === "suggest"} onClick={() => void aiSuggest()}>
+                    {aiBusy === "suggest" ? "Thinking…" : "✨ Suggest"}
+                  </button>
+                )}
               </div>
+              {!noteMode && suggestions.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 8 }}>
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={i} type="button" className="btn btn--ghost"
+                      style={{ minHeight: "auto", padding: "6px 10px", fontSize: 12, textAlign: "left", whiteSpace: "normal" }}
+                      onClick={() => { setReply(s); setSuggestions([]); }}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
               {!noteMode && cannedReplies.length > 0 && (
                 <select
                   className="input"

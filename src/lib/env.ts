@@ -18,6 +18,12 @@ const EnvSchema = z.object({
   WA_WEBHOOK_VERIFY_TOKEN: z.string().min(1),
   WA_MPS: z.coerce.number().int().positive().default(80),
   OPT_OUT_KEYWORDS: z.string().default("STOP,UNSUBSCRIBE"),
+
+  // ─── AI assist (V2 M3 §2.4) — Claude via the Anthropic SDK. Optional:
+  // the AI features stay dark until ANTHROPIC_API_KEY is set, so builds and
+  // non-AI deploys work without it. ───
+  ANTHROPIC_API_KEY: z.string().default(""),
+  ANTHROPIC_MODEL: z.string().default("claude-opus-4-8"),
   DATABASE_URL: z.string().url(),
   REDIS_URL: z.string().url(),
   NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
