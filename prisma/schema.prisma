@@ -255,6 +255,8 @@ model Conversation {
   firstResponseAt DateTime? // first OUT message after an inbound → first-response SLA
   closedAt        DateTime? // set when status → CLOSED, cleared on reopen
 
+  aiSummary       String?   // V2 M3 §2.4: one-paragraph Claude summary (on demand)
+
   messages Message[]
   notes    InternalNote[]
 

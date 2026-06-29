@@ -70,6 +70,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       assignee: assigneeJson(convo.assignedTo),
       firstResponseAt: convo.firstResponseAt,
       closedAt: convo.closedAt,
+      aiSummary: convo.aiSummary,
     },
     messages: messages.map((m) => ({
       id: m.id, direction: m.direction, type: m.type, text: m.text,
