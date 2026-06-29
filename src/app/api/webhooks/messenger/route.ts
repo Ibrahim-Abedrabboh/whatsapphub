@@ -3,6 +3,7 @@ import { getClientByPageAsset, isMessengerVerifyToken } from "@/lib/pageConfig";
 import { MessengerWebhookSchema } from "@/lib/validation";
 import { verifyWebhookSignature } from "@/lib/webhookSig";
 import { recordInboundMessage } from "@/lib/conversations";
+import { runAutomation } from "@/lib/automationRun";
 import { normalizeMessengerInbound } from "@/lib/channels/messenger";
 
 export const runtime = "nodejs";
@@ -45,7 +46,10 @@ export async function POST(req: NextRequest) {
     const clientId = entryRouted?.clientId ?? routed.clientId;
     for (const messaging of entry.messaging ?? []) {
       const m = normalizeMessengerInbound(messaging);
-      if (m) await recordInboundMessage(clientId, m, "MESSENGER");
+      if (m) {
+        await recordInboundMessage(clientId, m, "MESSENGER");
+        await runAutomation(clientId, "MESSENGER", m.from, m.text?.body ?? "").catch(() => {});
+      }
     }
   }
 

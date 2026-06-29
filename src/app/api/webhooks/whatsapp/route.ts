@@ -7,6 +7,7 @@ import {
 import { WebhookSchema } from "@/lib/validation";
 import { verifyWebhookSignature } from "@/lib/webhookSig";
 import { recordInboundMessage } from "@/lib/conversations";
+import { runAutomation } from "@/lib/automationRun";
 import { prisma } from "@/lib/db";
 
 export const runtime = "nodejs";
@@ -146,6 +147,9 @@ export async function POST(req: NextRequest) {
           });
           await prisma.contact.updateMany({ where: { phone: m.from, clientId }, data: { optedOut: true } });
         }
+
+        // Inbound automation (V2 §2.5) — best-effort; never block webhook ack.
+        await runAutomation(clientId, "WHATSAPP", m.from, m.text?.body ?? "").catch(() => {});
       }
     }
   }
