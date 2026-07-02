@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { resolveTzOffsetMin } from "./sendTime";
 
 // E.164 without leading '+', 8–15 digits (covers KSA/Kuwait/Qatar/Jordan, etc.)
 export const PhoneSchema = z
@@ -67,11 +68,21 @@ export const CreateBroadcastSchema = z.object({
     })
     .optional(),
   // Send-time optimization (V2 M4 §2.7): hold each recipient until HH:MM in
-  // their own timezone, read from the named contact attribute.
+  // their own timezone, read from the named contact attribute. defaultTz is a
+  // manual audience-wide fallback (offset or IANA name) for contacts without one.
   sendTime: z
     .object({
       targetLocal: z.string().regex(/^\d{2}:\d{2}$/, "Target time must be HH:MM"),
       tzAttr: z.string().trim().min(1).max(60).default("tz"),
+      defaultTz: z
+        .string()
+        .trim()
+        .min(1)
+        .max(64)
+        .refine((v) => resolveTzOffsetMin(v, new Date()) !== null, {
+          message: "Unknown timezone — use an offset like +3 or a name like Asia/Riyadh",
+        })
+        .optional(),
     })
     .optional(),
 }).refine((b) => !!b.listId !== !!b.segmentId, {

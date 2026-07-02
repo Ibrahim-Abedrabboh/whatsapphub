@@ -2,7 +2,7 @@ import { prisma } from "./db";
 import { sendQueue } from "./queue";
 import { matchContact, type SegmentRules } from "./segments";
 import { assignVariant } from "./abtest";
-import { parseTzOffsetMin, localSendDelayMs } from "./sendTime";
+import { resolveTzOffsetMin, localSendDelayMs } from "./sendTime";
 import type { Broadcast, Contact, Template } from "@prisma/client";
 
 // variableMap entries: { from: <field> } (pulls "name" / a contact attribute)
@@ -73,7 +73,7 @@ async function enqueueGroup(
   prepared: PreparedTemplate,
   variableMap: VariableMap,
   contacts: Contact[],
-  timing: { now: Date; baseDelayMs: number; sendTime?: { targetLocal: string; tzAttr: string } | null },
+  timing: { now: Date; baseDelayMs: number; sendTime?: { targetLocal: string; tzAttr: string; defaultTz?: string | null } | null },
 ): Promise<void> {
   for (const contact of contacts) {
     const rec = await prisma.broadcastRecipient.create({
@@ -81,11 +81,14 @@ async function enqueueGroup(
     });
 
     // Send-time optimization: hold each recipient until the target local time
-    // in their own timezone (attribute-driven). No/invalid tz → base schedule.
+    // in their own timezone (offset or IANA name from the contact attribute,
+    // else the broadcast's manual defaultTz). No usable tz → base schedule.
     let delay = timing.baseDelayMs;
     if (timing.sendTime) {
       const attrs = (contact.attributes ?? {}) as Record<string, unknown>;
-      const tz = parseTzOffsetMin(attrs[timing.sendTime.tzAttr]);
+      const tz =
+        resolveTzOffsetMin(attrs[timing.sendTime.tzAttr], timing.now) ??
+        resolveTzOffsetMin(timing.sendTime.defaultTz, timing.now);
       if (tz !== null) {
         delay = Math.max(timing.baseDelayMs, localSendDelayMs(timing.now, tz, timing.sendTime.targetLocal));
       }
@@ -132,7 +135,7 @@ export async function createAndEnqueueBroadcast(opts: {
   headerMediaUrl?: string | null;
   couponCode?: string | null;
   abTest?: { templateBId: string; splitPercent: number } | null;
-  sendTime?: { targetLocal: string; tzAttr: string } | null;
+  sendTime?: { targetLocal: string; tzAttr: string; defaultTz?: string | null } | null;
 }): Promise<EnqueueResult> {
   if (!!opts.listId === !!opts.segmentId) {
     return { ok: false, error: "provide a list or a segment (exactly one)", code: 422 };

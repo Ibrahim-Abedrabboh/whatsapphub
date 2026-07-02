@@ -21,6 +21,7 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
   const [stEnabled, setStEnabled] = useState(false);
   const [targetLocal, setTargetLocal] = useState("09:00");
   const [tzAttr, setTzAttr] = useState("tz");
+  const [defaultTz, setDefaultTz] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -54,7 +55,9 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
     if (needsCoupon && couponCode.trim()) body.couponCode = couponCode.trim();
     if (scheduleAt) body.scheduleAt = new Date(scheduleAt).toISOString();
     if (abEnabled && templateBId) body.abTest = { templateBId, splitPercent };
-    if (stEnabled && targetLocal) body.sendTime = { targetLocal, tzAttr: tzAttr.trim() || "tz" };
+    if (stEnabled && targetLocal) {
+      body.sendTime = { targetLocal, tzAttr: tzAttr.trim() || "tz", ...(defaultTz.trim() ? { defaultTz: defaultTz.trim() } : {}) };
+    }
 
     const res = await apiFetch("/api/broadcasts", {
       method: "POST",
@@ -176,8 +179,14 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
             <span className="muted" style={{ fontSize: 13 }}>local time, read from attribute</span>
             <input className="input" data-test-id="bc-sendtime-attr" value={tzAttr} maxLength={60}
               onChange={(e) => setTzAttr(e.target.value)} placeholder="tz" style={{ flex: "0 1 120px" }} />
+            <label className="label" style={{ flexBasis: "100%", margin: "4px 0 0" }} htmlFor="bc-default-tz">
+              Timezone for everyone else <span className="muted">(optional — offset like <code>+3</code> or a name like <code>Asia/Riyadh</code>)</span>
+            </label>
+            <input id="bc-default-tz" className="input" data-test-id="bc-sendtime-default-tz" value={defaultTz} maxLength={64}
+              onChange={(e) => setDefaultTz(e.target.value)} placeholder="e.g. Asia/Riyadh" style={{ flex: "1 1 200px" }} />
             <p className="note" style={{ flexBasis: "100%", margin: 0 }}>
-              Contacts need a timezone attribute (e.g. <code>tz=+3</code> or <code>-4:30</code>); contacts without one send on the normal schedule.
+              A contact&apos;s own timezone attribute wins (offset or name, e.g. <code>tz=+3</code> or <code>tz=Europe/Berlin</code>).
+              This manual timezone covers contacts without one; leave both empty and they send on the normal schedule.
             </p>
           </div>
         )}

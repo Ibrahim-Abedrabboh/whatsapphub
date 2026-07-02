@@ -21,6 +21,37 @@ export function parseTzOffsetMin(value: unknown): number | null {
 }
 
 /**
+ * Offset (minutes east of UTC) of an IANA timezone name ("Asia/Riyadh",
+ * "America/New_York") at a given instant — DST-aware because it's computed
+ * for that instant. Returns null for unknown names.
+ */
+export function ianaOffsetMin(tz: string, at: Date): number | null {
+  try {
+    const part = new Intl.DateTimeFormat("en-US", { timeZone: tz.trim(), timeZoneName: "longOffset" })
+      .formatToParts(at)
+      .find((p) => p.type === "timeZoneName")?.value;
+    if (!part) return null;
+    if (part === "GMT" || part === "UTC") return 0;
+    const m = part.match(/^(?:GMT|UTC)([+-])(\d{2}):(\d{2})$/);
+    if (!m) return null;
+    return (m[1] === "-" ? -1 : 1) * (Number(m[2]) * 60 + Number(m[3]));
+  } catch {
+    return null; // Intl throws RangeError on unknown timezone names
+  }
+}
+
+/**
+ * Resolve any user-supplied timezone value — numeric offset ("+3", "-4:30",
+ * "UTC+3") or IANA name ("Asia/Riyadh") — into minutes east of UTC at `at`.
+ * Null when unrecognized.
+ */
+export function resolveTzOffsetMin(value: unknown, at: Date): number | null {
+  const numeric = parseTzOffsetMin(value);
+  if (numeric !== null) return numeric;
+  return typeof value === "string" && value.trim() !== "" ? ianaOffsetMin(value, at) : null;
+}
+
+/**
  * Milliseconds from `now` until the contact's local wall clock next reads
  * `targetLocal` ("HH:MM"). Local time = UTC + tzOffsetMin. If the target
  * time is right now, returns 0; if it already passed today (locally), the

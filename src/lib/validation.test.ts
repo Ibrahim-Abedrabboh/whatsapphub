@@ -136,3 +136,18 @@ describe("CreateBroadcastSchema A/B + send-time", () => {
     expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "morning" } }).success).toBe(false);
   });
 });
+
+describe("CreateBroadcastSchema sendTime.defaultTz", () => {
+  const base = { templateId: "t1", listId: "l1", variableMap: [] };
+
+  it("accepts an offset and an IANA name", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "09:00", defaultTz: "+3" } }).success).toBe(true);
+    expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "09:00", defaultTz: "Asia/Riyadh" } }).success).toBe(true);
+  });
+  it("rejects an unknown timezone", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "09:00", defaultTz: "Narnia/Somewhere" } }).success).toBe(false);
+  });
+  it("stays optional", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "09:00" } }).success).toBe(true);
+  });
+});

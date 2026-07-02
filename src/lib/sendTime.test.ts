@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseTzOffsetMin, localSendDelayMs } from "./sendTime";
+import { parseTzOffsetMin, localSendDelayMs, ianaOffsetMin, resolveTzOffsetMin } from "./sendTime";
 
 describe("parseTzOffsetMin", () => {
   it("parses whole hours with/without sign", () => {
@@ -60,5 +60,32 @@ describe("localSendDelayMs", () => {
     expect(localSendDelayMs(now, 180, "25:00")).toBe(0);
     expect(localSendDelayMs(now, 180, "9:00")).toBe(0); // must be HH:MM
     expect(localSendDelayMs(now, 180, "nope")).toBe(0);
+  });
+});
+
+describe("ianaOffsetMin / resolveTzOffsetMin", () => {
+  // 2026-07-02 09:00:00 UTC — July, so US timezones are on DST.
+  const at = new Date(Date.UTC(2026, 6, 2, 9, 0, 0));
+  // 2026-01-15 — same zones off DST.
+  const january = new Date(Date.UTC(2026, 0, 15, 9, 0, 0));
+
+  it("resolves IANA names", () => {
+    expect(ianaOffsetMin("Asia/Riyadh", at)).toBe(180);
+    expect(ianaOffsetMin("UTC", at)).toBe(0);
+  });
+  it("is DST-aware", () => {
+    expect(ianaOffsetMin("America/New_York", at)).toBe(-240); // EDT in July
+    expect(ianaOffsetMin("America/New_York", january)).toBe(-300); // EST in January
+  });
+  it("rejects unknown names", () => {
+    expect(ianaOffsetMin("Mars/Olympus_Mons", at)).toBeNull();
+    expect(ianaOffsetMin("not a tz", at)).toBeNull();
+  });
+  it("resolveTzOffsetMin tries numeric first, then IANA, else null", () => {
+    expect(resolveTzOffsetMin("+3", at)).toBe(180);
+    expect(resolveTzOffsetMin("Asia/Riyadh", at)).toBe(180);
+    expect(resolveTzOffsetMin("half past nine", at)).toBeNull();
+    expect(resolveTzOffsetMin(undefined, at)).toBeNull();
+    expect(resolveTzOffsetMin("", at)).toBeNull();
   });
 });
