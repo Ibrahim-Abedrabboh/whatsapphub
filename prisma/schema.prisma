@@ -132,6 +132,11 @@ model Broadcast {
   listId      String?
   segment     Segment? @relation(fields: [segmentId], references: [id], onDelete: SetNull)
   segmentId   String?
+  // A/B test (V2 M4 §2.7): variant B links to its parent A; labels "A"/"B".
+  variantOf     String?
+  variantLabel  String?
+  variantParent Broadcast?  @relation("BroadcastVariants", fields: [variantOf], references: [id], onDelete: SetNull)
+  variants      Broadcast[] @relation("BroadcastVariants")
   status      BroadcastStatus @default(DRAFT)
   totalCount  Int      @default(0)
   sentCount   Int      @default(0)

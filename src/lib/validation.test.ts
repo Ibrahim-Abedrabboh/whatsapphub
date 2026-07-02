@@ -112,3 +112,27 @@ describe("CreateBroadcastSchema audience", () => {
     expect(CreateBroadcastSchema.safeParse({ ...base, listId: "l1", segmentId: "s1" }).success).toBe(false);
   });
 });
+
+describe("CreateBroadcastSchema A/B + send-time", () => {
+  const base = { templateId: "t1", listId: "l1", variableMap: [] };
+
+  it("accepts an A/B test and defaults the split to 50", () => {
+    const r = CreateBroadcastSchema.parse({ ...base, abTest: { templateBId: "t2" } });
+    expect(r.abTest?.splitPercent).toBe(50);
+  });
+  it("rejects variant B using the same template as A", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, abTest: { templateBId: "t1" } }).success).toBe(false);
+  });
+  it("rejects an out-of-range split", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, abTest: { templateBId: "t2", splitPercent: 0 } }).success).toBe(false);
+    expect(CreateBroadcastSchema.safeParse({ ...base, abTest: { templateBId: "t2", splitPercent: 100 } }).success).toBe(false);
+  });
+  it("accepts send-time and defaults the tz attribute", () => {
+    const r = CreateBroadcastSchema.parse({ ...base, sendTime: { targetLocal: "09:30" } });
+    expect(r.sendTime).toEqual({ targetLocal: "09:30", tzAttr: "tz" });
+  });
+  it("rejects a malformed target time", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "9:30" } }).success).toBe(false);
+    expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "morning" } }).success).toBe(false);
+  });
+});

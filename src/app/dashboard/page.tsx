@@ -51,7 +51,10 @@ export default async function Dashboard() {
           <tbody>
             {broadcasts.map((b) => (
               <tr key={b.id}>
-                <td><Link href={`/broadcasts/${b.id}`} data-test-id="broadcast-link">{b.template.name}</Link></td>
+                <td>
+                  <Link href={`/broadcasts/${b.id}`} data-test-id="broadcast-link">{b.template.name}</Link>
+                  {b.variantLabel && <span className="badge" style={{ marginInlineStart: 6 }}>{b.variantLabel}</span>}
+                </td>
                 <td>{b.list?.name ?? (b.segment ? `${b.segment.name} (segment)` : "(deleted segment)")}</td>
                 <td><span className={`badge badge--${b.status}`}>{b.status}</span></td>
                 <td>{b.sentCount}</td>
