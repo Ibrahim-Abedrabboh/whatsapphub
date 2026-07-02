@@ -149,6 +149,15 @@ export async function createAndEnqueueBroadcast(opts: {
     return { ok: false, error: "provide a list or a segment (exactly one)", code: 422 };
   }
 
+  // Auto-pause gate (V2 M4 §2.9): no new broadcasts while quality is RED.
+  const cfgRow = await prisma.whatsAppConfig.findUnique({
+    where: { clientId: opts.clientId },
+    select: { sendPaused: true },
+  });
+  if (cfgRow?.sendPaused) {
+    return { ok: false, error: "sending is paused — number quality dropped to RED; resume from the dashboard", code: 409 };
+  }
+
   // Scope everything to the caller's tenant so a broadcast can't reach another
   // client's template/list/contacts.
   const preparedA = await prepareTemplate(opts.clientId, opts.templateId, opts);
