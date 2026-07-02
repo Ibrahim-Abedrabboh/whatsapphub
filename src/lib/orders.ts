@@ -90,6 +90,32 @@ export function canTransition(from: string, to: string): boolean {
   return (TRANSITIONS[from as OrderStatus] ?? []).includes(to as OrderStatus);
 }
 
+// ── Abandoned-cart reminders (Phase 4) ────────────────────────────────
+export const REMIND_AFTER_HOURS = 6; // nudge once the cart has sat this long…
+export const REMIND_MAX_AGE_HOURS = 48; // …but never for carts older than this
+
+/**
+ * Should this order get an abandoned-cart nudge now? Only NEW orders that
+ * were never reminded, old enough to count as abandoned but young enough
+ * that a reminder is still welcome (and the 24h window plausibly open).
+ */
+export function needsReminder(
+  order: { status: string; createdAt: Date; remindedAt: Date | null },
+  now: Date,
+  opts: { afterHours?: number; maxAgeHours?: number } = {},
+): boolean {
+  const after = (opts.afterHours ?? REMIND_AFTER_HOURS) * 3_600_000;
+  const maxAge = (opts.maxAgeHours ?? REMIND_MAX_AGE_HOURS) * 3_600_000;
+  if (order.status !== "NEW" || order.remindedAt !== null) return false;
+  const age = now.getTime() - order.createdAt.getTime();
+  return age >= after && age <= maxAge;
+}
+
+/** Bilingual abandoned-cart nudge. */
+export function cartReminderText(o: Pick<ParsedOrder, "itemCount">): string {
+  return `Your cart with ${o.itemCount} item${o.itemCount === 1 ? "" : "s"} is still waiting — reply here to complete your order 🛒 / سلّتك ما زالت بانتظارك — راسلنا هنا لإتمام طلبك 🛒`;
+}
+
 /** Customer-facing notification for a status change (EN + AR in one message —
  *  we don't know the customer's language). */
 export function statusNotification(to: OrderStatus): string {

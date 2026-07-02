@@ -332,6 +332,10 @@ model Order {
   currency       String?
   status         String   @default("NEW") // NEW | CONFIRMED | SHIPPED | DELIVERED | CANCELLED
   note           String?
+  // Payment link sent for this order (V2 M5 §2.10 Phase 4) — tracked via a ShortLink.
+  paymentUrl     String?
+  // Abandoned-cart reminder sent at (null = not yet; set only on successful send).
+  remindedAt     DateTime?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
