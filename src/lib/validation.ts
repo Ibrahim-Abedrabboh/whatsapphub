@@ -244,6 +244,13 @@ export const SegmentSchema = z.object({
   rules: SegmentRulesSchema,
 });
 
+// Send catalog products into a conversation (V2 M5 §2.10). One id → a single
+// product message; more → a product_list (hard-capped at Meta's 30).
+export const SendProductSchema = z.object({
+  retailerIds: z.array(z.string().trim().min(1)).min(1, "Pick at least one product").max(30, "WhatsApp allows at most 30 products per message"),
+  body: z.string().trim().max(1024).optional(),
+});
+
 // Commerce catalog connection (V2 M5 §2.10). Meta catalog ids are numeric.
 export const CommerceCatalogSchema = z.object({
   metaCatalogId: z.string().trim().regex(/^\d{5,32}$/, "Enter the numeric catalog ID from Meta Commerce Manager"),

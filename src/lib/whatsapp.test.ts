@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { buildTemplatePayload, buildTemplateComponents, countTemplateVars } from "./whatsapp";
+import { buildTemplatePayload, buildTemplateComponents, countTemplateVars, buildProductPayload, buildProductListPayload } from "./whatsapp";
 
 describe("buildTemplatePayload", () => {
   // POSITIVE: template with body variables
@@ -194,5 +194,30 @@ describe("buildTemplateComponents — dynamic URL button example", () => {
     });
     const buttons = (comps.find((c) => c.type === "BUTTONS") as { buttons: Record<string, unknown>[] }).buttons;
     expect(buttons[0]).toEqual({ type: "URL", text: "Open", url: "https://x.co/page" });
+  });
+});
+
+describe("buildProductPayload / buildProductListPayload (V2 M5 commerce)", () => {
+  it("builds a single-product message with an optional body", () => {
+    const p = buildProductPayload({ to: "9665500000000", catalogId: "123", retailerId: "SKU-1", bodyText: "Check this out" });
+    expect(p.type).toBe("interactive");
+    expect(p.interactive).toEqual({
+      type: "product",
+      body: { text: "Check this out" },
+      action: { catalog_id: "123", product_retailer_id: "SKU-1" },
+    });
+  });
+  it("omits the body when blank", () => {
+    const p = buildProductPayload({ to: "1555", catalogId: "123", retailerId: "SKU-1", bodyText: "  " });
+    expect("body" in p.interactive).toBe(false);
+  });
+  it("builds a product_list with required header + body and sections", () => {
+    const p = buildProductListPayload({
+      to: "1555", catalogId: "123", headerText: "Our menu", bodyText: "Pick your favorites",
+      sections: [{ title: "Products", product_items: [{ product_retailer_id: "a" }, { product_retailer_id: "b" }] }],
+    });
+    expect(p.interactive.type).toBe("product_list");
+    expect(p.interactive.header).toEqual({ type: "text", text: "Our menu" });
+    expect(p.interactive.action.sections[0]!.product_items).toHaveLength(2);
   });
 });
