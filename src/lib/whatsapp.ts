@@ -171,6 +171,64 @@ export async function sendText(args: { to: string; body: string; clientId?: stri
   return wamid;
 }
 
+// ── Commerce: product messages (V2 M5 §2.10) ─────────────────────────
+
+/** Single-product interactive message. Pure — unit-tested without network. */
+export function buildProductPayload(args: { to: string; catalogId: string; retailerId: string; bodyText?: string | null }) {
+  return {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: args.to,
+    type: "interactive",
+    interactive: {
+      type: "product",
+      ...(args.bodyText?.trim() ? { body: { text: args.bodyText.trim() } } : {}),
+      action: { catalog_id: args.catalogId, product_retailer_id: args.retailerId },
+    },
+  } as const;
+}
+
+/** Multi-product (product_list) interactive message — Meta requires a text
+ *  header and a body. Sections come from productListSections (lib/commerce). */
+export function buildProductListPayload(args: {
+  to: string;
+  catalogId: string;
+  headerText: string;
+  bodyText: string;
+  sections: { title: string; product_items: { product_retailer_id: string }[] }[];
+}) {
+  return {
+    messaging_product: "whatsapp",
+    recipient_type: "individual",
+    to: args.to,
+    type: "interactive",
+    interactive: {
+      type: "product_list",
+      header: { type: "text", text: args.headerText },
+      body: { text: args.bodyText },
+      action: { catalog_id: args.catalogId, sections: args.sections },
+    },
+  } as const;
+}
+
+/** Send a prebuilt interactive payload (product / product_list). Returns the wamid. */
+export async function sendInteractive(payload: Record<string, unknown>, clientId?: string): Promise<string> {
+  const cfg = await getWaConfig(clientId);
+  const res = await fetch(`https://graph.facebook.com/${cfg.graphApiVersion}/${cfg.phoneNumberId}/messages`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${cfg.accessToken}`, "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  const json = (await res.json().catch(() => ({}))) as { messages?: { id: string }[]; error?: { message?: string } };
+  if (!res.ok) {
+    const retryable = res.status === 429 || res.status >= 500;
+    throw new WhatsAppError(json.error?.message ?? `WA send failed (${res.status})`, res.status, retryable);
+  }
+  const wamid = json.messages?.[0]?.id;
+  if (!wamid) throw new WhatsAppError("No wamid in response", 500, true);
+  return wamid;
+}
+
 /** Send a read receipt for an inbound message. Best-effort (never throws). */
 export async function sendReadReceipt(wamid: string, clientId?: string): Promise<void> {
   try {

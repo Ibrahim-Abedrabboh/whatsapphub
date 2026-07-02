@@ -9,6 +9,7 @@ import { slaState, formatRemaining } from "@/lib/sla";
 interface Assignee { id: string; name: string | null; email: string }
 interface Note { id: string; body: string; authorId: string | null; authorName: string | null; createdAt: string }
 interface CannedReply { id: string; title: string; shortcut: string | null; body: string }
+interface CatalogProduct { id: string; retailerId: string; name: string; priceText: string | null }
 interface Convo {
   id: string; phone: string; channel: string; name: string | null;
   lastPreview: string | null; lastMessageAt: string; lastInboundAt: string | null; unread: number;
@@ -152,6 +153,10 @@ export default function InboxClient() {
   const [reply, setReply] = useState("");
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
+  // Commerce (V2 M5 §2.10): product picker. null = never loaded (lazy).
+  const [products, setProducts] = useState<CatalogProduct[] | null>(null);
+  const [showProducts, setShowProducts] = useState(false);
+  const [pickedProducts, setPickedProducts] = useState<Set<string>>(new Set());
   const threadRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -335,6 +340,47 @@ export default function InboxClient() {
       loadThread(activeId);
     } else {
       setErr(j.error ?? "Could not send file");
+    }
+  }
+
+  // ── Commerce: send catalog product(s) into the thread (V2 M5 §2.10) ──
+  async function openProductPicker() {
+    setShowProducts(true);
+    if (products === null) {
+      const r = await apiFetch("/api/commerce/products");
+      setProducts(r.ok ? (await r.json()).products : []);
+    }
+  }
+
+  function toggleProduct(retailerId: string) {
+    setPickedProducts((prev) => {
+      const next = new Set(prev);
+      if (next.has(retailerId)) next.delete(retailerId);
+      else if (next.size < 30) next.add(retailerId);
+      return next;
+    });
+  }
+
+  async function sendProducts() {
+    if (!activeId || pickedProducts.size === 0) return;
+    setBusy(true);
+    setErr(null);
+    const r = await apiFetch(`/api/conversations/${activeId}/send-product`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ retailerIds: [...pickedProducts], ...(reply.trim() ? { body: reply.trim() } : {}) }),
+    });
+    const j = await r.json().catch(() => ({}));
+    setBusy(false);
+    if (r.ok) {
+      setReply("");
+      setPickedProducts(new Set());
+      setShowProducts(false);
+      setMessages((m) => [...m, j.message]);
+      loadConvos();
+      loadThread(activeId);
+    } else {
+      setErr(j.error ?? "Could not send products");
     }
   }
 
@@ -547,6 +593,32 @@ export default function InboxClient() {
                   The 24-hour reply window is closed. Send an approved <b>template</b> to re-open the conversation.
                 </div>
               )}
+              {!noteMode && showProducts && (
+                <div className="card" data-test-id="product-picker" style={{ marginBottom: 8, maxHeight: 260, overflowY: "auto", padding: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <strong style={{ fontSize: 13 }}>Send products {pickedProducts.size > 0 && `(${pickedProducts.size}/30)`}</strong>
+                    <span className="muted" style={{ fontSize: 12 }}>the reply box text becomes the message caption</span>
+                    <button type="button" className="btn btn--ghost" style={{ marginLeft: "auto", minHeight: 26, padding: "2px 10px", fontSize: 12 }} onClick={() => setShowProducts(false)}>✕</button>
+                  </div>
+                  {products === null && <p className="muted" style={{ fontSize: 13 }}>Loading products…</p>}
+                  {products !== null && products.length === 0 && (
+                    <p className="muted" style={{ fontSize: 13 }}>No synced products — connect a catalog and sync in Settings → Commerce.</p>
+                  )}
+                  {products !== null && products.map((p) => (
+                    <label key={p.id} style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0", fontSize: 13, cursor: "pointer" }}>
+                      <input type="checkbox" checked={pickedProducts.has(p.retailerId)} onChange={() => toggleProduct(p.retailerId)} />
+                      <span>{p.name}</span>
+                      {p.priceText && <span className="muted">{p.priceText}</span>}
+                    </label>
+                  ))}
+                  {products !== null && products.length > 0 && (
+                    <button type="button" className="btn btn--sm" data-test-id="product-picker-send" style={{ marginTop: 8 }}
+                      disabled={busy || pickedProducts.size === 0} onClick={() => void sendProducts()}>
+                      {busy ? "Sending…" : `Send ${pickedProducts.size || ""} product${pickedProducts.size === 1 ? "" : "s"}`}
+                    </button>
+                  )}
+                </div>
+              )}
               <div className="thread__inputrow">
                 <input
                   ref={fileRef}
@@ -568,6 +640,19 @@ export default function InboxClient() {
                     aria-label="Attach a file"
                   >
                     📎
+                  </button>
+                )}
+                {!noteMode && head?.channel === "WHATSAPP" && (
+                  <button
+                    type="button"
+                    className="btn btn--ghost thread__attach"
+                    data-test-id="product-picker-open"
+                    onClick={() => void openProductPicker()}
+                    disabled={busy}
+                    title="Send catalog products"
+                    aria-label="Send catalog products"
+                  >
+                    🛍
                   </button>
                 )}
                 <input
