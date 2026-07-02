@@ -244,6 +244,15 @@ export const SegmentSchema = z.object({
   rules: SegmentRulesSchema,
 });
 
+// Public landing-page lead form. `website` is a honeypot — humans never see
+// it; a non-empty value means a bot filled the form.
+export const LeadSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(120),
+  phone: PhoneSchema,
+  business: z.string().trim().max(120).optional(),
+  website: z.string().max(200).optional(), // honeypot
+});
+
 // Send catalog products into a conversation (V2 M5 §2.10). One id → a single
 // product message; more → a product_list (hard-capped at Meta's 30).
 export const SendProductSchema = z.object({

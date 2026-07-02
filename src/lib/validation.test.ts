@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema } from "./validation";
+import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema, LeadSchema } from "./validation";
 
 describe("PhoneSchema", () => {
   it("normalizes +966 50 000 0000 → 966500000000", () => {
@@ -161,5 +161,21 @@ describe("CreateBroadcastSchema trackedUrl", () => {
   });
   it("rejects a non-URL", () => {
     expect(CreateBroadcastSchema.safeParse({ ...base, trackedUrl: "not a url" }).success).toBe(false);
+  });
+});
+
+describe("LeadSchema", () => {
+  it("accepts a valid lead and normalizes the phone", () => {
+    const r = LeadSchema.parse({ name: "Ahmed", phone: "+966 50 000 0001", business: "Nazzil Cafe" });
+    expect(r.phone).toBe("966500000001");
+  });
+  it("rejects a missing name", () => {
+    expect(LeadSchema.safeParse({ name: "  ", phone: "966500000001" }).success).toBe(false);
+  });
+  it("rejects a bad phone", () => {
+    expect(LeadSchema.safeParse({ name: "Ahmed", phone: "123" }).success).toBe(false);
+  });
+  it("rejects an overlong business name", () => {
+    expect(LeadSchema.safeParse({ name: "Ahmed", phone: "966500000001", business: "x".repeat(121) }).success).toBe(false);
   });
 });

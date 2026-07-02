@@ -354,6 +354,18 @@ html[lang="ar"] .dk-h1 { letter-spacing:normal; line-height:1.4; font-weight:700
 .dk-card p { color:var(--dk-muted); line-height:1.55; margin:0; font-size:14.5px; }
 .dk-card__arrow { margin-top:auto; padding-top:18px; color:var(--dk-green); font-size:20px; }
 
+/* lead capture (#get-started) */
+.dk-getstarted { padding:clamp(40px,6vw,72px) 0; }
+.dk-lead-form { display:grid; gap:12px; max-width:440px; margin:0 auto; }
+.dk-input { background:var(--dk-panel); border:1px solid var(--dk-line); border-radius:12px;
+  padding:12px 14px; color:var(--dk-ink); font:inherit; width:100%; }
+.dk-input::placeholder { color:var(--dk-ink2); }
+.dk-input:focus { outline:none; border-color:var(--dk-green);
+  box-shadow:0 0 0 3px color-mix(in oklab, var(--dk-green) 25%, transparent); }
+.dk-lead-form__hp { position:absolute; left:-9999px; width:1px; height:1px; opacity:0; }
+.dk-lead-form__ok { color:var(--state-success); text-align:center; font-size:16px; margin:0 auto; }
+.dk-lead-form__err { color:var(--state-error); font-size:13px; margin:0; }
+
 /* closing CTA + footer */
 .dk-final { text-align:center; padding:clamp(48px,8vw,90px) 0; }
 .dk-final h2 { font-family:var(--font-display); font-weight:600; letter-spacing:-.025em;
