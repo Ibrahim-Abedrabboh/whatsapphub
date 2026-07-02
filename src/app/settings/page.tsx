@@ -7,6 +7,7 @@ import CannedRepliesManager from "@/components/CannedRepliesManager";
 import KnowledgeManager from "@/components/KnowledgeManager";
 import AutomationRulesManager from "@/components/AutomationRulesManager";
 import FlowsManager from "@/components/FlowsManager";
+import CommerceManager from "@/components/CommerceManager";
 import SettingsTabs from "@/components/SettingsTabs";
 
 export const dynamic = "force-dynamic";
@@ -40,6 +41,7 @@ export default function SettingsPage() {
             { id: "knowledge", label: "AI knowledge", content: <KnowledgeManager /> },
             { id: "automation", label: "Automation", content: <AutomationRulesManager /> },
             { id: "flows", label: "WhatsApp Flows", content: <FlowsManager /> },
+            { id: "commerce", label: "Commerce", content: <CommerceManager /> },
           ]}
         />
       </main>
