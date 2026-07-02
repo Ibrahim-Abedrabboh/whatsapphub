@@ -4,11 +4,13 @@ import { useMemo, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
 
 interface List { id: string; name: string }
+interface Segment { id: string; name: string }
 interface Template { id: string; name: string; language: string; variableCount: number; headerFormat?: string | null; copyCode?: boolean }
 
-export default function BroadcastForm({ lists, templates }: { lists: List[]; templates: Template[] }) {
+export default function BroadcastForm({ lists, segments = [], templates }: { lists: List[]; segments?: Segment[]; templates: Template[] }) {
   const [templateId, setTemplateId] = useState("");
-  const [listId, setListId] = useState("");
+  // Audience encoded as "list:<id>" | "segment:<id>" so one select covers both.
+  const [audience, setAudience] = useState("");
   const [vars, setVars] = useState<string[]>([]);
   const [headerMediaUrl, setHeaderMediaUrl] = useState("");
   const [couponCode, setCouponCode] = useState("");
@@ -33,7 +35,9 @@ export default function BroadcastForm({ lists, templates }: { lists: List[]; tem
     setBusy(true);
     setMsg(null);
     const variableMap = vars.map((v) => (v.startsWith("field:") ? { from: v.slice(6).trim() } : { literal: v }));
-    const body: Record<string, unknown> = { templateId, listId, variableMap };
+    const body: Record<string, unknown> = { templateId, variableMap };
+    if (audience.startsWith("segment:")) body.segmentId = audience.slice(8);
+    else body.listId = audience.slice(5);
     if (mediaHeader && headerMediaUrl.trim()) body.headerMediaUrl = headerMediaUrl.trim();
     if (needsCoupon && couponCode.trim()) body.couponCode = couponCode.trim();
     if (scheduleAt) body.scheduleAt = new Date(scheduleAt).toISOString();
@@ -67,10 +71,17 @@ export default function BroadcastForm({ lists, templates }: { lists: List[]; tem
       </div>
 
       <div className="field">
-        <label className="label" htmlFor="lst">Recipient list</label>
-        <select id="lst" data-test-id="bc-list" className="input" value={listId} onChange={(e) => setListId(e.target.value)} required>
+        <label className="label" htmlFor="lst">Audience — a list or a dynamic segment</label>
+        <select id="lst" data-test-id="bc-list" className="input" value={audience} onChange={(e) => setAudience(e.target.value)} required>
           <option value="">— choose —</option>
-          {lists.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+          <optgroup label="Lists">
+            {lists.map((l) => <option key={l.id} value={`list:${l.id}`}>{l.name}</option>)}
+          </optgroup>
+          {segments.length > 0 && (
+            <optgroup label="Segments (matched at send time)">
+              {segments.map((s) => <option key={s.id} value={`segment:${s.id}`}>{s.name}</option>)}
+            </optgroup>
+          )}
         </select>
       </div>
 
@@ -114,7 +125,7 @@ export default function BroadcastForm({ lists, templates }: { lists: List[]; tem
       </div>
 
       <button data-test-id="bc-submit" className="btn" type="submit"
-        disabled={busy || !templateId || !listId || (mediaHeader && !headerMediaUrl.trim()) || (needsCoupon && !couponCode.trim())} aria-busy={busy}>
+        disabled={busy || !templateId || !audience || (mediaHeader && !headerMediaUrl.trim()) || (needsCoupon && !couponCode.trim())} aria-busy={busy}>
         {busy ? "Submitting…" : scheduleAt ? "Schedule broadcast" : "Send now"}
       </button>
       {msg && <p data-test-id="bc-result" className="note" style={{ marginTop: 10 }}>{msg}</p>}

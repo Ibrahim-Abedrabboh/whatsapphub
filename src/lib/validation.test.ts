@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema } from "./validation";
+import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema } from "./validation";
 
 describe("PhoneSchema", () => {
   it("normalizes +966 50 000 0000 → 966500000000", () => {
@@ -65,5 +65,50 @@ describe("CreateContactSchema", () => {
   });
   it("rejects an invalid phone", () => {
     expect(CreateContactSchema.safeParse({ firstName: "Ahmed", phone: "123" }).success).toBe(false);
+  });
+});
+
+describe("SegmentSchema", () => {
+  const cond = (over: Record<string, unknown> = {}) => ({ field: "tag", op: "eq", value: "vip", ...over });
+
+  it("accepts a valid segment", () => {
+    const r = SegmentSchema.parse({ name: "VIPs", rules: { match: "all", conditions: [cond()] } });
+    expect(r.rules.conditions).toHaveLength(1);
+  });
+  it("accepts attr:<key> fields and value-less exists/isTrue", () => {
+    const ok = SegmentSchema.safeParse({
+      name: "Riyadh",
+      rules: { match: "any", conditions: [cond({ field: "attr:city" }), { field: "optedOut", op: "isTrue" }, { field: "tag", op: "exists" }] },
+    });
+    expect(ok.success).toBe(true);
+  });
+  it("rejects an unknown field", () => {
+    expect(SegmentSchema.safeParse({ name: "X", rules: { match: "all", conditions: [cond({ field: "phone" })] } }).success).toBe(false);
+  });
+  it("rejects eq/neq/contains without a value", () => {
+    for (const op of ["eq", "neq", "contains"]) {
+      expect(SegmentSchema.safeParse({ name: "X", rules: { match: "all", conditions: [{ field: "tag", op }] } }).success).toBe(false);
+    }
+  });
+  it("rejects an empty condition list and a blank name", () => {
+    expect(SegmentSchema.safeParse({ name: "X", rules: { match: "all", conditions: [] } }).success).toBe(false);
+    expect(SegmentSchema.safeParse({ name: "  ", rules: { match: "all", conditions: [cond()] } }).success).toBe(false);
+  });
+});
+
+describe("CreateBroadcastSchema audience", () => {
+  const base = { templateId: "t1", variableMap: [] };
+
+  it("accepts a list audience", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, listId: "l1" }).success).toBe(true);
+  });
+  it("accepts a segment audience", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, segmentId: "s1" }).success).toBe(true);
+  });
+  it("rejects neither audience", () => {
+    expect(CreateBroadcastSchema.safeParse(base).success).toBe(false);
+  });
+  it("rejects both audiences at once", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, listId: "l1", segmentId: "s1" }).success).toBe(false);
   });
 });

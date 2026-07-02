@@ -106,13 +106,32 @@ model Template {
   @@index([clientId])
 }
 
+// Dynamic segment (V2 M4 §2.7) — a saved rule set evaluated against contacts
+// at preview/send time, so membership is always live (no materialized rows).
+// rules = { match: "all"|"any", conditions: [{ field, op, value? }] } — see lib/segments.ts.
+model Segment {
+  id        String   @id @default(cuid())
+  clientId  String   @default("default")
+  name      String
+  rules     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  broadcasts Broadcast[]
+
+  @@unique([clientId, name])
+}
+
 model Broadcast {
   id          String   @id @default(cuid())
   clientId    String   @default("default")
   template    Template @relation(fields: [templateId], references: [id])
   templateId  String
-  list        ContactList @relation(fields: [listId], references: [id])
-  listId      String
+  // Audience: exactly one of list / segment (enforced in lib/broadcast.ts).
+  list        ContactList? @relation(fields: [listId], references: [id])
+  listId      String?
+  segment     Segment? @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  segmentId   String?
   status      BroadcastStatus @default(DRAFT)
   totalCount  Int      @default(0)
   sentCount   Int      @default(0)

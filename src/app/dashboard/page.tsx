@@ -10,16 +10,17 @@ export const dynamic = "force-dynamic";
 
 export default async function Dashboard() {
   const clientId = await getClientIdFromCookies();
-  const [contacts, optedOut, lists, templates, broadcasts] = await Promise.all([
+  const [contacts, optedOut, lists, segments, templates, broadcasts] = await Promise.all([
     prisma.contact.count({ where: { clientId } }),
     prisma.contact.count({ where: { clientId, optedOut: true } }),
     prisma.contactList.findMany({ where: { clientId }, orderBy: { createdAt: "desc" } }),
+    prisma.segment.findMany({ where: { clientId }, orderBy: { name: "asc" }, select: { id: true, name: true } }),
     prisma.template.findMany({ where: { clientId, status: "APPROVED" }, orderBy: { name: "asc" } }),
     prisma.broadcast.findMany({
       where: { clientId },
       orderBy: { createdAt: "desc" },
       take: 20,
-      include: { template: true, list: true },
+      include: { template: true, list: true, segment: true },
     }),
   ]);
 
@@ -39,19 +40,19 @@ export default async function Dashboard() {
         <section className="grid-forms">
           <NewListForm />
           <UploadForm lists={lists} />
-          <BroadcastForm lists={lists} templates={templates} />
+          <BroadcastForm lists={lists} segments={segments} templates={templates} />
         </section>
 
         <h2>Recent broadcasts</h2>
         <table data-test-id="broadcasts-table" className="table">
           <thead>
-            <tr><th>Template</th><th>List</th><th>Status</th><th>Sent</th><th>Failed</th><th>Total</th><th>Scheduled</th></tr>
+            <tr><th>Template</th><th>Audience</th><th>Status</th><th>Sent</th><th>Failed</th><th>Total</th><th>Scheduled</th></tr>
           </thead>
           <tbody>
             {broadcasts.map((b) => (
               <tr key={b.id}>
                 <td><Link href={`/broadcasts/${b.id}`} data-test-id="broadcast-link">{b.template.name}</Link></td>
-                <td>{b.list.name}</td>
+                <td>{b.list?.name ?? (b.segment ? `${b.segment.name} (segment)` : "(deleted segment)")}</td>
                 <td><span className={`badge badge--${b.status}`}>{b.status}</span></td>
                 <td>{b.sentCount}</td>
                 <td>{b.failedCount}</td>

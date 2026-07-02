@@ -12,12 +12,13 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid", issues: parsed.error.issues }, { status: 400 });
   }
-  const { templateId, listId, variableMap, scheduleAt, headerMediaUrl, couponCode } = parsed.data;
+  const { templateId, listId, segmentId, variableMap, scheduleAt, headerMediaUrl, couponCode } = parsed.data;
 
   const result = await createAndEnqueueBroadcast({
     clientId: await getClientId(req),
     templateId,
     listId,
+    segmentId,
     variableMap,
     scheduledAt: scheduleAt ? new Date(scheduleAt) : null,
     headerMediaUrl,
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
     where: { clientId: await getClientId(req) },
     orderBy: { createdAt: "desc" },
     take: 50,
-    include: { template: true, list: true },
+    include: { template: true, list: true, segment: true },
   });
   return NextResponse.json({ broadcasts });
 }
