@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import LangToggle from "@/components/LangToggle";
+import LeadForm from "@/components/LeadForm";
 
 // Public marketing landing — "Dockit"-style docs layout in a WhatsApp-green
 // palette. Bilingual EN/AR (CSS shows one based on <html lang>). Stays outside
@@ -99,6 +100,14 @@ export default function Landing() {
               </article>
             ))}
           </div>
+        </section>
+
+        <section id="get-started" className="dk-getstarted">
+          <div className="dk-features__head">
+            <h2><T en="Get started" ar="ابدأ الآن" /> <span className="sub"><T en="in one message" ar="برسالة واحدة" /></span></h2>
+            <p><T en="Leave your number and we'll message you on WhatsApp." ar="اترك رقمك وسنراسلك على واتساب." /></p>
+          </div>
+          <LeadForm />
         </section>
 
         <section className="dk-final">
