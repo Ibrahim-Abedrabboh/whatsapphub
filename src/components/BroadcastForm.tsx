@@ -15,12 +15,24 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
   const [headerMediaUrl, setHeaderMediaUrl] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [scheduleAt, setScheduleAt] = useState("");
+  const [abEnabled, setAbEnabled] = useState(false);
+  const [templateBId, setTemplateBId] = useState("");
+  const [splitPercent, setSplitPercent] = useState(50);
+  const [stEnabled, setStEnabled] = useState(false);
+  const [targetLocal, setTargetLocal] = useState("09:00");
+  const [tzAttr, setTzAttr] = useState("tz");
+  const [defaultTz, setDefaultTz] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const selected = useMemo(() => templates.find((t) => t.id === templateId), [templateId, templates]);
   const mediaHeader = !!selected && ["IMAGE", "DOCUMENT", "VIDEO"].includes(selected.headerFormat ?? "");
   const needsCoupon = !!selected?.copyCode;
+  // Variant B candidates: same variable count as A (the one variableMap feeds both).
+  const bCandidates = useMemo(
+    () => (selected ? templates.filter((t) => t.id !== selected.id && t.variableCount === selected.variableCount) : []),
+    [selected, templates],
+  );
 
   function onTemplateChange(id: string) {
     setTemplateId(id);
@@ -28,6 +40,7 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
     setVars(Array(t?.variableCount ?? 0).fill(""));
     setHeaderMediaUrl("");
     setCouponCode("");
+    setTemplateBId(""); // variant B depends on A's variable count
   }
 
   async function onSubmit(e: React.FormEvent) {
@@ -41,6 +54,10 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
     if (mediaHeader && headerMediaUrl.trim()) body.headerMediaUrl = headerMediaUrl.trim();
     if (needsCoupon && couponCode.trim()) body.couponCode = couponCode.trim();
     if (scheduleAt) body.scheduleAt = new Date(scheduleAt).toISOString();
+    if (abEnabled && templateBId) body.abTest = { templateBId, splitPercent };
+    if (stEnabled && targetLocal) {
+      body.sendTime = { targetLocal, tzAttr: tzAttr.trim() || "tz", ...(defaultTz.trim() ? { defaultTz: defaultTz.trim() } : {}) };
+    }
 
     const res = await apiFetch("/api/broadcasts", {
       method: "POST",
@@ -52,8 +69,8 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
     setMsg(
       res.ok
         ? j.scheduledAt
-          ? `Scheduled ${j.queued} messages for ${new Date(j.scheduledAt).toLocaleString()}.`
-          : `Queued ${j.queued} messages now.`
+          ? `Scheduled ${j.queued} messages for ${new Date(j.scheduledAt).toLocaleString()}${j.variantBId ? " across variants A + B" : ""}.`
+          : `Queued ${j.queued} messages now${j.variantBId ? " across variants A + B" : ""}.`
         : `Error: ${j.error ?? res.status}`,
     );
   }
@@ -124,8 +141,59 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
         <input id="sch" data-test-id="bc-schedule" className="input" type="datetime-local" value={scheduleAt} onChange={(e) => setScheduleAt(e.target.value)} />
       </div>
 
+      <div className="field">
+        <label className="label" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input type="checkbox" data-test-id="bc-ab" checked={abEnabled} onChange={(e) => setAbEnabled(e.target.checked)} disabled={!selected} />
+          A/B test — send a second template to part of the audience
+        </label>
+        {abEnabled && (
+          <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap" }}>
+            <select className="input" data-test-id="bc-ab-template" style={{ flex: "2 1 200px" }} value={templateBId}
+              onChange={(e) => setTemplateBId(e.target.value)} required>
+              <option value="">— template B ({selected?.variableCount ?? 0} vars, like A) —</option>
+              {bCandidates.map((t) => <option key={t.id} value={t.id}>{t.name} ({t.language})</option>)}
+            </select>
+            <label className="label" style={{ display: "flex", alignItems: "center", gap: 6, flex: "1 1 130px" }}>
+              <input className="input" data-test-id="bc-ab-split" type="number" min={1} max={99} value={splitPercent}
+                onChange={(e) => setSplitPercent(Math.min(99, Math.max(1, Number(e.target.value) || 50)))} style={{ width: 80 }} />
+              % get A
+            </label>
+            {bCandidates.length === 0 && selected && (
+              <p className="note" style={{ flexBasis: "100%", margin: 0 }}>
+                No other approved template has {selected.variableCount} variables — variant B must take the same variables as A.
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="field">
+        <label className="label" style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <input type="checkbox" data-test-id="bc-sendtime" checked={stEnabled} onChange={(e) => setStEnabled(e.target.checked)} />
+          Send-time optimization — deliver at a local time per contact
+        </label>
+        {stEnabled && (
+          <div style={{ display: "flex", gap: 8, marginTop: 8, flexWrap: "wrap", alignItems: "center" }}>
+            <input className="input" data-test-id="bc-sendtime-target" type="time" value={targetLocal}
+              onChange={(e) => setTargetLocal(e.target.value)} style={{ flex: "0 1 130px" }} required />
+            <span className="muted" style={{ fontSize: 13 }}>local time, read from attribute</span>
+            <input className="input" data-test-id="bc-sendtime-attr" value={tzAttr} maxLength={60}
+              onChange={(e) => setTzAttr(e.target.value)} placeholder="tz" style={{ flex: "0 1 120px" }} />
+            <label className="label" style={{ flexBasis: "100%", margin: "4px 0 0" }} htmlFor="bc-default-tz">
+              Timezone for everyone else <span className="muted">(optional — offset like <code>+3</code> or a name like <code>Asia/Riyadh</code>)</span>
+            </label>
+            <input id="bc-default-tz" className="input" data-test-id="bc-sendtime-default-tz" value={defaultTz} maxLength={64}
+              onChange={(e) => setDefaultTz(e.target.value)} placeholder="e.g. Asia/Riyadh" style={{ flex: "1 1 200px" }} />
+            <p className="note" style={{ flexBasis: "100%", margin: 0 }}>
+              A contact&apos;s own timezone attribute wins (offset or name, e.g. <code>tz=+3</code> or <code>tz=Europe/Berlin</code>).
+              This manual timezone covers contacts without one; leave both empty and they send on the normal schedule.
+            </p>
+          </div>
+        )}
+      </div>
+
       <button data-test-id="bc-submit" className="btn" type="submit"
-        disabled={busy || !templateId || !audience || (mediaHeader && !headerMediaUrl.trim()) || (needsCoupon && !couponCode.trim())} aria-busy={busy}>
+        disabled={busy || !templateId || !audience || (mediaHeader && !headerMediaUrl.trim()) || (needsCoupon && !couponCode.trim()) || (abEnabled && !templateBId) || (stEnabled && !targetLocal)} aria-busy={busy}>
         {busy ? "Submitting…" : scheduleAt ? "Schedule broadcast" : "Send now"}
       </button>
       {msg && <p data-test-id="bc-result" className="note" style={{ marginTop: 10 }}>{msg}</p>}

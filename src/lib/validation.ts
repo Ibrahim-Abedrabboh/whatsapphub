@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { resolveTzOffsetMin } from "./sendTime";
 
 // E.164 without leading '+', 8–15 digits (covers KSA/Kuwait/Qatar/Jordan, etc.)
 export const PhoneSchema = z
@@ -58,9 +59,38 @@ export const CreateBroadcastSchema = z.object({
   headerMediaUrl: z.string().url().optional(),
   // Coupon code — required when the chosen template has a COPY_CODE button.
   couponCode: z.string().trim().min(1).max(15).optional(),
+  // A/B test (V2 M4 §2.7): send template B to a deterministic slice of the
+  // audience. splitPercent = % of contacts that get variant A.
+  abTest: z
+    .object({
+      templateBId: z.string().min(1),
+      splitPercent: z.number().int().min(1).max(99).default(50),
+    })
+    .optional(),
+  // Send-time optimization (V2 M4 §2.7): hold each recipient until HH:MM in
+  // their own timezone, read from the named contact attribute. defaultTz is a
+  // manual audience-wide fallback (offset or IANA name) for contacts without one.
+  sendTime: z
+    .object({
+      targetLocal: z.string().regex(/^\d{2}:\d{2}$/, "Target time must be HH:MM"),
+      tzAttr: z.string().trim().min(1).max(60).default("tz"),
+      defaultTz: z
+        .string()
+        .trim()
+        .min(1)
+        .max(64)
+        .refine((v) => resolveTzOffsetMin(v, new Date()) !== null, {
+          message: "Unknown timezone — use an offset like +3 or a name like Asia/Riyadh",
+        })
+        .optional(),
+    })
+    .optional(),
 }).refine((b) => !!b.listId !== !!b.segmentId, {
   message: "Choose a recipient list or a segment (exactly one)",
   path: ["listId"],
+}).refine((b) => !b.abTest || b.abTest.templateBId !== b.templateId, {
+  message: "Variant B must use a different template than A",
+  path: ["abTest"],
 });
 
 export const LoginSchema = z.object({
