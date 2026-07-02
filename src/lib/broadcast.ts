@@ -3,6 +3,7 @@ import { sendQueue } from "./queue";
 import { matchContact, type SegmentRules } from "./segments";
 import { assignVariant } from "./abtest";
 import { resolveTzOffsetMin, localSendDelayMs } from "./sendTime";
+import { genCode } from "./shortLinks";
 import type { Broadcast, Contact, Template } from "@prisma/client";
 
 // variableMap entries: { from: <field> } (pulls "name" / a contact attribute)
@@ -74,6 +75,7 @@ async function enqueueGroup(
   variableMap: VariableMap,
   contacts: Contact[],
   timing: { now: Date; baseDelayMs: number; sendTime?: { targetLocal: string; tzAttr: string; defaultTz?: string | null } | null },
+  linkCode?: string | null,
 ): Promise<void> {
   for (const contact of contacts) {
     const rec = await prisma.broadcastRecipient.create({
@@ -108,6 +110,9 @@ async function enqueueGroup(
         headerMediaUrl: prepared.headerMediaUrl,
         couponCode: prepared.couponCode,
         carouselCards: prepared.carouselCards,
+        // Tracked link: fills the template's dynamic URL button ({{1}}); the
+        // ?c= ref attributes the click back to this contact on redirect.
+        urlButtonParam: linkCode ? `${linkCode}?c=${contact.id}` : null,
       },
       { jobId: `${broadcast.id}:${contact.id}`, delay },
     );
@@ -136,6 +141,9 @@ export async function createAndEnqueueBroadcast(opts: {
   couponCode?: string | null;
   abTest?: { templateBId: string; splitPercent: number } | null;
   sendTime?: { targetLocal: string; tzAttr: string; defaultTz?: string | null } | null;
+  // Destination for a tracked short link (§2.9). Requires the template's URL
+  // button to be dynamic and point at this app's /r/{{1}} route.
+  trackedUrl?: string | null;
 }): Promise<EnqueueResult> {
   if (!!opts.listId === !!opts.segmentId) {
     return { ok: false, error: "provide a list or a segment (exactly one)", code: 422 };
@@ -230,9 +238,31 @@ export async function createAndEnqueueBroadcast(opts: {
     });
   }
 
-  await enqueueGroup(broadcastA, preparedA, opts.variableMap, groupA, timing);
+  // Tracked link: one short link per variant so clicks compare A vs B.
+  const trackedUrl = (opts.trackedUrl ?? "").trim();
+  let codeA: string | null = null;
+  let codeB: string | null = null;
+  if (trackedUrl) {
+    const mkLink = async (broadcastId: string) => {
+      // genCode collisions are ~1 in 62^8 — retry a couple of times, then fail loudly.
+      for (let attempt = 0; attempt < 3; attempt++) {
+        const code = genCode();
+        try {
+          await prisma.shortLink.create({ data: { clientId: opts.clientId, code, targetUrl: trackedUrl, broadcastId } });
+          return code;
+        } catch {
+          /* unique collision — draw again */
+        }
+      }
+      throw new Error("could not allocate a short-link code");
+    };
+    codeA = await mkLink(broadcastA.id);
+    if (broadcastB) codeB = await mkLink(broadcastB.id);
+  }
+
+  await enqueueGroup(broadcastA, preparedA, opts.variableMap, groupA, timing, codeA);
   if (broadcastB && preparedB) {
-    await enqueueGroup(broadcastB, preparedB, opts.variableMap, groupB, timing);
+    await enqueueGroup(broadcastB, preparedB, opts.variableMap, groupB, timing, codeB);
   }
 
   return {

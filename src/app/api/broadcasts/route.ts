@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   if (!parsed.success) {
     return NextResponse.json({ error: "invalid", issues: parsed.error.issues }, { status: 400 });
   }
-  const { templateId, listId, segmentId, variableMap, scheduleAt, headerMediaUrl, couponCode, abTest, sendTime } = parsed.data;
+  const { templateId, listId, segmentId, variableMap, scheduleAt, headerMediaUrl, couponCode, abTest, sendTime, trackedUrl } = parsed.data;
 
   const result = await createAndEnqueueBroadcast({
     clientId: await getClientId(req),
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
     couponCode,
     abTest,
     sendTime,
+    trackedUrl,
   });
 
   if (!result.ok) return NextResponse.json({ error: result.error }, { status: result.code ?? 422 });

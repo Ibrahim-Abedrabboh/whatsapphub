@@ -22,6 +22,7 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
   const [targetLocal, setTargetLocal] = useState("09:00");
   const [tzAttr, setTzAttr] = useState("tz");
   const [defaultTz, setDefaultTz] = useState("");
+  const [trackedUrl, setTrackedUrl] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -55,6 +56,7 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
     if (needsCoupon && couponCode.trim()) body.couponCode = couponCode.trim();
     if (scheduleAt) body.scheduleAt = new Date(scheduleAt).toISOString();
     if (abEnabled && templateBId) body.abTest = { templateBId, splitPercent };
+    if (trackedUrl.trim()) body.trackedUrl = trackedUrl.trim();
     if (stEnabled && targetLocal) {
       body.sendTime = { targetLocal, tzAttr: tzAttr.trim() || "tz", ...(defaultTz.trim() ? { defaultTz: defaultTz.trim() } : {}) };
     }
@@ -164,6 +166,20 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
               </p>
             )}
           </div>
+        )}
+      </div>
+
+      <div className="field">
+        <label className="label" htmlFor="bc-tracked-url">
+          Tracked link <span className="muted">(optional — counts URL-button clicks)</span>
+        </label>
+        <input id="bc-tracked-url" data-test-id="bc-tracked-url" className="input" type="url" value={trackedUrl}
+          onChange={(e) => setTrackedUrl(e.target.value)} placeholder="https://your-site.com/offer" />
+        {trackedUrl.trim() && (
+          <p className="note" style={{ marginTop: 6 }}>
+            The template&apos;s first button must be a <strong>URL button ending in {"{{1}}"}</strong> that points at this
+            app&apos;s <code>/r/{"{{1}}"}</code> route. Recipients are redirected to this URL and each click is counted.
+          </p>
         )}
       </div>
 

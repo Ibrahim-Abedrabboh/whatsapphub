@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import Nav from "@/components/Nav";
 import LiveProgress from "@/components/LiveProgress";
 import { getClientIdFromCookies } from "@/lib/users";
+import { clickStats } from "@/lib/shortLinks";
 
 export const dynamic = "force-dynamic";
 
@@ -18,17 +19,24 @@ interface VariantFunnel {
   failed: number;
   clicks: number;
   uniqueClicks: number;
+  linkClicks: number;
+  uniqueLinkClicks: number;
 }
 
 /** Per-variant funnel: recipient statuses (cumulative) + button clicks. */
 async function variantFunnel(b: { id: string; variantLabel: string | null; template: { name: string } }): Promise<VariantFunnel> {
-  const [grouped, clickEvents] = await Promise.all([
+  const [grouped, clickEvents, linkClickRows] = await Promise.all([
     prisma.broadcastRecipient.groupBy({ by: ["status"], where: { broadcastId: b.id }, _count: { _all: true } }),
     prisma.messageEvent.findMany({
       where: { type: "click", recipient: { broadcastId: b.id } },
       select: { recipientId: true },
     }),
+    prisma.linkClick.findMany({
+      where: { shortLink: { broadcastId: b.id } },
+      select: { contactId: true },
+    }),
   ]);
+  const linkStats = clickStats(linkClickRows);
   const counts = Object.fromEntries(grouped.map((g) => [g.status, g._count._all])) as Record<string, number>;
   const read = counts.READ ?? 0;
   const delivered = read + (counts.DELIVERED ?? 0);
@@ -45,6 +53,8 @@ async function variantFunnel(b: { id: string; variantLabel: string | null; templ
     failed: counts.FAILED ?? 0,
     clicks: clickEvents.length,
     uniqueClicks: new Set(clickEvents.map((c) => c.recipientId)).size,
+    linkClicks: linkStats.total,
+    uniqueLinkClicks: linkStats.unique,
   };
 }
 
@@ -69,6 +79,13 @@ export default async function BroadcastDetail({ params }: { params: Promise<{ id
   const pairRoot = b.variantOf ? b.variantParent : b.variants.length > 0 ? b : null;
   const pair = pairRoot ? [pairRoot, ...(pairRoot.id === b.id ? b.variants : pairRoot.variants)] : [];
   const funnels = pair.length >= 2 ? await Promise.all(pair.map(variantFunnel)) : [];
+
+  // Tracked links on this broadcast (V2 M4 §2.9).
+  const links = await prisma.shortLink.findMany({
+    where: { broadcastId: b.id },
+    include: { clicks: { select: { contactId: true } } },
+    orderBy: { createdAt: "asc" },
+  });
 
   return (
     <>
@@ -98,7 +115,7 @@ export default async function BroadcastDetail({ params }: { params: Promise<{ id
             <p className="note">Cumulative funnel per variant — a read message also counts as sent and delivered.</p>
             <table className="table">
               <thead>
-                <tr><th>Variant</th><th>Template</th><th>Total</th><th>Sent</th><th>Delivered</th><th>Read</th><th>Failed</th><th>Clicks</th></tr>
+                <tr><th>Variant</th><th>Template</th><th>Total</th><th>Sent</th><th>Delivered</th><th>Read</th><th>Failed</th><th>Clicks</th><th>Link clicks</th></tr>
               </thead>
               <tbody>
                 {funnels.map((f) => (
@@ -115,8 +132,34 @@ export default async function BroadcastDetail({ params }: { params: Promise<{ id
                     <td>{f.read}</td>
                     <td>{f.failed}</td>
                     <td>{f.clicks}{f.uniqueClicks > 0 ? ` (${f.uniqueClicks} unique)` : ""}</td>
+                    <td>{f.linkClicks}{f.uniqueLinkClicks > 0 ? ` (${f.uniqueLinkClicks} unique)` : ""}</td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {links.length > 0 && (
+          <div className="card" style={{ marginTop: 20 }} data-test-id="tracked-links">
+            <h3>Tracked links</h3>
+            <p className="note">Every recipient&apos;s URL button goes through <code>/r/&lt;code&gt;</code>, so clicks are counted (and attributed when possible) before redirecting.</p>
+            <table className="table">
+              <thead><tr><th>Short link</th><th>Destination</th><th>Clicks</th><th>Unique clickers</th></tr></thead>
+              <tbody>
+                {links.map((l) => {
+                  const s = clickStats(l.clicks);
+                  return (
+                    <tr key={l.id}>
+                      <td><code>/r/{l.code}</code></td>
+                      <td style={{ maxWidth: 340, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        <a href={l.targetUrl} target="_blank" rel="noreferrer">{l.targetUrl}</a>
+                      </td>
+                      <td>{s.total}</td>
+                      <td>{s.unique}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
