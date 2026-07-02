@@ -286,6 +286,36 @@ model WhatsAppConfig {
   updatedAt          DateTime  @updatedAt
 }
 
+// Commerce (V2 M5 §2.10) — the client's Meta Commerce Manager catalog. One per
+// tenant; products are synced from Graph on demand and cached locally so the
+// inbox product picker doesn't hit Meta on every open.
+model CommerceCatalog {
+  id            String    @id @default(cuid())
+  clientId      String    @unique @default("default")
+  metaCatalogId String
+  name          String?
+  lastSyncedAt  DateTime?
+  updatedAt     DateTime  @updatedAt
+}
+
+// A synced catalog product (V2 M5 §2.10). retailerId is Meta's
+// product_retailer_id — the key used in product messages and order webhooks.
+model Product {
+  id           String   @id @default(cuid())
+  clientId     String   @default("default")
+  retailerId   String
+  name         String
+  priceText    String? // formatted by Meta, e.g. "SAR 25.00"
+  currency     String?
+  imageUrl     String?
+  availability String? // in stock | out of stock (as reported)
+  raw          Json?   // full Graph node for fields we don't model yet
+  updatedAt    DateTime @updatedAt
+
+  @@unique([clientId, retailerId])
+  @@index([clientId])
+}
+
 // Point-in-time reading of a phone number's Meta quality rating + messaging
 // tier (V2 M4 §2.9). Written by the worker's repeatable quality poll.
 model QualitySnapshot {

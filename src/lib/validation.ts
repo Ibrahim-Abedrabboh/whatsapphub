@@ -244,6 +244,11 @@ export const SegmentSchema = z.object({
   rules: SegmentRulesSchema,
 });
 
+// Commerce catalog connection (V2 M5 §2.10). Meta catalog ids are numeric.
+export const CommerceCatalogSchema = z.object({
+  metaCatalogId: z.string().trim().regex(/^\d{5,32}$/, "Enter the numeric catalog ID from Meta Commerce Manager"),
+});
+
 // AI translate request (V2 M3 §2.4).
 export const TranslateSchema = z.object({
   text: z.string().trim().min(1, "Nothing to translate").max(8000),
