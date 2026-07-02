@@ -1,10 +1,12 @@
-import { Worker } from "bullmq";
+import { DelayedError, Queue, Worker } from "bullmq";
 // Relative imports (not "@/..."): the worker runs under tsx, which does not
 // resolve tsconfig `paths` the way Next.js does.
 import { connection, SEND_QUEUE, type SendJob } from "../lib/queue";
 import { RECURRING_QUEUE, recurringQueue, upsertSchedule, type RecurringJob } from "../lib/recurring";
 import { createAndEnqueueBroadcast, type VariableMap } from "../lib/broadcast";
 import { sendTemplate, WhatsAppError } from "../lib/whatsapp";
+import { getWaConfig, DEFAULT_CLIENT_ID } from "../lib/waConfig";
+import { parseQuality, shouldPause } from "../lib/quality";
 import { prisma } from "../lib/db";
 import { env } from "../lib/env";
 
@@ -12,8 +14,20 @@ import { env } from "../lib/env";
 // Meta's allowance (default tier = 80 msg/s). Raise WA_MPS only after upgrade.
 const worker = new Worker<SendJob>(
   SEND_QUEUE,
-  async (job) => {
+  async (job, token) => {
     const { recipientId, to, templateName, language, bodyParams, headerFormat, headerMediaUrl, couponCode, carouselCards, urlButtonParam, clientId } = job.data;
+
+    // Auto-pause gate (V2 M4 §2.9): while the client's number quality is RED,
+    // hold queued sends by re-delaying the job (does not burn retry attempts).
+    const cfgRow = await prisma.whatsAppConfig.findUnique({
+      where: { clientId: clientId ?? DEFAULT_CLIENT_ID },
+      select: { sendPaused: true },
+    });
+    if (cfgRow?.sendPaused) {
+      console.log(`[worker] client ${clientId ?? DEFAULT_CLIENT_ID} paused (quality RED) — delaying job ${job.id} 5m`);
+      await job.moveToDelayed(Date.now() + 5 * 60_000, token);
+      throw new DelayedError();
+    }
 
     // First job of a scheduled broadcast flips it to SENDING.
     await prisma.broadcast.updateMany({
@@ -107,6 +121,62 @@ recurringWorker.on("failed", (job, err) => console.error(`[recurring] ${job?.id}
   const active = await prisma.recurringCampaign.findMany({ where: { active: true } });
   for (const c of active) await upsertSchedule(c.id, c.cron);
   if (active.length) console.log(`[recurring] synced ${active.length} active schedule(s)`);
+})();
+
+// ── Number-quality poller + auto-pause (V2 M4 §2.9) ──────────────────
+// Every 15 minutes: read each connected client's quality_rating from Meta,
+// store a QualitySnapshot, and pause sending when it drops to RED. Errors are
+// isolated per client so one bad token can't stall the loop; resume is manual.
+const QUALITY_QUEUE = "wa-quality";
+const qualityQueue = new Queue(QUALITY_QUEUE, { connection });
+
+const qualityWorker = new Worker(
+  QUALITY_QUEUE,
+  async () => {
+    const rows = await prisma.whatsAppConfig.findMany({ select: { clientId: true } });
+    const clientIds = [...new Set([DEFAULT_CLIENT_ID, ...rows.map((r) => r.clientId)])];
+
+    let polled = 0;
+    for (const clientId of clientIds) {
+      try {
+        const cfg = await getWaConfig(clientId);
+        if (!cfg.phoneNumberId || !cfg.accessToken) continue;
+
+        const res = await fetch(
+          `https://graph.facebook.com/${cfg.graphApiVersion}/${cfg.phoneNumberId}?fields=quality_rating,messaging_limit_tier`,
+          { headers: { Authorization: `Bearer ${cfg.accessToken}` } },
+        );
+        if (!res.ok) {
+          console.error(`[quality] ${clientId}: Meta responded ${res.status}`);
+          continue;
+        }
+
+        const { qualityRating, messagingTier } = parseQuality(await res.json().catch(() => null));
+        await prisma.qualitySnapshot.create({
+          data: { clientId, phoneNumberId: cfg.phoneNumberId, qualityRating, messagingTier },
+        });
+        polled++;
+
+        if (shouldPause(qualityRating)) {
+          const updated = await prisma.whatsAppConfig.updateMany({
+            where: { clientId, sendPaused: false },
+            data: { sendPaused: true },
+          });
+          if (updated.count > 0) console.error(`[quality] ${clientId}: rating RED — sending PAUSED (manual resume required)`);
+        }
+      } catch (err) {
+        console.error(`[quality] ${clientId}:`, err instanceof Error ? err.message : err);
+      }
+    }
+    return { polled };
+  },
+  { connection },
+);
+qualityWorker.on("failed", (job, err) => console.error(`[quality] ${job?.id} failed:`, err.message));
+
+(async () => {
+  await qualityQueue.upsertJobScheduler("quality-poll", { every: 15 * 60 * 1000 }, { name: "poll", data: {} });
+  console.log("[quality] polling every 15m");
 })();
 
 // Keep the import referenced even if unused above (queue is created on import).

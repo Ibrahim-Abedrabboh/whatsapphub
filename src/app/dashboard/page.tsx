@@ -4,6 +4,7 @@ import Nav from "@/components/Nav";
 import UploadForm from "@/components/UploadForm";
 import NewListForm from "@/components/NewListForm";
 import BroadcastForm from "@/components/BroadcastForm";
+import QualityCard from "@/components/QualityCard";
 import { getClientIdFromCookies } from "@/lib/users";
 
 export const dynamic = "force-dynamic";
@@ -29,6 +30,8 @@ export default async function Dashboard() {
       <Nav />
       <main className="app">
         <h1>Dashboard</h1>
+
+        <QualityCard />
 
         <section className="stats">
           <Stat label="Contacts" value={contacts} />
