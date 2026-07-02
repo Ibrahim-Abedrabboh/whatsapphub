@@ -157,6 +157,34 @@ model Broadcast {
   @@index([status])
 }
 
+// Link tracking (V2 M4 §2.9) — a short code that 302-redirects via the public
+// /r/[code] route, logging a LinkClick on the way. One per broadcast (variant)
+// when a tracked URL is supplied; standalone links are possible too.
+model ShortLink {
+  id          String   @id @default(cuid())
+  clientId    String   @default("default")
+  code        String   @unique
+  targetUrl   String
+  broadcastId String?
+  createdAt   DateTime @default(now())
+
+  clicks LinkClick[]
+
+  @@index([broadcastId])
+}
+
+model LinkClick {
+  id          String    @id @default(cuid())
+  shortLink   ShortLink @relation(fields: [shortLinkId], references: [id], onDelete: Cascade)
+  shortLinkId String
+  // Plain string (no FK): attribution comes from an untrusted URL param on a
+  // public route — a bogus id must not make the click insert fail.
+  contactId   String?
+  createdAt   DateTime  @default(now())
+
+  @@index([shortLinkId])
+}
+
 enum BroadcastStatus {
   DRAFT
   SCHEDULED

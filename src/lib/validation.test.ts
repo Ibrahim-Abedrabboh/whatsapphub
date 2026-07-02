@@ -151,3 +151,15 @@ describe("CreateBroadcastSchema sendTime.defaultTz", () => {
     expect(CreateBroadcastSchema.safeParse({ ...base, sendTime: { targetLocal: "09:00" } }).success).toBe(true);
   });
 });
+
+describe("CreateBroadcastSchema trackedUrl", () => {
+  const base = { templateId: "t1", listId: "l1", variableMap: [] };
+
+  it("accepts a valid URL and stays optional", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, trackedUrl: "https://x.co/offer" }).success).toBe(true);
+    expect(CreateBroadcastSchema.safeParse(base).success).toBe(true);
+  });
+  it("rejects a non-URL", () => {
+    expect(CreateBroadcastSchema.safeParse({ ...base, trackedUrl: "not a url" }).success).toBe(false);
+  });
+});

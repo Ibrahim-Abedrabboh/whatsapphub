@@ -21,6 +21,9 @@ export function buildTemplatePayload(args: {
   couponCode?: string | null;
   // Carousel cards: each card's media is supplied per-send (body/buttons are static).
   carouselCards?: { format: string; mediaUrl: string }[] | null;
+  // Suffix for a dynamic URL button (template URL ends in {{1}}) — used for
+  // tracked short links. Assumed at index 0 (index 1 when a coupon is at 0).
+  urlButtonParam?: string | null;
 }) {
   const components: Record<string, unknown>[] = [];
 
@@ -47,6 +50,16 @@ export function buildTemplatePayload(args: {
       sub_type: "copy_code",
       index: "0",
       parameters: [{ type: "coupon_code", coupon_code: args.couponCode }],
+    });
+  }
+
+  // Dynamic URL button — the suffix fills the template URL's {{1}}.
+  if (args.urlButtonParam) {
+    components.push({
+      type: "button",
+      sub_type: "url",
+      index: args.couponCode ? "1" : "0",
+      parameters: [{ type: "text", text: args.urlButtonParam }],
     });
   }
 
@@ -97,6 +110,7 @@ export async function sendTemplate(args: {
   headerMediaUrl?: string | null;
   couponCode?: string | null;
   carouselCards?: { format: string; mediaUrl: string }[] | null;
+  urlButtonParam?: string | null;
   clientId?: string;
 }): Promise<string> {
   const cfg = await getWaConfig(args.clientId);
@@ -295,7 +309,11 @@ export function buildTemplateComponents(input: CreateTemplateInput): Record<stri
     components.push({
       type: "BUTTONS",
       buttons: input.buttons.map((b) => {
-        if (b.type === "URL") return { type: "URL", text: b.text, url: b.url };
+        if (b.type === "URL") {
+          // Dynamic URL ({{1}} suffix, e.g. a tracked /r/ link) — Meta requires a sample.
+          const dynamic = b.url?.includes("{{1}}");
+          return { type: "URL", text: b.text, url: b.url, ...(dynamic ? { example: [b.url!.replace("{{1}}", "abc123")] } : {}) };
+        }
         if (b.type === "PHONE_NUMBER") return { type: "PHONE_NUMBER", text: b.text, phone_number: b.phoneNumber };
         if (b.type === "COPY_CODE") return { type: "COPY_CODE", example: b.couponExample };
         return { type: "QUICK_REPLY", text: b.text };

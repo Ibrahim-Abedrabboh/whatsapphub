@@ -18,6 +18,7 @@ export interface SendJob {
   headerMediaUrl?: string | null; // media link for the header component
   couponCode?: string | null;     // code for a COPY_CODE (coupon) button
   carouselCards?: { format: string; mediaUrl: string }[] | null; // carousel card media
+  urlButtonParam?: string | null; // suffix for a dynamic URL button (tracked short link)
 }
 
 export const SEND_QUEUE = "wa-send";

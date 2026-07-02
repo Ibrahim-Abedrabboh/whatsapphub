@@ -146,3 +146,53 @@ describe("buildTemplateComponents", () => {
     expect("example" in (c[0] as object)).toBe(false);
   });
 });
+
+describe("buildTemplatePayload — dynamic URL button (tracked links)", () => {
+  it("adds a url button parameter at index 0", () => {
+    const p = buildTemplatePayload({
+      to: "15551230000", templateName: "offer", language: "en",
+      bodyParams: ["Sarah"], urlButtonParam: "abc123?c=cont1",
+    });
+    const comps = (p.template as { components?: Record<string, unknown>[] }).components ?? [];
+    expect(comps).toContainEqual({
+      type: "button", sub_type: "url", index: "0",
+      parameters: [{ type: "text", text: "abc123?c=cont1" }],
+    });
+  });
+  it("shifts to index 1 when a copy-code button occupies index 0", () => {
+    const p = buildTemplatePayload({
+      to: "15551230000", templateName: "offer", language: "en",
+      bodyParams: [], couponCode: "SAVE20", urlButtonParam: "abc123",
+    });
+    const comps = (p.template as { components?: Record<string, unknown>[] }).components ?? [];
+    const url = comps.find((c) => c.sub_type === "url");
+    expect(url).toMatchObject({ index: "1" });
+  });
+  it("omits the component when no param is supplied", () => {
+    const p = buildTemplatePayload({ to: "1555", templateName: "t", language: "en", bodyParams: ["x"] });
+    const comps = (p.template as { components?: Record<string, unknown>[] }).components ?? [];
+    expect(comps.find((c) => c.sub_type === "url")).toBeUndefined();
+  });
+});
+
+describe("buildTemplateComponents — dynamic URL button example", () => {
+  it("adds an example for a {{1}} URL (Meta requires a sample)", () => {
+    const comps = buildTemplateComponents({
+      name: "t", language: "en", category: "MARKETING", body: "Hi", bodyExamples: [],
+      buttons: [{ type: "URL", text: "Open", url: "https://hub.example.com/r/{{1}}" }],
+    });
+    const buttons = (comps.find((c) => c.type === "BUTTONS") as { buttons: Record<string, unknown>[] }).buttons;
+    expect(buttons[0]).toEqual({
+      type: "URL", text: "Open", url: "https://hub.example.com/r/{{1}}",
+      example: ["https://hub.example.com/r/abc123"],
+    });
+  });
+  it("leaves static URLs untouched", () => {
+    const comps = buildTemplateComponents({
+      name: "t", language: "en", category: "MARKETING", body: "Hi", bodyExamples: [],
+      buttons: [{ type: "URL", text: "Open", url: "https://x.co/page" }],
+    });
+    const buttons = (comps.find((c) => c.type === "BUTTONS") as { buttons: Record<string, unknown>[] }).buttons;
+    expect(buttons[0]).toEqual({ type: "URL", text: "Open", url: "https://x.co/page" });
+  });
+});

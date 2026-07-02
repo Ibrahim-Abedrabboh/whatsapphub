@@ -67,6 +67,9 @@ export const CreateBroadcastSchema = z.object({
       splitPercent: z.number().int().min(1).max(99).default(50),
     })
     .optional(),
+  // Tracked link (V2 M4 §2.9): destination URL for a per-broadcast short link.
+  // The template's URL button must be dynamic ({{1}}) and point at /r/.
+  trackedUrl: z.string().trim().url("Tracked link must be a valid URL").max(2000).optional(),
   // Send-time optimization (V2 M4 §2.7): hold each recipient until HH:MM in
   // their own timezone, read from the named contact attribute. defaultTz is a
   // manual audience-wide fallback (offset or IANA name) for contacts without one.
