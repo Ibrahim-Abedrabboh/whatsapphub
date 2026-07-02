@@ -1,6 +1,7 @@
 import Nav from "@/components/Nav";
 import ContactsTable from "@/components/ContactsTable";
 import AddContactForm from "@/components/AddContactForm";
+import UploadForm from "@/components/UploadForm";
 import SegmentsManager from "@/components/SegmentsManager";
 import { prisma } from "@/lib/db";
 import { getClientIdFromCookies } from "@/lib/users";
@@ -20,10 +21,11 @@ export default async function ContactsPage() {
       <main className="app">
         <h1>Contacts</h1>
         <p className="note" style={{ marginBottom: 16 }}>
-          Add a contact, search, opt out / re-subscribe, or delete. Opt-outs are excluded from every broadcast.
+          Add one contact or import a CSV, search, opt out / re-subscribe, or delete. Opt-outs are excluded from every broadcast.
         </p>
         <section className="grid-forms" style={{ marginBottom: 16 }}>
           <AddContactForm lists={lists} />
+          <UploadForm lists={lists} />
         </section>
         <div className="card">
           <ContactsTable />
