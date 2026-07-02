@@ -7,6 +7,7 @@ import CannedRepliesManager from "@/components/CannedRepliesManager";
 import KnowledgeManager from "@/components/KnowledgeManager";
 import AutomationRulesManager from "@/components/AutomationRulesManager";
 import FlowsManager from "@/components/FlowsManager";
+import SettingsTabs from "@/components/SettingsTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -16,25 +17,31 @@ export default function SettingsPage() {
       <Nav />
       <main className="app">
         <h1>Settings</h1>
-        {/* SUPERADMIN-only; renders nothing for regular users. */}
+        {/* SUPERADMIN-only; renders nothing for regular users, so it lives above the tabs. */}
         <ClientsManager />
-        <h2 style={{ marginTop: 32 }}>WhatsApp connection</h2>
-        {/* One-click Embedded Signup (renders nothing if not configured server-side). */}
-        <EmbeddedSignup />
-        <p className="note" style={{ maxWidth: 680, margin: "0 0 12px" }}>
-          Prefer to enter credentials by hand? Use the advanced setup below.
-        </p>
-        <WhatsAppSetup />
-        <h2 style={{ marginTop: 32 }}>Team members</h2>
-        <UsersManager />
-        <h2 style={{ marginTop: 32 }}>Canned replies</h2>
-        <CannedRepliesManager />
-        <h2 style={{ marginTop: 32 }}>AI knowledge base</h2>
-        <KnowledgeManager />
-        <h2 style={{ marginTop: 32 }}>Automation</h2>
-        <AutomationRulesManager />
-        <h2 style={{ marginTop: 32 }}>WhatsApp Flows</h2>
-        <FlowsManager />
+        <SettingsTabs
+          tabs={[
+            {
+              id: "connection",
+              label: "WhatsApp connection",
+              content: (
+                <>
+                  {/* One-click Embedded Signup (renders nothing if not configured server-side). */}
+                  <EmbeddedSignup />
+                  <p className="note" style={{ maxWidth: 680, margin: "0 0 12px" }}>
+                    Prefer to enter credentials by hand? Use the advanced setup below.
+                  </p>
+                  <WhatsAppSetup />
+                </>
+              ),
+            },
+            { id: "team", label: "Team", content: <UsersManager /> },
+            { id: "replies", label: "Canned replies", content: <CannedRepliesManager /> },
+            { id: "knowledge", label: "AI knowledge", content: <KnowledgeManager /> },
+            { id: "automation", label: "Automation", content: <AutomationRulesManager /> },
+            { id: "flows", label: "WhatsApp Flows", content: <FlowsManager /> },
+          ]}
+        />
       </main>
     </>
   );
