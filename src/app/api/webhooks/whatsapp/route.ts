@@ -8,7 +8,9 @@ import { WebhookSchema } from "@/lib/validation";
 import { verifyWebhookSignature } from "@/lib/webhookSig";
 import { recordInboundMessage } from "@/lib/conversations";
 import { runAutomation } from "@/lib/automationRun";
+import { parseOrderMessage } from "@/lib/orders";
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 
 export const runtime = "nodejs";
 
@@ -137,6 +139,35 @@ export async function POST(req: NextRequest) {
 
         // Thread the message into the two-way inbox for this client.
         await recordInboundMessage(clientId, m, "WHATSAPP");
+
+        // Cart order (V2 M5 §2.10) → an Order row for /orders. Best-effort:
+        // a parse/DB hiccup must never block the webhook ack.
+        if (m.type === "order" && m.order) {
+          try {
+            const parsedOrder = parseOrderMessage(m.order);
+            if (parsedOrder) {
+              const [contact, convo] = await Promise.all([
+                prisma.contact.findUnique({ where: { clientId_phone: { clientId, phone: m.from } }, select: { id: true } }),
+                prisma.conversation.findFirst({ where: { clientId, phone: m.from, channel: "WHATSAPP" }, select: { id: true } }),
+              ]);
+              await prisma.order.create({
+                data: {
+                  clientId,
+                  phone: m.from,
+                  contactId: contact?.id ?? null,
+                  conversationId: convo?.id ?? null,
+                  catalogId: parsedOrder.catalogId,
+                  items: parsedOrder.items as unknown as Prisma.InputJsonValue,
+                  itemCount: parsedOrder.itemCount,
+                  total: parsedOrder.total,
+                  currency: parsedOrder.currency,
+                },
+              });
+            }
+          } catch (err) {
+            console.error("[orders] failed to record inbound order:", err instanceof Error ? err.message : err);
+          }
+        }
 
         const text = m.text?.body?.trim().toUpperCase() ?? "";
         if (optOutKeywords.includes(text)) {

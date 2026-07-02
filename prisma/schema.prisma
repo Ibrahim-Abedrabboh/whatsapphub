@@ -316,6 +316,29 @@ model Product {
   @@index([clientId])
 }
 
+// An order placed from a WhatsApp cart (V2 M5 §2.10). Created by the inbound
+// webhook when a customer sends an "order" message; managed on /orders.
+// items = [{ retailerId, quantity, itemPrice, currency }] as reported by Meta.
+model Order {
+  id             String   @id @default(cuid())
+  clientId       String   @default("default")
+  conversationId String?
+  contactId      String?
+  phone          String
+  catalogId      String?
+  items          Json
+  itemCount      Int      @default(0)
+  total          Decimal? @db.Decimal(12, 2)
+  currency       String?
+  status         String   @default("NEW") // NEW | CONFIRMED | SHIPPED | DELIVERED | CANCELLED
+  note           String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([clientId, status])
+  @@index([clientId, createdAt])
+}
+
 // Point-in-time reading of a phone number's Meta quality rating + messaging
 // tier (V2 M4 §2.9). Written by the worker's repeatable quality poll.
 model QualitySnapshot {

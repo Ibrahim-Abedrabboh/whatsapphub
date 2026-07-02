@@ -15,6 +15,8 @@ export interface InboundMessage {
   interactive?: { button_reply?: { title?: string }; list_reply?: { title?: string } };
   button?: { text?: string };
   location?: { latitude?: number; longitude?: number; name?: string; address?: string };
+  // Cart order (V2 M5 §2.10) — full parsing lives in lib/orders.ts.
+  order?: { catalog_id?: string; product_items?: { product_retailer_id?: string; quantity?: number | string }[] };
 }
 
 export interface NormalizedMessage {
@@ -42,6 +44,10 @@ export function normalizeInbound(m: InboundMessage): NormalizedMessage {
   if (m.interactive) return { type: "interactive", text: m.interactive.button_reply?.title ?? m.interactive.list_reply?.title ?? null, ...base };
   if (m.button) return { type: "interactive", text: m.button.text ?? null, ...base };
   if (m.location) return { type: "location", text: m.location.name ?? m.location.address ?? null, ...base };
+  if (m.order) {
+    const count = Array.isArray(m.order.product_items) ? m.order.product_items.length : 0;
+    return { type: "order", text: `🛒 Order (${count} item${count === 1 ? "" : "s"})`, ...base };
+  }
   return { type: m.type || "text", text: null, ...base };
 }
 

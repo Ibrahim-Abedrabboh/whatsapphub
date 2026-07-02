@@ -260,6 +260,12 @@ export const SendProductSchema = z.object({
   body: z.string().trim().max(1024).optional(),
 });
 
+// Order status change (V2 M5 §2.10). notify=false skips the customer message.
+export const UpdateOrderSchema = z.object({
+  status: z.enum(["CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"]),
+  notify: z.boolean().default(true),
+});
+
 // Commerce catalog connection (V2 M5 §2.10). Meta catalog ids are numeric.
 export const CommerceCatalogSchema = z.object({
   metaCatalogId: z.string().trim().regex(/^\d{5,32}$/, "Enter the numeric catalog ID from Meta Commerce Manager"),
@@ -372,6 +378,23 @@ export const WebhookSchema = z.object({
                   sticker: z.object({ id: z.string().optional(), mime_type: z.string().optional() }).optional(),
                   reaction: z.object({ emoji: z.string().optional(), message_id: z.string().optional() }).optional(),
                   location: z.object({ latitude: z.number().optional(), longitude: z.number().optional(), name: z.string().optional(), address: z.string().optional() }).optional(),
+                  // Cart order (V2 M5 §2.10) — items the customer placed.
+                  order: z
+                    .object({
+                      catalog_id: z.string().optional(),
+                      text: z.string().optional(),
+                      product_items: z
+                        .array(
+                          z.object({
+                            product_retailer_id: z.string().optional(),
+                            quantity: z.union([z.number(), z.string()]).optional(),
+                            item_price: z.union([z.number(), z.string()]).optional(),
+                            currency: z.string().optional(),
+                          }),
+                        )
+                        .optional(),
+                    })
+                    .optional(),
                 }),
               )
               .optional(),
