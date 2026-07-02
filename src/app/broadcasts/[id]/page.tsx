@@ -12,9 +12,11 @@ export default async function BroadcastDetail({ params }: { params: Promise<{ id
 
   const b = await prisma.broadcast.findFirst({
     where: { id, clientId: await getClientIdFromCookies() },
-    include: { template: true, list: true },
+    include: { template: true, list: true, segment: true },
   });
   if (!b) notFound();
+
+  const audience = b.list?.name ?? (b.segment ? `${b.segment.name} (segment)` : "(deleted segment)");
 
   return (
     <>
@@ -22,7 +24,7 @@ export default async function BroadcastDetail({ params }: { params: Promise<{ id
       <main className="app">
         <Link href="/dashboard" className="muted" style={{ fontSize: 13 }}>← Back to dashboard</Link>
         <h1>
-          {b.template.name} <span className="muted" style={{ fontSize: 16, fontWeight: 400 }}>→ {b.list.name}</span>
+          {b.template.name} <span className="muted" style={{ fontSize: 16, fontWeight: 400 }}>→ {audience}</span>
         </h1>
         <p className="note">
           {b.scheduledAt ? `Scheduled for ${b.scheduledAt.toLocaleString()} · ` : ""}

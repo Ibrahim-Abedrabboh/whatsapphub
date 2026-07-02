@@ -1,5 +1,6 @@
 import { prisma } from "./db";
 import { sendQueue } from "./queue";
+import { matchContact, type SegmentRules } from "./segments";
 
 // variableMap entries: { from: <field> } (pulls "name" / a contact attribute)
 // or { literal: <text> }.
@@ -28,16 +29,22 @@ export interface EnqueueResult {
  * Create a broadcast and enqueue one send job per opted-in recipient.
  * Shared by the manual broadcast API and the recurring scheduler so the
  * opt-out filtering, idempotency, and scheduling logic live in one place.
+ * Audience: exactly one of listId (static membership) or segmentId (dynamic
+ * rules, resolved against the client's contacts at send time — V2 M4 §2.7).
  */
 export async function createAndEnqueueBroadcast(opts: {
   clientId: string;
   templateId: string;
-  listId: string;
+  listId?: string | null;
+  segmentId?: string | null;
   variableMap: VariableMap;
   scheduledAt?: Date | null;
   headerMediaUrl?: string | null;
   couponCode?: string | null;
 }): Promise<EnqueueResult> {
+  if (!!opts.listId === !!opts.segmentId) {
+    return { ok: false, error: "provide a list or a segment (exactly one)", code: 422 };
+  }
   // Scope everything to the caller's tenant so a broadcast can't reach another
   // client's template/list/contacts.
   const template = await prisma.template.findFirst({ where: { id: opts.templateId, clientId: opts.clientId } });
@@ -65,14 +72,24 @@ export async function createAndEnqueueBroadcast(opts: {
   const optOuts = new Set(
     (await prisma.optOut.findMany({ where: { clientId: opts.clientId }, select: { phone: true } })).map((o) => o.phone),
   );
-  const members = await prisma.contactListMembership.findMany({
-    where: { listId: opts.listId, list: { clientId: opts.clientId } },
-    include: { contact: true },
-  });
-  const recipients = members
-    .map((m) => m.contact)
-    .filter((c) => c.clientId === opts.clientId && !c.optedOut && !optOuts.has(c.phone));
-  if (recipients.length === 0) return { ok: false, error: "no opted-in recipients in list", code: 422 };
+
+  let candidates;
+  if (opts.listId) {
+    const members = await prisma.contactListMembership.findMany({
+      where: { listId: opts.listId, list: { clientId: opts.clientId } },
+      include: { contact: true },
+    });
+    candidates = members.map((m) => m.contact).filter((c) => c.clientId === opts.clientId);
+  } else {
+    const segment = await prisma.segment.findFirst({ where: { id: opts.segmentId!, clientId: opts.clientId } });
+    if (!segment) return { ok: false, error: "segment not found", code: 404 };
+    const rules = segment.rules as unknown as SegmentRules;
+    const contacts = await prisma.contact.findMany({ where: { clientId: opts.clientId } });
+    candidates = contacts.filter((c) => matchContact(c, rules));
+  }
+
+  const recipients = candidates.filter((c) => !c.optedOut && !optOuts.has(c.phone));
+  if (recipients.length === 0) return { ok: false, error: "no opted-in recipients in the selected audience", code: 422 };
 
   const scheduledAt = opts.scheduledAt ?? null;
   const delayMs = scheduledAt ? Math.max(0, scheduledAt.getTime() - Date.now()) : 0;
@@ -81,7 +98,8 @@ export async function createAndEnqueueBroadcast(opts: {
     data: {
       clientId: opts.clientId,
       templateId: opts.templateId,
-      listId: opts.listId,
+      listId: opts.listId ?? null,
+      segmentId: opts.segmentId ?? null,
       status: scheduledAt ? "SCHEDULED" : "SENDING",
       totalCount: recipients.length,
       variableMap: opts.variableMap,

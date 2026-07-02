@@ -35,7 +35,9 @@ export type CreateContactInput = z.infer<typeof CreateContactSchema>;
 
 export const CreateBroadcastSchema = z.object({
   templateId: z.string().min(1),
-  listId: z.string().min(1),
+  // Audience: exactly one of listId / segmentId (refined below).
+  listId: z.string().min(1).optional(),
+  segmentId: z.string().min(1).optional(),
   // Map template {{1}},{{2}}... to a Contact field or literal.
   // e.g. [{ "from": "name" }, { "literal": "20% off" }]
   variableMap: z
@@ -56,6 +58,9 @@ export const CreateBroadcastSchema = z.object({
   headerMediaUrl: z.string().url().optional(),
   // Coupon code — required when the chosen template has a COPY_CODE button.
   couponCode: z.string().trim().min(1).max(15).optional(),
+}).refine((b) => !!b.listId !== !!b.segmentId, {
+  message: "Choose a recipient list or a segment (exactly one)",
+  path: ["listId"],
 });
 
 export const LoginSchema = z.object({
@@ -178,6 +183,33 @@ export const UpdateContactSchema = z
     attributes: z.record(z.string()).optional(),
   })
   .refine((o) => Object.values(o).some((v) => v !== undefined), { message: "Nothing to update" });
+
+// Dynamic segment (V2 M4 §2.7). Create + full update. Condition fields:
+// "name", "optedOut", "tag", or "attr:<key>"; exists/isTrue need no value.
+export const SegmentConditionSchema = z
+  .object({
+    field: z
+      .string()
+      .trim()
+      .max(60)
+      .regex(/^(name|optedOut|tag|attr:.+)$/, "field must be name, optedOut, tag, or attr:<key>"),
+    op: z.enum(["eq", "neq", "contains", "exists", "isTrue"]),
+    value: z.string().trim().max(120).optional(),
+  })
+  .refine((c) => c.op === "exists" || c.op === "isTrue" || (c.value ?? "").length > 0, {
+    message: "This operator needs a value",
+    path: ["value"],
+  });
+
+export const SegmentRulesSchema = z.object({
+  match: z.enum(["all", "any"]),
+  conditions: z.array(SegmentConditionSchema).min(1, "Add at least one condition").max(20),
+});
+
+export const SegmentSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(80),
+  rules: SegmentRulesSchema,
+});
 
 // AI translate request (V2 M3 §2.4).
 export const TranslateSchema = z.object({

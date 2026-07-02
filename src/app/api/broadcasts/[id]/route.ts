@@ -23,7 +23,7 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
 
   const broadcast = await prisma.broadcast.findFirst({
     where: { id, clientId: await getClientId(req) },
-    include: { template: true, list: true },
+    include: { template: true, list: true, segment: true },
   });
   if (!broadcast) return NextResponse.json({ error: "not found" }, { status: 404 });
 
@@ -64,7 +64,8 @@ export async function GET(req: NextRequest, ctx: { params: Promise<{ id: string 
       id: broadcast.id,
       status: broadcast.status,
       template: { name: broadcast.template.name, language: broadcast.template.language },
-      list: { name: broadcast.list.name },
+      // Audience label: the list, or the segment (or a placeholder if the segment was deleted).
+      list: { name: broadcast.list?.name ?? (broadcast.segment ? `${broadcast.segment.name} (segment)` : "(deleted segment)") },
       totalCount: broadcast.totalCount,
       sentCount: broadcast.sentCount,
       failedCount: broadcast.failedCount,

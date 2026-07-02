@@ -1,6 +1,7 @@
 import Nav from "@/components/Nav";
 import ContactsTable from "@/components/ContactsTable";
 import AddContactForm from "@/components/AddContactForm";
+import SegmentsManager from "@/components/SegmentsManager";
 import { prisma } from "@/lib/db";
 import { getClientIdFromCookies } from "@/lib/users";
 
@@ -27,6 +28,12 @@ export default async function ContactsPage() {
         <div className="card">
           <ContactsTable />
         </div>
+
+        <h2 style={{ marginTop: 24 }}>Segments</h2>
+        <p className="note" style={{ marginBottom: 16 }}>
+          Save a rule set (tags, attributes, name) as a dynamic segment and broadcast to whoever matches at send time.
+        </p>
+        <SegmentsManager />
       </main>
     </>
   );
