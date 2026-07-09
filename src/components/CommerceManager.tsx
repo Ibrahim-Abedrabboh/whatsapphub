@@ -86,7 +86,7 @@ export default function CommerceManager() {
                 <td style={{ width: 44 }}>
                   {p.imageUrl
                     ? // eslint-disable-next-line @next/next/no-img-element
-                      <img src={p.imageUrl} alt="" width={36} height={36} style={{ borderRadius: 8, objectFit: "cover" }} />
+                      <img src={p.imageUrl} alt={p.name} loading="lazy" width={36} height={36} style={{ borderRadius: 8, objectFit: "cover" }} />
                     : <span className="muted">—</span>}
                 </td>
                 <td>{p.name}</td>

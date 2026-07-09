@@ -184,7 +184,7 @@ export default function TemplatesManager() {
           {headerFormat && (
             <p className="muted" style={{ marginTop: 6, fontSize: 13 }}>
               {headerUploading ? "Uploading sample to Meta…"
-                : headerErr ? <span style={{ color: "var(--danger,#e5484d)" }}>{headerErr}</span>
+                : headerErr ? <span style={{ color: "var(--danger)" }}>{headerErr}</span>
                 : headerExample ? `✓ Sample uploaded${headerFile ? ` — ${headerFile}` : ""}`
                 : "Pick a sample file — it's uploaded to Meta to review the template."}
             </p>

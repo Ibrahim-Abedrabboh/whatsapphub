@@ -7,8 +7,8 @@ interface Snapshot { qualityRating: string | null; messagingTier: string | null;
 
 const RATING_COLOR: Record<string, string> = {
   GREEN: "var(--brand-accent)",
-  YELLOW: "#d9a514",
-  RED: "#e5484d",
+  YELLOW: "var(--state-warning)",
+  RED: "var(--state-error)",
 };
 
 /** Number-quality card (V2 M4 §2.9): current Meta rating + tier, with the

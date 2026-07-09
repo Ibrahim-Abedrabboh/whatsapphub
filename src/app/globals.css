@@ -17,7 +17,8 @@
   --line:#1F1F1F; --line2:#262626; --line-hover:#333333;
 
   /* ── Stratum canonical: text ── */
-  --text-primary:#FFFFFF; --text-soft:#ECECEC; --muted:#9A9A9A; --micro:#6B6B6B;
+  /* --micro lifted #6B6B6B→#8A8A8A so 11px table headers / eyebrows clear WCAG AA (4.5:1) on page + card. */
+  --text-primary:#FFFFFF; --text-soft:#ECECEC; --muted:#9A9A9A; --micro:#8A8A8A;
 
   /* ── Stratum canonical: ember (brand accent) ── */
   --ember:#FF5A1F; --ember-2:#FF8A4A; --ember-hover:#FF6E3A;
@@ -28,6 +29,7 @@
   /* ── Stratum canonical: semantic states ── */
   --state-error:#FF3D00;   --state-error-bg:rgba(255,61,0,.08);
   --state-success:#22C55E; --state-success-bg:rgba(34,197,94,.08);
+  --state-warning:#D9A514; --state-warning-bg:rgba(217,165,20,.08);
 
   /* ── Stratum canonical: radii ── */
   --radius-sm:6px; --radius-md:8px; --radius-lg:12px; --radius-xl:18px; --radius-2xl:28px;
@@ -77,6 +79,10 @@ body {
 }
 a { color:var(--brand-accent); text-decoration:none; }
 a:hover { color:var(--accent-hover); }
+
+/* Keyboard focus: one on-brand indicator for every interactive surface (WCAG 2.4.7).
+   Inputs keep their own box-shadow ring (higher-specificity :focus rule below). */
+:focus-visible { outline:2px solid var(--brand-accent); outline-offset:2px; }
 h1 { font-size:clamp(26px,4vw,40px); font-weight:600; letter-spacing:-.025em; margin:.2em 0 .4em; }
 h2 { font-size:clamp(20px,3vw,28px); font-weight:600; letter-spacing:-.02em; margin:1.2em 0 .5em; }
 h3 { font-size:17px; font-weight:600; margin:0 0 12px; }
@@ -100,7 +106,8 @@ html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3 { letter-spacing:norm
 .client-switch__dot { width:7px; height:7px; border-radius:50%; background:var(--brand-accent); flex:none; }
 .client-switch__select { background:none; border:0; color:var(--ink); font:inherit; font-size:13px;
   font-weight:600; cursor:pointer; padding-inline-end:2px; }
-.client-switch__select:focus { outline:none; }
+/* Suppress the ring only for pointer focus; keyboard focus keeps the global :focus-visible outline. */
+.client-switch__select:focus:not(:focus-visible) { outline:none; }
 
 /* brand wordmark */
 .brand { display:inline-flex; align-items:center; gap:10px; font-weight:600; font-size:20px; letter-spacing:-.02em; }
@@ -263,7 +270,7 @@ html[lang="ar"] .lp-kicker, html[lang="ar"] .auth__pitch { letter-spacing:normal
   --surface-page:#FAFAFA; --surface-sunken:#F2F2F2; --surface:#FFFFFF; --surface-elevated:#F7F7F7;
   --bg:var(--surface-page); --bg2:var(--surface-sunken); --card:var(--surface); --card2:var(--surface-elevated);
   --line:#E5E5E5; --line2:#D4D4D4; --line-hover:#B8B8B8;
-  --ink:#0B0B0B; --text-primary:#0B0B0B; --text-soft:#1A1A1A; --muted:#5A5A5A; --micro:#7A7A7A;
+  --ink:#0B0B0B; --text-primary:#0B0B0B; --text-soft:#1A1A1A; --muted:#5A5A5A; --micro:#6A6A6A;
   --teal-soft:rgba(255,90,31,.10);
   --btn-text:#FFFFFF;
   --shadow:0 8px 24px rgba(11,11,11,.08);
@@ -271,7 +278,7 @@ html[lang="ar"] .lp-kicker, html[lang="ar"] .auth__pitch { letter-spacing:normal
 
 /* theme toggle */
 .theme-toggle {
-  display:inline-grid; place-items:center; width:40px; height:40px; cursor:pointer;
+  display:inline-grid; place-items:center; width:44px; height:44px; cursor:pointer;
   border-radius:var(--r-pill); border:1px solid var(--line2); background:var(--card);
   color:var(--ink); font-size:16px; transition:border-color .15s, transform .15s; }
 .theme-toggle:hover { border-color:var(--brand-accent); transform:translateY(-1px); }
@@ -306,7 +313,11 @@ html[lang="ar"] .lp-kicker, html[lang="ar"] .auth__pitch { letter-spacing:normal
 .dk-nav__links a { color:var(--dk-muted); font-weight:600; font-size:15px; }
 .dk-nav__links a:hover { color:var(--dk-ink); }
 .dk-nav__right { display:flex; gap:12px; align-items:center; justify-self:end; }
-@media (max-width:760px){ .dk-nav { grid-template-columns:1fr auto; } .dk-nav__links { display:none; } }
+/* Mobile: don't amputate the nav — drop the links to a centered full-width second row. */
+@media (max-width:760px){
+  .dk-nav { grid-template-columns:1fr auto; }
+  .dk-nav__links { grid-column:1 / -1; order:3; justify-content:center; gap:20px; padding-top:10px; font-size:14px; }
+}
 
 /* buttons — pill-shaped per Stratum */
 .dk-btn { display:inline-flex; align-items:center; gap:8px; font-weight:600; font-size:15px;
