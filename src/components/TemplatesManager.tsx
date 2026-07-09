@@ -197,9 +197,9 @@ export default function TemplatesManager() {
         </div>
         {varCount > 0 && (
           <div className="field">
-            <label className="label">Example values <span className="muted">(Meta requires one per variable)</span></label>
+            <label className="label" htmlFor="tpl-example-1">Example values <span className="muted">(Meta requires one per variable)</span></label>
             {Array.from({ length: varCount }, (_, i) => (
-              <input key={i} className="input input--sm" style={{ marginBottom: 6 }} value={examples[i] ?? ""}
+              <input key={i} id={`tpl-example-${i + 1}`} className="input input--sm" style={{ marginBottom: 6 }} value={examples[i] ?? ""}
                 onChange={(e) => setExample(i, e.target.value)} placeholder={`Example for {{${i + 1}}}`} />
             ))}
           </div>
@@ -210,10 +210,10 @@ export default function TemplatesManager() {
             onChange={(e) => setFooter(e.target.value)} placeholder="Reply STOP to opt out" />
         </div>
         <div className="field">
-          <label className="label">Buttons <span className="muted">(optional, up to 3)</span></label>
+          <label className="label" htmlFor="tpl-btn-0-type">Buttons <span className="muted">(optional, up to 3)</span></label>
           {buttons.map((b, i) => (
             <div key={i} className="row" style={{ gap: 8, marginBottom: 8 }}>
-              <select className="input input--sm" style={{ flex: "0 0 auto", width: "auto" }} value={b.type}
+              <select id={`tpl-btn-${i}-type`} className="input input--sm" style={{ flex: "0 0 auto", width: "auto" }} value={b.type}
                 onChange={(e) => updateButton(i, { type: e.target.value as Btn["type"] })}>
                 <option value="QUICK_REPLY">Quick reply</option>
                 <option value="URL">URL</option>

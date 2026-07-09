@@ -148,10 +148,10 @@ export default function SegmentsManager() {
         </div>
 
         <div className="field">
-          <label className="label">Conditions</label>
+          <label className="label" htmlFor="segments-conditions">Conditions</label>
           {rows.map((r, i) => (
             <div key={i} style={{ display: "flex", gap: 6, marginBottom: 8, flexWrap: "wrap" }}>
-              <select className="input" style={{ flex: "1 1 110px" }} value={r.field}
+              <select id={i === 0 ? "segments-conditions" : undefined} className="input" style={{ flex: "1 1 110px" }} value={r.field}
                 onChange={(e) => setRow(i, { field: e.target.value as Row["field"] })}>
                 <option value="tag">Tag</option>
                 <option value="name">Name</option>

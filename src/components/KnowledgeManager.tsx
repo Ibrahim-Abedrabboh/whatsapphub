@@ -47,12 +47,12 @@ export default function KnowledgeManager() {
         <h3>{editingId ? "Edit doc" : "New doc"}</h3>
         <p className="note" style={{ marginTop: 0 }}>Grounds the AI <b>FAQ answer</b> in the inbox — agents draft replies from these docs.</p>
         <div className="field">
-          <label className="label">Title</label>
-          <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={120} />
+          <label className="label" htmlFor="knowledge-title">Title</label>
+          <input id="knowledge-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={120} />
         </div>
         <div className="field">
-          <label className="label">Content</label>
-          <textarea className="input" value={content} onChange={(e) => setContent(e.target.value)} required rows={6} />
+          <label className="label" htmlFor="knowledge-content">Content</label>
+          <textarea id="knowledge-content" className="input" value={content} onChange={(e) => setContent(e.target.value)} required rows={6} />
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : editingId ? "Save" : "Create"}</button>

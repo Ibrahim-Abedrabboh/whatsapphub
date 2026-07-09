@@ -47,16 +47,16 @@ export default function CannedRepliesManager() {
       <form onSubmit={save} className="card">
         <h3>{editingId ? "Edit snippet" : "New snippet"}</h3>
         <div className="field">
-          <label className="label">Title</label>
-          <input className="input" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={80} />
+          <label className="label" htmlFor="canned-title">Title</label>
+          <input id="canned-title" className="input" value={title} onChange={(e) => setTitle(e.target.value)} required maxLength={80} />
         </div>
         <div className="field">
-          <label className="label">Shortcut (optional)</label>
-          <input className="input" value={shortcut} onChange={(e) => setShortcut(e.target.value)} maxLength={40} placeholder="/greeting" />
+          <label className="label" htmlFor="canned-shortcut">Shortcut (optional)</label>
+          <input id="canned-shortcut" className="input" value={shortcut} onChange={(e) => setShortcut(e.target.value)} maxLength={40} placeholder="/greeting" />
         </div>
         <div className="field">
-          <label className="label">Body — use {"{{name}}"} / {"{{phone}}"} for the contact</label>
-          <textarea className="input" value={body} onChange={(e) => setBody(e.target.value)} required rows={4} />
+          <label className="label" htmlFor="canned-body">Body — use {"{{name}}"} / {"{{phone}}"} for the contact</label>
+          <textarea id="canned-body" className="input" value={body} onChange={(e) => setBody(e.target.value)} required rows={4} />
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : editingId ? "Save" : "Create"}</button>

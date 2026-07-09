@@ -59,12 +59,12 @@ export default function FlowsManager() {
         <h3>{editingId ? "Edit flow" : "New flow"}</h3>
         <p className="note" style={{ marginTop: 0 }}>WhatsApp Flows are native in-chat forms. Submitting requires Meta Flows access on your app.</p>
         <div className="field">
-          <label className="label">Name</label>
-          <input className="input" value={name} onChange={(e) => setName(e.target.value)} required maxLength={80} />
+          <label className="label" htmlFor="flows-name">Name</label>
+          <input id="flows-name" className="input" value={name} onChange={(e) => setName(e.target.value)} required maxLength={80} />
         </div>
         <div className="field">
-          <label className="label">Definition (Flow JSON)</label>
-          <textarea className="input" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 12 }} value={defText} onChange={(e) => setDefText(e.target.value)} rows={8} />
+          <label className="label" htmlFor="flows-definition">Definition (Flow JSON)</label>
+          <textarea id="flows-definition" className="input" style={{ fontFamily: "var(--font-mono, monospace)", fontSize: 12 }} value={defText} onChange={(e) => setDefText(e.target.value)} rows={8} />
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : editingId ? "Save" : "Create"}</button>

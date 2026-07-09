@@ -85,28 +85,28 @@ export default function AutomationRulesManager() {
         <h3>{editingId ? "Edit rule" : "New rule"}</h3>
         <p className="note" style={{ marginTop: 0 }}>Auto-reply to inbound messages by keyword, or send an away message outside business hours.</p>
         <div className="field">
-          <label className="label">Name</label>
-          <input className="input" value={name} onChange={(e) => setName(e.target.value)} required maxLength={80} />
+          <label className="label" htmlFor="rules-name">Name</label>
+          <input id="rules-name" className="input" value={name} onChange={(e) => setName(e.target.value)} required maxLength={80} />
         </div>
         <div className="field">
-          <label className="label">Trigger</label>
-          <select className="input" value={kind} onChange={(e) => setKind(e.target.value as "keyword" | "away")}>
+          <label className="label" htmlFor="rules-trigger">Trigger</label>
+          <select id="rules-trigger" className="input" value={kind} onChange={(e) => setKind(e.target.value as "keyword" | "away")}>
             <option value="keyword">Keyword match</option>
             <option value="away">Outside business hours (away)</option>
           </select>
         </div>
         {kind === "keyword" ? (
           <div className="field">
-            <label className="label">Keywords (comma-separated)</label>
-            <input className="input" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="price, hours, location" />
+            <label className="label" htmlFor="rules-keywords">Keywords (comma-separated)</label>
+            <input id="rules-keywords" className="input" value={keywords} onChange={(e) => setKeywords(e.target.value)} placeholder="price, hours, location" />
           </div>
         ) : (
           <>
             <div className="field">
-              <label className="label">Business days</label>
-              <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+              <span className="label" id="rules-days-label">Business days</span>
+              <div role="group" aria-labelledby="rules-days-label" style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
                 {DAYS.map((d, i) => (
-                  <button key={d} type="button" className={`btn ${days.includes(i) ? "" : "btn--ghost"}`} style={{ minHeight: 30, padding: "3px 8px", fontSize: 12 }}
+                  <button key={d} type="button" aria-pressed={days.includes(i)} className={`btn ${days.includes(i) ? "" : "btn--ghost"}`} style={{ minHeight: 30, padding: "3px 8px", fontSize: 12 }}
                     onClick={() => setDays((ds) => ds.includes(i) ? ds.filter((x) => x !== i) : [...ds, i].sort())}>
                     {d}
                   </button>
@@ -114,15 +114,15 @@ export default function AutomationRulesManager() {
               </div>
             </div>
             <div className="field" style={{ display: "flex", gap: 8 }}>
-              <span><label className="label">Open</label><input className="input" type="time" value={start} onChange={(e) => setStart(e.target.value)} /></span>
-              <span><label className="label">Close</label><input className="input" type="time" value={end} onChange={(e) => setEnd(e.target.value)} /></span>
-              <span><label className="label">TZ offset (min)</label><input className="input" type="number" value={tzOffset} onChange={(e) => setTzOffset(Number(e.target.value))} style={{ maxWidth: 110 }} /></span>
+              <span><label className="label" htmlFor="rules-open">Open</label><input id="rules-open" className="input" type="time" value={start} onChange={(e) => setStart(e.target.value)} /></span>
+              <span><label className="label" htmlFor="rules-close">Close</label><input id="rules-close" className="input" type="time" value={end} onChange={(e) => setEnd(e.target.value)} /></span>
+              <span><label className="label" htmlFor="rules-tzoffset">TZ offset (min)</label><input id="rules-tzoffset" className="input" type="number" value={tzOffset} onChange={(e) => setTzOffset(Number(e.target.value))} style={{ maxWidth: 110 }} /></span>
             </div>
           </>
         )}
         <div className="field">
-          <label className="label">Auto-reply text</label>
-          <textarea className="input" value={body} onChange={(e) => setBody(e.target.value)} required rows={3} />
+          <label className="label" htmlFor="rules-body">Auto-reply text</label>
+          <textarea id="rules-body" className="input" value={body} onChange={(e) => setBody(e.target.value)} required rows={3} />
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : editingId ? "Save" : "Create"}</button>

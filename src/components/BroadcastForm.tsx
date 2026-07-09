@@ -127,11 +127,11 @@ export default function BroadcastForm({ lists, segments = [], templates }: { lis
 
       {selected && selected.variableCount > 0 && (
         <div className="field">
-          <label className="label">
+          <label className="label" htmlFor="bc-var-1">
             Template variables — literal text, or <code>field:name</code> / <code>field:city</code> to pull per-contact
           </label>
           {vars.map((v, i) => (
-            <input key={i} data-test-id={`bc-var-${i + 1}`} className="input" placeholder={`{{${i + 1}}}`}
+            <input key={i} id={`bc-var-${i + 1}`} data-test-id={`bc-var-${i + 1}`} className="input" placeholder={`{{${i + 1}}}`}
               value={v} onChange={(e) => setVars((p) => p.map((x, idx) => (idx === i ? e.target.value : x)))}
               style={{ marginBottom: 8 }} />
           ))}
