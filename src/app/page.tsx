@@ -2,6 +2,7 @@ import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import LangToggle from "@/components/LangToggle";
 import LeadForm from "@/components/LeadForm";
+import { Icon, type IconKey } from "@/components/icons";
 
 // Public marketing landing — "Dockit"-style docs layout in a WhatsApp-green
 // palette. Bilingual EN/AR (CSS shows one based on <html lang>). Stays outside
@@ -19,23 +20,23 @@ function T({ en, ar }: { en: string; ar: string }) {
 
 type Bi = { en: string; ar: string };
 
-const FEATURES: { icon: string; title: Bi; body: Bi }[] = [
-  { icon: "📋", title: { en: "Send Menu", ar: "إرسال القائمة" },
-    body: { en: "Send your menu as an approved template to one number or a whole list.",
-      ar: "أرسِل قائمة الطعام كرسالة قالب معتمدة لرقم أو قائمة أرقام." } },
-  { icon: "⭐", title: { en: "Request Feedback", ar: "طلب تقييم" },
+const FEATURES: { key: IconKey; n: string; lead?: boolean; title: Bi; body: Bi }[] = [
+  { key: "menu", n: "01", lead: true, title: { en: "Send Menu", ar: "إرسال القائمة" },
+    body: { en: "Send your menu as an approved template to one number or a whole list — the fastest way to get an order started.",
+      ar: "أرسِل قائمة الطعام كرسالة قالب معتمدة لرقم أو قائمة أرقام — أسرع طريقة لبدء الطلب." } },
+  { key: "star", n: "02", title: { en: "Request Feedback", ar: "طلب تقييم" },
     body: { en: "Ask for the customer's review after their order with a ready-made message.",
       ar: "اطلب رأي العميل بعد الطلب برسالة جاهزة." } },
-  { icon: "📡", title: { en: "Delivery Status", ar: "حالة التسليم" },
+  { key: "signal", n: "03", title: { en: "Delivery Status", ar: "حالة التسليم" },
     body: { en: "Track sent · delivered · read · clicked for every message, live.",
       ar: "تابِع: أُرسِلت · وصلت · قُرئت · نُقِر — لكل رسالة لحظيًا." } },
-  { icon: "🗂️", title: { en: "Message Log", ar: "سجل الإرسال" },
+  { key: "log", n: "04", title: { en: "Message Log", ar: "سجل الإرسال" },
     body: { en: "Review every sent message with its timestamp and status.",
       ar: "راجِع كل رسالة مُرسَلة مع التوقيت والحالة." } },
-  { icon: "✅", title: { en: "Consent Management", ar: "إدارة الموافقات" },
+  { key: "shield", n: "05", title: { en: "Consent Management", ar: "إدارة الموافقات" },
     body: { en: "Opted-in numbers only, with the opt-in date on record.",
       ar: "أرقام بموافقة مسبقة فقط، مع توثيق التاريخ." } },
-  { icon: "🔁", title: { en: "Recurring Campaigns", ar: "حملات متكرّرة" },
+  { key: "repeat", n: "06", title: { en: "Recurring Campaigns", ar: "حملات متكرّرة" },
     body: { en: "Schedule sends on a cron — the worker fans them out on time.",
       ar: "جدوِل الإرسال وفق توقيت محدّد، ويتولّى العامل التوزيع في موعده." } },
 ];
@@ -90,13 +91,15 @@ export default function Landing() {
             <p><T en="From sending the menu to delivery receipts — managed from one place."
               ar="من إرسال القائمة حتى إيصالات التسليم — من مكان واحد." /></p>
           </div>
-          <div className="dk-grid">
+          <div className="dk-feats">
             {FEATURES.map((f) => (
-              <article key={f.icon} className="dk-card">
-                <div className="dk-card__ic" aria-hidden>{f.icon}</div>
+              <article key={f.key} className={f.lead ? "dk-feat dk-feat--lead" : "dk-feat"}>
+                <div className="dk-feat__head">
+                  <span className="dk-feat__n">{f.n}</span>
+                  <Icon name={f.key} className="dk-feat__ic" />
+                </div>
                 <h3><T en={f.title.en} ar={f.title.ar} /></h3>
                 <p><T en={f.body.en} ar={f.body.ar} /></p>
-                <div className="dk-card__arrow" aria-hidden>→</div>
               </article>
             ))}
           </div>
