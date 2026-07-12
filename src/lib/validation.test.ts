@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema, LeadSchema, ChatbotFlowSchema, CreateChatbotSchema } from "./validation";
+import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema, LeadSchema, ChatbotFlowSchema, CreateChatbotSchema, AutomationRuleSchema } from "./validation";
 
 describe("PhoneSchema", () => {
   it("normalizes +966 50 000 0000 → 966500000000", () => {
@@ -245,5 +245,21 @@ describe("CreateChatbotSchema", () => {
   it("rejects a flow that fails ChatbotFlowSchema", () => {
     const badFlow = { startId: "ghost", nodes: {} };
     expect(CreateChatbotSchema.safeParse({ name: "Bot", flow: badFlow }).success).toBe(false);
+  });
+});
+
+describe("AutomationRuleSchema action", () => {
+  const base = { name: "Bot on hi", enabled: true, trigger: { type: "keyword", keywords: ["hi"] } };
+  it("accepts a sendText action", () => {
+    expect(AutomationRuleSchema.safeParse({ ...base, action: { type: "sendText", body: "Hello" } }).success).toBe(true);
+  });
+  it("accepts a startChatbot action with a chatbotId", () => {
+    expect(AutomationRuleSchema.safeParse({ ...base, action: { type: "startChatbot", chatbotId: "cb_123" } }).success).toBe(true);
+  });
+  it("rejects a startChatbot action with no chatbotId", () => {
+    expect(AutomationRuleSchema.safeParse({ ...base, action: { type: "startChatbot", chatbotId: "" } }).success).toBe(false);
+  });
+  it("rejects an unknown action type", () => {
+    expect(AutomationRuleSchema.safeParse({ ...base, action: { type: "explode" } }).success).toBe(false);
   });
 });
