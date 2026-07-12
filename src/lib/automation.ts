@@ -8,7 +8,9 @@ export type Trigger =
   // start/end are "HH:MM" wall-clock at tzOffset minutes from UTC.
   | { type: "away"; days: number[]; start: string; end: string; tzOffset?: number };
 
-export type Action = { type: "sendText"; body: string };
+export type Action =
+  | { type: "sendText"; body: string }
+  | { type: "startChatbot"; chatbotId: string }; // Phase 3: authored + persisted; executed in Phase 4
 
 export interface AutomationRuleDef { enabled: boolean; trigger: Trigger; action: Action }
 export interface RuleContext { text: string; now: Date }

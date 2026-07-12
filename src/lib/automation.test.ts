@@ -57,3 +57,11 @@ describe("evaluateRules", () => {
     expect(evaluateRules([keywordRule, awayRule], { text: "hello", now: monday9utc })).toEqual([]);
   });
 });
+
+describe("evaluateRules with startChatbot", () => {
+  const botRule: AutomationRuleDef = { enabled: true, trigger: { type: "keyword", keywords: ["order"] }, action: { type: "startChatbot", chatbotId: "cb_9" } };
+  it("returns a startChatbot action for a matching rule", () => {
+    const actions = evaluateRules([botRule], { text: "I want to order", now: new Date("2026-01-05T09:00:00Z") });
+    expect(actions).toEqual([{ type: "startChatbot", chatbotId: "cb_9" }]);
+  });
+});

@@ -6,7 +6,7 @@
 import { prisma } from "./db";
 import { connection } from "./queue";
 import { getChannel } from "./channels";
-import { evaluateRules, type AutomationRuleDef } from "./automation";
+import { evaluateRules, type AutomationRuleDef, type Action } from "./automation";
 
 const COOLDOWN_SECONDS = 300; // one auto-reply per peer per 5 minutes
 
@@ -22,7 +22,10 @@ export async function runAutomation(clientId: string, channel: string, peer: str
     trigger: r.trigger as unknown as AutomationRuleDef["trigger"],
     action: r.action as unknown as AutomationRuleDef["action"],
   }));
-  const send = evaluateRules(rules, { text, now: new Date() }).find((a) => a.type === "sendText");
+  // Phase 3: only sendText is executed here. startChatbot is authored/persisted
+  // now; creating a ChatbotSession from it is Phase 4.
+  const send = evaluateRules(rules, { text, now: new Date() })
+    .find((a): a is Extract<Action, { type: "sendText" }> => a.type === "sendText");
   if (!send) return;
 
   // Never auto-reply to an opted-out contact.

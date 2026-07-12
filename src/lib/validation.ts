@@ -297,7 +297,10 @@ export const AutomationRuleSchema = z.object({
       tzOffset: z.number().int().min(-720).max(840).optional(),
     }),
   ]),
-  action: z.object({ type: z.literal("sendText"), body: z.string().trim().min(1, "Reply body is required").max(1000) }),
+  action: z.discriminatedUnion("type", [
+    z.object({ type: z.literal("sendText"), body: z.string().trim().min(1, "Reply body is required").max(1000) }),
+    z.object({ type: z.literal("startChatbot"), chatbotId: z.string().trim().min(1, "Pick a chatbot") }),
+  ]),
 });
 
 // FAQ knowledge-base document (V2 M3 §2.4). Used for create + full update.
