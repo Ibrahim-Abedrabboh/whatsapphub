@@ -1,7 +1,6 @@
 import Link from "next/link";
 import ThemeToggle from "@/components/ThemeToggle";
 import LangToggle from "@/components/LangToggle";
-import LeadForm from "@/components/LeadForm";
 import GrowthTools from "@/components/GrowthTools";
 import { Icon, type IconKey } from "@/components/icons";
 
@@ -75,14 +74,6 @@ export default function Landing() {
           </p>
           <div className="dk-actions reveal d3">
             <Link href="/login" className="dk-btn dk-btn--primary" data-test-id="landing-cta"><T en="Open the hub" ar="افتح المركز" /></Link>
-            <a href="#features" className="dk-btn dk-btn--ghost"><T en="See features" ar="شاهد المزايا" /></a>
-          </div>
-          <div className="dk-pop reveal d4">
-            <span><T en="Popular:" ar="الأكثر استخدامًا:" /></span>
-            <a className="dk-chip" href="#features"><T en="Send menu" ar="إرسال القائمة" /></a>
-            <a className="dk-chip" href="#features"><T en="Request feedback" ar="طلب تقييم" /></a>
-            <a className="dk-chip" href="#features"><T en="Delivery status" ar="حالة التسليم" /></a>
-            <a className="dk-chip" href="/login"><T en="Templates" ar="القوالب" /></a>
           </div>
         </section>
 
@@ -114,16 +105,11 @@ export default function Landing() {
           </div>
         </section>
 
-        <section id="get-started" className="dk-getstarted">
-          <div className="dk-features__head">
-            <h2><T en="Get started" ar="ابدأ الآن" /> <span className="sub"><T en="in one message" ar="برسالة واحدة" /></span></h2>
-            <p><T en="Leave your number and we'll message you on WhatsApp." ar="اترك رقمك وسنراسلك على واتساب." /></p>
-          </div>
-          <LeadForm />
-        </section>
-
         <section className="dk-final">
-          <h2><T en="Start sending from Opal Hotel Social Media Growth Hub." ar="ابدأ الإرسال من مركز أوبال هوتل." /></h2>
+          <h2 style={{ maxWidth: "none" }}>
+            <span data-lang="en">Start sending from Opal Hotel<br />Social Media Growth Hub.</span>
+            <span data-lang="ar">ابدأ الإرسال من مركز أوبال هوتل<br />للنمو عبر وسائل التواصل.</span>
+          </h2>
           <Link href="/login" className="dk-btn dk-btn--primary"><T en="Open the hub" ar="افتح المركز" /></Link>
         </section>
 

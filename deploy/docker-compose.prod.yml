@@ -1,0 +1,94 @@
+# ============================================================
+# Opal Hotel Social Media Growth Hub — production stack (self-hosted)
+# web + worker + Postgres + Redis, fronted by Caddy, exposed via Cloudflare Tunnel.
+#
+# Place this file (and Caddyfile + .env) at the repo root, then:
+#   docker compose -f docker-compose.prod.yml up -d --build
+# ============================================================
+name: opal-hub
+
+# Shared build for the app image (built once, reused by migrate/app/worker).
+x-app: &app
+  build: .
+  image: opal-hub:latest
+  env_file: .env
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: ["redisdata:/data"]
+
+  # One-shot: apply DB migrations + seed the first admin, then exit.
+  migrate:
+    <<: *app
+    restart: "no"
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run seed:admin"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  app:
+    <<: *app
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+    expose: ["3000"] # internal only — reached through Caddy / Cloudflare
+    command: ["npm", "run", "start"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+      migrate: { condition: service_completed_successfully }
+
+  worker:
+    <<: *app
+    environment:
+      NODE_ENV: production
+    command: ["npm", "run", "worker"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+      migrate: { condition: service_completed_successfully }
+
+  # Internal reverse proxy: compression + security headers → app.
+  # Public TLS is terminated by Cloudflare, so Caddy serves plain HTTP here.
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    # Uncomment to also reach the app directly on your LAN (http://SERVER-IP):
+    # ports: ["80:80"]
+
+  # Public ingress with edge TLS — no port-forwarding, no exposed LAN.
+  # Create the tunnel in Cloudflare Zero Trust, then map your hostname
+  # (e.g. hub.opalhotel.com) → http://caddy:80 and paste the token into .env.
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ["tunnel", "run", "--token", "${CLOUDFLARE_TUNNEL_TOKEN}"]
+    depends_on: [caddy]
+
+volumes:
+  pgdata: {}
+  redisdata: {}
+  caddy_data: {}
+  caddy_config: {}

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Self-Hosting &amp; Accounts — Opal Hotel Social Media Growth Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg:#FFFCF3; --sunken:#F5F1E4; --card:#FFFFFF; --elevated:#FBF8EF;
+    --ink:#2C2C2C; --soft:#3D3D3D; --muted:#726D5E; --micro:#635F51;
+    --gold:#BB8B41; --gold-2:#C2A670; --gold-deep:#8F6B2E;
+    --line:#E7E0CE; --burgundy:#800020; --burgundy-bg:rgba(128,0,32,.06);
+    --green:#2E7D46; --green-bg:rgba(46,125,70,.08); --slate:#394E6C; --slate-bg:rgba(57,78,108,.06);
+    --serif:"Libre Baskerville",Georgia,serif; --display:"Cormorant Garamond",serif;
+    --sans:"Montserrat","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono","Courier New",monospace;
+    --code-bg:#2b2620; --code-ink:#f3ead6;
+    --radius:20px; --shadow:0 3px 18px rgba(44,44,44,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0B0B0B; --sunken:#111; --card:#171717; --elevated:#1E1E1E; --ink:#FFFCF3; --soft:#E7E0CE;
+      --muted:#A79E86; --line:#262626; --burgundy:#D06A80; --burgundy-bg:rgba(208,106,128,.1);
+      --green:#4FB06E; --green-bg:rgba(79,176,110,.1); --slate:#8CA3C7; --slate-bg:rgba(140,163,199,.1);
+      --shadow:0 8px 26px rgba(0,0,0,.5); }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15.5px; line-height:1.68; -webkit-font-smoothing:antialiased; }
+  .wrap { max-width:880px; margin:0 auto; padding:0 24px 80px; }
+  header.top { text-align:center; padding:60px 24px 36px; border-bottom:1px solid var(--line); background:radial-gradient(130% 100% at 50% -25%, rgba(187,139,65,.12), transparent 60%), var(--bg); }
+  .mark { width:78px; height:78px; margin:0 auto 20px; border-radius:50%; border:2px solid var(--gold); display:grid; place-items:center; font-family:var(--display); font-size:46px; color:var(--gold); line-height:1; }
+  .brand { font-family:var(--display); font-weight:600; font-size:clamp(28px,4.6vw,40px); color:var(--ink); margin:0; }
+  .brand .gold { color:var(--gold); }
+  .kicker { letter-spacing:.3em; text-transform:uppercase; font-size:11.5px; color:var(--gold-deep); margin:10px 0 0; }
+  .slogan { font-family:var(--serif); font-style:italic; color:var(--soft); font-size:17px; margin:14px 0 0; }
+  h2 { font-family:var(--serif); font-weight:700; font-size:clamp(21px,3vw,27px); color:var(--ink); margin:52px 0 6px; }
+  h2 .num { color:var(--gold); font-weight:400; margin-right:10px; }
+  h3 { font-family:var(--serif); font-weight:700; font-size:17px; color:var(--ink); margin:26px 0 6px; }
+  .divider { height:1px; background:linear-gradient(90deg,var(--gold),transparent); margin:12px 0 22px; }
+  p { margin:12px 0; } strong { color:var(--ink); } a { color:var(--gold-deep); }
+  ul,ol { padding-left:22px; } li { margin:7px 0; }
+  code.inl { background:var(--sunken); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-family:var(--mono); font-size:.85em; color:var(--gold-deep); }
+
+  .tbl-wrap { overflow-x:auto; margin:16px 0; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+  th,td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:top; }
+  th { font-family:var(--sans); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-deep); background:var(--sunken); }
+  td.c,th.c { text-align:center; } tr:last-child td { border-bottom:0; }
+  .yes { color:var(--green); font-weight:700; } .no { color:var(--micro); }
+
+  .call { border-radius:13px; padding:12px 18px 12px 42px; margin:16px 0; position:relative; border:1px solid var(--line); font-size:14.5px; }
+  .call::before { position:absolute; left:14px; top:11px; font-size:15px; }
+  .call .k { font-weight:700; }
+  .tip{background:rgba(187,139,65,.07);border-color:rgba(187,139,65,.35)} .tip::before{content:"\1F4A1"} .tip .k{color:var(--gold-deep)}
+  .warning{background:var(--burgundy-bg);border-color:rgba(128,0,32,.3)} .warning::before{content:"\26A0\FE0F"} .warning .k{color:var(--burgundy)}
+  .note{background:var(--slate-bg);border-color:rgba(57,78,108,.28)} .note::before{content:"\1F4DD"} .note .k{color:var(--slate)}
+  .success{background:var(--green-bg);border-color:rgba(46,125,70,.3)} .success::before{content:"\2705"} .success .k{color:var(--green)}
+
+  /* diagram */
+  .diagram { background:var(--code-bg); color:var(--code-ink); border-radius:var(--radius); padding:20px 22px; font-family:var(--mono); font-size:13px; line-height:1.5; overflow-x:auto; white-space:pre; margin:16px 0; }
+
+  /* code blocks with copy */
+  .code { position:relative; margin:14px 0 22px; }
+  .code .cap { display:flex; align-items:center; justify-content:space-between; background:var(--sunken); border:1px solid var(--line); border-bottom:0; border-radius:12px 12px 0 0; padding:8px 14px; font-family:var(--mono); font-size:12.5px; color:var(--gold-deep); font-weight:600; }
+  .code .copy { font-family:var(--sans); font-weight:600; font-size:12px; background:var(--gold); color:#fff; border:0; border-radius:999px; padding:5px 14px; cursor:pointer; }
+  .code .copy:hover { background:var(--gold-deep); }
+  .code pre { margin:0; background:var(--code-bg); color:var(--code-ink); border-radius:0 0 12px 12px; padding:16px 18px; overflow-x:auto; font-family:var(--mono); font-size:12.5px; line-height:1.55; }
+  .code pre .c { color:#b7a179; } /* comment tint via spans if needed */
+
+  footer { text-align:center; color:var(--muted); font-size:13px; margin-top:56px; padding-top:22px; border-top:1px solid var(--line); }
+  footer .s { font-family:var(--serif); font-style:italic; color:var(--gold-deep); }
+  @media print { .copy { display:none; } body { background:#fff; color:#222; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="mark">O</div>
+  <h1 class="brand">Self-Hosting <span class="gold">&amp; Accounts</span></h1>
+  <p class="kicker">Opal Hotel Social Media Growth Hub</p>
+  <p class="slogan">The True Meaning of Luxury</p>
+</header>
+
+<div class="wrap">
+
+  <!-- 1 -->
+  <h2 id="accounts"><span class="num">1</span>Multiple Accounts &amp; WhatsApp Numbers</h2>
+  <div class="divider"></div>
+
+  <h3>✅ Multiple accounts (businesses) — Yes, fully</h3>
+  <p>The platform is <strong>multi-tenant</strong>. Every record — contacts, conversations, templates, chatbots, orders, team, settings — is scoped to its owning account and <strong>completely isolated</strong>; one account can never see another's data. A <strong>super-admin</strong> switches between accounts with the client switcher in the top nav, and each account has its own team, WhatsApp number, Facebook Page, and Instagram.</p>
+
+  <h3>✅ Multiple WhatsApp numbers — Yes: one number per account</h3>
+  <p>Each account connects <strong>exactly one</strong> WhatsApp number. Because you can create many accounts, the system as a whole runs <strong>many numbers side by side</strong>, and inbound messages <strong>route to the correct account automatically</strong> by their phone-number ID.</p>
+
+  <div class="tbl-wrap"><table>
+    <tr><th>You want</th><th>How</th></tr>
+    <tr><td>Run <strong>3 separate brands / numbers</strong></td><td>Create <strong>3 accounts</strong> (one number each) → switch between them in the nav</td></tr>
+    <tr><td>Facebook Page + Instagram per brand</td><td>One Page + one IG account <strong>per account</strong> (each channel config is unique per account)</td></tr>
+    <tr><td>All brands from one login</td><td>Sign in as <strong>super-admin</strong> and switch accounts — no re-login</td></tr>
+  </table></div>
+
+  <div class="call note"><span class="k">📝 Note:</span> Each account = one WhatsApp number + one Facebook Page + one Instagram, all flowing into that account's unified inbox.</div>
+  <div class="call warning"><span class="k">⚠️ The one limit:</span> the system does <strong>not</strong> currently support <strong>multiple WhatsApp numbers inside a single account</strong> (two numbers sharing one inbox). That specific setup would be a small schema change (making an account's WhatsApp connection one-to-many).</div>
+
+  <!-- 2 -->
+  <h2 id="architecture"><span class="num">2</span>Recommended Hosting Setup</h2>
+  <div class="divider"></div>
+  <p><strong>The one constraint that shapes everything:</strong> Meta must reach your webhook over <strong>public HTTPS</strong>. Even though your devices are on the LAN, WhatsApp/Instagram/Messenger deliver inbound messages by calling <code class="inl">https://your-domain/api/webhooks/*</code> from the internet. So the design is “publicly-reachable webhook + your team uses the UI over HTTPS.”</p>
+
+  <div class="diagram">  Meta (WhatsApp / IG / Messenger) ──HTTPS──▶ ┌────────────────────────────────┐
+  Your team &amp; LAN devices        ──HTTPS──▶ │  Cloudflare Tunnel (edge TLS)  │
+                                              │            │                   │
+                                              │   Caddy (proxy, :80)           │
+                                              │            │                   │
+                                              │   app:3000   worker            │
+                                              │   Postgres   Redis             │
+                                              └────────────────────────────────┘
+                                                  one docker compose stack</div>
+
+  <ul>
+    <li><strong>Server:</strong> an always-on Linux box (Ubuntu) with Docker + Compose. For one hotel, <strong>2–4 vCPU / 8 GB RAM / SSD</strong> is plenty. On-prem or a small cloud VPS both work.</li>
+    <li><strong>Cloudflare Tunnel</strong> gives public HTTPS with <strong>no port-forwarding and no exposed LAN</strong> — the tunnel dials out; Meta and your team reach the app via a hostname like <code class="inl">hub.opalhotel.com</code>.</li>
+    <li><strong>Caddy</strong> is the internal reverse proxy (compression + security headers). Public TLS is handled at Cloudflare's edge, so Caddy runs plain HTTP inside.</li>
+    <li><strong>LAN devices</strong> just open <code class="inl">https://hub.opalhotel.com</code> in any browser — nothing to install, protected by the app's own login.</li>
+  </ul>
+  <div class="call tip"><span class="k">💡 Tip — keep LAN traffic local:</span> add split-horizon DNS (via your router or Pi-hole) so inside devices resolve <code class="inl">hub.opalhotel.com</code> to the server's LAN IP. Uncomment <code class="inl">ports: ["80:80"]</code> on the <code class="inl">caddy</code> service to reach it directly.</div>
+
+  <!-- 3 -->
+  <h2 id="deploy"><span class="num">3</span>Deploy in 5 Steps</h2>
+  <div class="divider"></div>
+  <ol>
+    <li><strong>Clone the repo</strong> onto the server: <code class="inl">git clone &lt;your-repo&gt; opal-hub &amp;&amp; cd opal-hub</code></li>
+    <li><strong>Add the three files below</strong> at the repo root: <code class="inl">docker-compose.prod.yml</code>, <code class="inl">Caddyfile</code>, and <code class="inl">.env</code> (they're also in the <code class="inl">deploy/</code> folder).</li>
+    <li><strong>Create a Cloudflare Tunnel</strong> (Zero Trust → Networks → Tunnels), map <code class="inl">hub.opalhotel.com</code> → <code class="inl">http://caddy:80</code>, and paste the token into <code class="inl">.env</code>.</li>
+    <li><strong>Fill every secret</strong> in <code class="inl">.env</code> (see the template). Generate the admin password hash with <code class="inl">node scripts/hash-password.mjs 'your-password'</code>.</li>
+    <li><strong>Launch:</strong> <code class="inl">docker compose -f docker-compose.prod.yml up -d --build</code> — migrations + admin seed run automatically, then web + worker start.</li>
+  </ol>
+  <div class="call success"><span class="k">✅ Then:</span> point each Meta webhook to <code class="inl">https://hub.opalhotel.com/api/webhooks/whatsapp</code> (and <code class="inl">/instagram</code>, <code class="inl">/messenger</code>) and whitelist the domain in your Meta app.</div>
+
+  <h3>docker-compose.prod.yml</h3>
+  <div class="code">
+    <div class="cap"><span>docker-compose.prod.yml</span><button class="copy" onclick="cp(this)">Copy</button></div>
+<pre>name: opal-hub
+
+x-app: &amp;app
+  build: .
+  image: opal-hub:latest
+  env_file: .env
+  restart: unless-stopped
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: ["redisdata:/data"]
+
+  migrate:
+    &lt;&lt;: *app
+    restart: "no"
+    command: ["sh", "-c", "npx prisma migrate deploy &amp;&amp; npm run seed:admin"]
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  app:
+    &lt;&lt;: *app
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+    expose: ["3000"]
+    command: ["npm", "run", "start"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+      migrate: { condition: service_completed_successfully }
+
+  worker:
+    &lt;&lt;: *app
+    environment:
+      NODE_ENV: production
+    command: ["npm", "run", "worker"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redis: { condition: service_started }
+      migrate: { condition: service_completed_successfully }
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on: [app]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    # ports: ["80:80"]   # uncomment for direct LAN access (http://SERVER-IP)
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: ["tunnel", "run", "--token", "${CLOUDFLARE_TUNNEL_TOKEN}"]
+    depends_on: [caddy]
+
+volumes:
+  pgdata: {}
+  redisdata: {}
+  caddy_data: {}
+  caddy_config: {}</pre>
+  </div>
+
+  <h3>Caddyfile</h3>
+  <div class="code">
+    <div class="cap"><span>Caddyfile</span><button class="copy" onclick="cp(this)">Copy</button></div>
+<pre># Cloudflare terminates public TLS at the edge and forwards to Caddy on :80.
+# Caddy adds compression + security headers, then proxies to the Next.js app.
+:80 {
+	encode zstd gzip
+	header {
+		-Server
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
+	reverse_proxy app:3000
+}</pre>
+  </div>
+
+  <h3>.env</h3>
+  <div class="code">
+    <div class="cap"><span>.env</span><button class="copy" onclick="cp(this)">Copy</button></div>
+<pre># ── Database (Postgres container) ──
+POSTGRES_USER=opal
+POSTGRES_PASSWORD=REPLACE_with_a_strong_password
+POSTGRES_DB=opalhub
+DATABASE_URL=postgresql://opal:REPLACE_with_a_strong_password@postgres:5432/opalhub
+
+# ── Redis ──
+REDIS_URL=redis://redis:6379
+
+# ── App & auth (required) ──
+NODE_ENV=production
+AUTH_JWT_SECRET=REPLACE_openssl_rand_hex_32      # openssl rand -hex 32
+ADMIN_EMAIL=admin@opalhotel.com
+ADMIN_PASSWORD_HASH=REPLACE_bcrypt_hash          # node scripts/hash-password.mjs 'pw'
+
+# ── Meta / WhatsApp (required) ──
+WA_PHONE_NUMBER_ID=
+WA_BUSINESS_ACCOUNT_ID=
+WA_ACCESS_TOKEN=
+META_APP_SECRET=
+WA_WEBHOOK_VERIFY_TOKEN=choose-any-secret-phrase
+
+# ── Meta app (media + one-click onboarding) ──
+WA_APP_ID=
+META_APP_ID=
+META_CONFIG_ID=
+GRAPH_API_VERSION=v21.0
+
+# ── Sending ──
+WA_MPS=80
+OPT_OUT_KEYWORDS=STOP,UNSUBSCRIBE
+
+# ── AI assist (optional) ──
+ANTHROPIC_API_KEY=
+ANTHROPIC_MODEL=claude-opus-4-8
+
+# ── Cloudflare Tunnel ──
+CLOUDFLARE_TUNNEL_TOKEN=</pre>
+  </div>
+
+  <!-- 4 -->
+  <h2 id="ops"><span class="num">4</span>Access, Security &amp; Backups</h2>
+  <div class="divider"></div>
+  <ul>
+    <li><strong>Firewall:</strong> with Cloudflare Tunnel you can close all inbound ports — only allow <code class="inl">22</code> (SSH). Nothing else needs to be open.</li>
+    <li><strong>Security:</strong> the app's own <strong>login</strong> is the primary gate. For extra protection you can add <strong>Cloudflare Access</strong> (email/SSO) in front of the UI — but leave <code class="inl">/api/webhooks/*</code> and the OAuth callback open so Meta can reach them.</li>
+    <li><strong>Backups:</strong> the <code class="inl">pgdata</code> volume holds everything. Nightly dump: <code class="inl">docker compose exec postgres pg_dump -U opal opalhub | gzip &gt; backup-$(date +%F).sql.gz</code> — send it off-box.</li>
+    <li><strong>Updates:</strong> <code class="inl">git pull &amp;&amp; docker compose -f docker-compose.prod.yml up -d --build</code> — migrations re-run automatically.</li>
+    <li><strong>Scale:</strong> add worker replicas if broadcast volume grows — keep <code class="inl">WA_MPS × workers ≤</code> your Meta messaging tier.</li>
+  </ul>
+  <div class="call warning"><span class="k">⚠️ Don't</span> make the whole app LAN-only — Meta's webhook and the OAuth callback must stay publicly reachable over HTTPS. Keep the app behind HTTPS + login; optionally restrict the UI with Cloudflare Access.</div>
+
+  <footer>
+    Opal Hotel Social Media Growth Hub &nbsp;·&nbsp; <span class="s">The True Meaning of Luxury</span> &nbsp;·&nbsp; Self-Hosting Guide
+  </footer>
+</div>
+
+<script>
+  function cp(btn) {
+    var pre = btn.closest('.code').querySelector('pre');
+    navigator.clipboard.writeText(pre.textContent).then(function () {
+      var t = btn.textContent; btn.textContent = 'Copied ✓';
+      setTimeout(function () { btn.textContent = t; }, 1500);
+    }).catch(function () {});
+  }
+</script>
+</body>
+</html>

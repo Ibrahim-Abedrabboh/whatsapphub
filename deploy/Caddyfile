@@ -1,0 +1,22 @@
+# ============================================================
+# Caddy — internal reverse proxy for the Opal Hub app.
+# Cloudflare Tunnel terminates PUBLIC TLS at the edge and forwards traffic to
+# this Caddy on port 80, so Caddy speaks plain HTTP internally and just adds
+# compression + security headers before proxying to the Next.js app.
+#
+# Want Caddy to manage certificates itself (e.g. for direct LAN HTTPS on your
+# own domain)? Use the Cloudflare DNS-01 challenge with a Caddy build that
+# includes the caddy-dns/cloudflare plugin — see the notes on the guide page.
+# ============================================================
+:80 {
+	encode zstd gzip
+
+	header {
+		-Server
+		Referrer-Policy "strict-origin-when-cross-origin"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+	}
+
+	reverse_proxy app:3000
+}
