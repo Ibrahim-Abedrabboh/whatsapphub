@@ -1,8 +1,9 @@
 import { DelayedError, Queue, Worker } from "bullmq";
 // Relative imports (not "@/..."): the worker runs under tsx, which does not
 // resolve tsconfig `paths` the way Next.js does.
-import { connection, SEND_QUEUE, type SendJob } from "../lib/queue";
+import { connection, SEND_QUEUE, type SendJob, CHATBOT_QUEUE, type ChatbotResumeJob } from "../lib/queue";
 import { RECURRING_QUEUE, recurringQueue, upsertSchedule, type RecurringJob } from "../lib/recurring";
+import { resumeChatbotSession } from "../lib/chatbotRun";
 import { createAndEnqueueBroadcast, type VariableMap } from "../lib/broadcast";
 import { sendTemplate, WhatsAppError } from "../lib/whatsapp";
 import { getWaConfig, DEFAULT_CLIENT_ID } from "../lib/waConfig";
@@ -122,6 +123,16 @@ recurringWorker.on("failed", (job, err) => console.error(`[recurring] ${job?.id}
   for (const c of active) await upsertSchedule(c.id, c.cron);
   if (active.length) console.log(`[recurring] synced ${active.length} active schedule(s)`);
 })();
+
+// ── Chatbot session resume (V2 M3 delay node) ────────────────────────
+// A delay node parks a session; a delayed job fires here to continue the flow.
+const chatbotResumeWorker = new Worker<ChatbotResumeJob>(
+  CHATBOT_QUEUE,
+  async (job) => { await resumeChatbotSession(job.data.sessionId); },
+  { connection },
+);
+chatbotResumeWorker.on("failed", (job, err) => console.error(`[chatbot] resume ${job?.id} failed:`, err.message));
+console.log(`[chatbot] listening on "${CHATBOT_QUEUE}"`);
 
 // ── Number-quality poller + auto-pause (V2 M4 §2.9) ──────────────────
 // Every 15 minutes: read each connected client's quality_rating from Meta,
