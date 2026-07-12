@@ -30,6 +30,10 @@ COPY --from=build --chown=app:app /app/prisma ./prisma
 COPY --from=build --chown=app:app /app/src ./src
 COPY --from=build --chown=app:app /app/scripts ./scripts
 COPY --from=build --chown=app:app /app/package.json ./package.json
+# The worker runs `tsx src/worker/index.ts`; tsx needs tsconfig.json to resolve
+# the `@/*` path alias used by lib modules it imports (e.g. chatbotRun → @/lib/db).
+# Without this the worker crash-loops with "Cannot find module '@/lib/db'".
+COPY --from=build --chown=app:app /app/tsconfig.json ./tsconfig.json
 
 USER app
 # Informational; the app listens on $PORT. Railway's default is 8080, so the

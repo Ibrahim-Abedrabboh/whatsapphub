@@ -56,7 +56,7 @@ prisma/                    # schema.prisma + hand-written SQL migrations (0001 �
 ```
 
 ## Conventions
-- **Imports:** use `@/...` everywhere. `src/worker/index.ts` uses relative `../lib/...` by convention, but this is *not* required — `tsx` (4.19) **does** resolve tsconfig `paths`, verified 2026-07: the worker statically imports `../lib/chatbotRun`, whose entire `@/…` dependency chain (incl. the channel adapters) loads fine under tsx. So lib modules the worker pulls in may freely use `@/` internally.
+- **Imports:** use `@/...` everywhere. `src/worker/index.ts` itself uses relative `../lib/...`. Lib modules the worker imports **may** use `@/` internally — but ONLY because the Docker runtime stage copies `tsconfig.json` (tsx reads the `@/*` path map from it). tsx resolves `@/` only when `tsconfig.json` is present at runtime; it's absent from a naive image, so a worker-reachable `@/` import crash-loops with `Cannot find module '@/lib/db'` (see Gotchas). Local `tsx` "works" because tsconfig sits at the project root — always verify worker imports against the Docker image, not just locally.
 - **Validation:** every API body / CSV row / webhook payload goes through a Zod schema in `lib/validation.ts`.
 - **DB:** Prisma only, no raw string SQL.
 - **Multi-tenancy:** every entity carries `clientId`; always scope queries via the tenant resolver (`lib/tenancy.ts`); a SUPERADMIN's acting-client cookie (`acid`) overrides their own `cid`.
@@ -64,6 +64,7 @@ prisma/                    # schema.prisma + hand-written SQL migrations (0001 �
 - **Styling:** classes from `globals.css` (`.card .btn .badge--<STATUS>` etc.). Avoid new inline hex — use CSS vars.
 
 ## Gotchas
+- **Worker `@/` resolution needs `tsconfig.json` in the image** — the worker runs `tsx src/worker/index.ts`; any lib module it transitively imports that uses `@/…` needs `tsconfig.json` present at runtime. The Dockerfile runtime stage copies it explicitly; if you strip that COPY (or add a new deploy path), the worker crash-loops on `Cannot find module '@/lib/db'`. Local runs mask this (tsconfig is at the repo root).
 - **Middleware must stay edge-safe** — never import `tokenStore`, `users`, or Prisma into `middleware.ts`.
 - **`strict` + `noUncheckedIndexedAccess`** will flag array indexing — expect small guards.
 - **Per-worker rate limiting:** running N workers can exceed your Meta tier (keep `WA_MPS × workers ≤ tier`).
