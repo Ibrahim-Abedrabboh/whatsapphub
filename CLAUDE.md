@@ -56,7 +56,7 @@ prisma/                    # schema.prisma + hand-written SQL migrations (0001 �
 ```
 
 ## Conventions
-- **Imports:** use `@/...` everywhere EXCEPT `src/worker/index.ts`, which runs under `tsx` and uses relative `../lib/...` (tsx doesn't resolve tsconfig `paths`).
+- **Imports:** use `@/...` everywhere. `src/worker/index.ts` uses relative `../lib/...` by convention, but this is *not* required — `tsx` (4.19) **does** resolve tsconfig `paths`, verified 2026-07: the worker statically imports `../lib/chatbotRun`, whose entire `@/…` dependency chain (incl. the channel adapters) loads fine under tsx. So lib modules the worker pulls in may freely use `@/` internally.
 - **Validation:** every API body / CSV row / webhook payload goes through a Zod schema in `lib/validation.ts`.
 - **DB:** Prisma only, no raw string SQL.
 - **Multi-tenancy:** every entity carries `clientId`; always scope queries via the tenant resolver (`lib/tenancy.ts`); a SUPERADMIN's acting-client cookie (`acid`) overrides their own `cid`.
