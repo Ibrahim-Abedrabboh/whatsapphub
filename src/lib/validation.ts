@@ -343,6 +343,12 @@ const ChatbotNodeSchema = z.discriminatedUnion("type", [
       .min(1, "Add at least one option")
       .max(10, "Up to 10 choices"),
   }),
+  z.object({
+    id: z.string().min(1),
+    type: z.literal("delay"),
+    seconds: z.number().int().min(1, "At least 1 second").max(86400, "At most 24 hours"),
+    nextId: z.string().optional(),
+  }),
   z.object({ id: z.string().min(1), type: z.literal("ai"), nextId: z.string().optional() }),
   z.object({
     id: z.string().min(1),

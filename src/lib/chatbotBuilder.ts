@@ -3,7 +3,7 @@ import type { ChatbotFlow } from "@/lib/validation";
 // The builder edits an ordered list of these; blocksToFlow compiles them to a
 // ChatbotFlow state machine. Non-branch blocks chain linearly to the next block;
 // a branch routes only via its explicit per-case targets + default target.
-export type BlockType = "message" | "question" | "buttons" | "branch" | "ai" | "aiAgent" | "end";
+export type BlockType = "message" | "question" | "buttons" | "branch" | "delay" | "ai" | "aiAgent" | "end";
 
 export interface BranchCase {
   keywords: string; // comma-separated in the editor; split on compile
@@ -25,6 +25,7 @@ export interface Block {
   cases?: BranchCase[]; // branch
   defaultNextId?: string; // branch
   options?: ButtonOption[]; // buttons
+  seconds?: number; // delay
 }
 
 export const BLOCK_META: Record<BlockType, { label: string; wait: boolean; help: string }> = {
@@ -32,6 +33,7 @@ export const BLOCK_META: Record<BlockType, { label: string; wait: boolean; help:
   question: { label: "Ask & wait", wait: true, help: "Ask a question and save the customer's reply to reuse later with {{yourVariable}}." },
   buttons: { label: "Buttons / menu", wait: true, help: "Offer up to 10 choices and branch on the one the customer picks." },
   branch: { label: "Branch on reply", wait: true, help: "Route the conversation based on keywords found in the customer's reply." },
+  delay: { label: "Delay", wait: false, help: "Wait a set time before the next step — makes the bot feel more human." },
   ai: { label: "AI answer", wait: false, help: "Answer the customer's last message from your uploaded knowledge, then continue." },
   aiAgent: { label: "AI Agent", wait: true, help: "Hand off to an autonomous AI agent that chats until its goal is met." },
   end: { label: "End", wait: false, help: "End the conversation." },
@@ -45,6 +47,7 @@ export function newBlock(type: BlockType): Block {
     case "question": return { id, type, text: "", saveAs: "answer" };
     case "buttons": return { id, type, text: "", options: [{ label: "", nextId: "" }] };
     case "branch": return { id, type, cases: [{ keywords: "", nextId: "" }], defaultNextId: "" };
+    case "delay": return { id, type, seconds: 5 };
     case "aiAgent": return { id, type };
     default: return { id, type }; // ai | end
   }
@@ -93,6 +96,9 @@ export function blocksToFlow(blocks: Block[]): ChatbotFlow {
           options: (blk.options ?? []).map((o) => ({ label: o.label, nextId: o.nextId })),
         };
         break;
+      case "delay":
+        nodes[blk.id] = { id: blk.id, type: "delay", seconds: blk.seconds ?? 5, ...(linearNext ? { nextId: linearNext } : {}) };
+        break;
       case "end":
         nodes[blk.id] = { id: blk.id, type: "end" };
         break;
@@ -128,6 +134,7 @@ export function flowToBlocks(flow: ChatbotFlow): Block[] {
       case "aiAgent": return { id, type: "aiAgent", goal: node.goal, maxTurns: node.maxTurns };
       case "branch": return { id, type: "branch", cases: node.cases.map((c) => ({ keywords: c.keywords.join(", "), nextId: c.nextId })), defaultNextId: node.defaultNextId ?? "" };
       case "buttons": return { id, type: "buttons", text: node.text, options: node.options.map((o) => ({ label: o.label, nextId: o.nextId })) };
+      case "delay": return { id, type: "delay", seconds: node.seconds };
       case "end": return { id, type: "end" };
     }
   });

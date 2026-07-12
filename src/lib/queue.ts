@@ -32,3 +32,21 @@ export const sendQueue = new Queue<SendJob>(SEND_QUEUE, {
     removeOnFail: 5000,
   },
 });
+
+// Resume a chatbot session parked on a delay node (V2 M3 Phase 4 + delay). The
+// job is enqueued with { delay: ms } and processed by the worker.
+export interface ChatbotResumeJob {
+  sessionId: string;
+}
+
+export const CHATBOT_QUEUE = "chatbot-resume";
+
+export const chatbotQueue = new Queue<ChatbotResumeJob>(CHATBOT_QUEUE, {
+  connection,
+  defaultJobOptions: {
+    attempts: 3,
+    backoff: { type: "exponential", delay: 2000 },
+    removeOnComplete: 1000,
+    removeOnFail: 5000,
+  },
+});
