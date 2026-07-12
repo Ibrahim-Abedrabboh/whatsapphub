@@ -101,3 +101,15 @@ describe("blocksToFlow / flowToBlocks buttons", () => {
     expect(flowToBlocks(flow).map((x) => x.id).sort()).toEqual(["bt", "e"]);
   });
 });
+
+describe("blocksToFlow delay", () => {
+  it("compiles a delay node that chains linearly and passes schema", () => {
+    const blocks: Block[] = [
+      b({ id: "d", type: "delay", seconds: 8 }),
+      b({ id: "e", type: "end" }),
+    ];
+    const flow = blocksToFlow(blocks);
+    expect(flow.nodes.d).toEqual({ id: "d", type: "delay", seconds: 8, nextId: "e" });
+    expect(ChatbotFlowSchema.safeParse(flow).success).toBe(true);
+  });
+});

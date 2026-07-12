@@ -287,3 +287,20 @@ describe("ChatbotFlowSchema buttons node", () => {
     expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: [{ label: "Yes", nextId: "ghost" }] })).success).toBe(false);
   });
 });
+
+describe("ChatbotFlowSchema delay node", () => {
+  const f = (delay: Record<string, unknown>) => ({
+    startId: "d",
+    nodes: { d: { id: "d", type: "delay", ...delay }, e: { id: "e", type: "end" } },
+  });
+  it("accepts a valid delay node", () => {
+    expect(ChatbotFlowSchema.safeParse(f({ seconds: 30, nextId: "e" })).success).toBe(true);
+  });
+  it("rejects a non-integer or zero delay", () => {
+    expect(ChatbotFlowSchema.safeParse(f({ seconds: 0, nextId: "e" })).success).toBe(false);
+    expect(ChatbotFlowSchema.safeParse(f({ seconds: 1.5, nextId: "e" })).success).toBe(false);
+  });
+  it("rejects a dangling delay nextId", () => {
+    expect(ChatbotFlowSchema.safeParse(f({ seconds: 5, nextId: "ghost" })).success).toBe(false);
+  });
+});

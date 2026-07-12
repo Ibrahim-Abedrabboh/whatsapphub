@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { startRun, advance, substitute, type NodeResponder } from "./chatbot";
+import { startRun, advance, resume, substitute, type NodeResponder } from "./chatbot";
 import type { ChatbotFlow } from "./validation";
 
 // respond stub: ai → canned answer; aiAgent → "done" once inbound says "bye"
@@ -136,5 +136,35 @@ describe("advance — buttons", () => {
     expect(r.waiting).toBe(true);
     expect(r.session.currentNodeId).toBe("bt");
     expect(r.outbound).toEqual(["Choose:\n1. Pizza\n2. Pasta"]);
+  });
+});
+
+describe("delay node", () => {
+  const f = flow("m", {
+    m: { id: "m", type: "message", text: "One", nextId: "d" },
+    d: { id: "d", type: "delay", seconds: 5, nextId: "m2" },
+    m2: { id: "m2", type: "message", text: "Two", nextId: "e" },
+    e: { id: "e", type: "end" },
+  });
+  it("emits messages before the delay, then pauses with delayMs and parks on the delay node", async () => {
+    const r = await startRun(f, respond);
+    expect(r.outbound).toEqual(["One"]);
+    expect(r.delayMs).toBe(5000);
+    expect(r.done).toBe(false);
+    expect(r.waiting).toBe(false);
+    expect(r.session.currentNodeId).toBe("d");
+  });
+  it("resume() continues after the delay to completion", async () => {
+    const start = await startRun(f, respond);
+    const r = await resume(f, start.session, respond);
+    expect(r.outbound).toEqual(["Two"]);
+    expect(r.done).toBe(true);
+  });
+  it("ignores an inbound message while parked on a delay (waits for the timer)", async () => {
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "hello", respond);
+    expect(r.outbound).toEqual([]);
+    expect(r.done).toBe(false);
+    expect(r.session.currentNodeId).toBe("d");
   });
 });

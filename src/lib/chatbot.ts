@@ -26,6 +26,7 @@ export interface AdvanceResult {
   outbound: string[];
   waiting: boolean;
   done: boolean;
+  delayMs?: number; // set when the walk paused on a delay node; resume() after this
 }
 
 /** Replace {{name}}/{{phone}}/{{savedVar}} with values; unknown tokens stay. */
@@ -65,6 +66,10 @@ async function walk(flow: ChatbotFlow, nodeId: string | undefined, session: Sess
     if (node.type === "end") {
       return { session: { currentNodeId: cursor, variables: vars, status: "DONE" }, outbound, waiting: false, done: true };
     }
+    if (node.type === "delay") {
+      // Pause: park ON the delay node; the caller schedules resume() after delayMs.
+      return { session: { currentNodeId: cursor, variables: vars, status: "ACTIVE" }, outbound, waiting: false, done: false, delayMs: node.seconds * 1000 };
+    }
     // wait-node: question emits its prompt on arrival; buttons emits its menu;
     // branch/aiAgent just park for the next inbound message.
     if (node.type === "question") outbound.push(substitute(node.text, vars));
@@ -81,11 +86,21 @@ export function startRun(flow: ChatbotFlow, respond: NodeResponder, vars: Record
   return walk(flow, flow.startId, session, respond);
 }
 
+/** Continue a session parked on a delay node once its timer has elapsed. */
+export function resume(flow: ChatbotFlow, session: SessionState, respond: NodeResponder): Promise<AdvanceResult> {
+  const node: ChatbotNode | undefined = flow.nodes[session.currentNodeId];
+  const from = node && node.type === "delay" ? node.nextId : session.currentNodeId;
+  return walk(flow, from, session, respond);
+}
+
 /** Feed an inbound message to the parked wait-node, then walk onward. */
 export async function advance(flow: ChatbotFlow, session: SessionState, inboundText: string, respond: NodeResponder): Promise<AdvanceResult> {
   const node: ChatbotNode | undefined = flow.nodes[session.currentNodeId];
   const vars: Record<string, string> = { ...session.variables, __lastInbound: inboundText };
   if (!node) return { session: { ...session, variables: vars, status: "DONE" }, outbound: [], waiting: false, done: true };
+
+  // Parked on a delay — ignore inbound; the scheduled timer will resume the flow.
+  if (node.type === "delay") return { session: { ...session, variables: vars }, outbound: [], waiting: false, done: false };
 
   if (node.type === "question") {
     vars[node.saveAs] = inboundText;
