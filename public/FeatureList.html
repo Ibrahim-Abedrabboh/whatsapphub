@@ -3,15 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Opal Hotel Social Media Growth Hub — Feature List</title>
+<title>Opal Hotel Social Media Growth Hub — Feature List · دليل المزايا</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
   /* ============================================================
-     Opal Hotel Social Media Growth Hub — Feature List
+     Opal Hotel Social Media Growth Hub — Feature List (bilingual EN/AR)
      Palette from opal-hotel-theme.xml (v3.0): cream & gold.
-     Light by default; follows the OS for dark (reversed black+gold).
      ============================================================ */
   :root {
     --bg:#FFFCF3; --sunken:#F5F1E4; --card:#FFFFFF; --elevated:#FBF8EF;
@@ -21,10 +20,10 @@
     --burgundy:#800020; --burgundy-bg:rgba(128,0,32,.06);
     --green:#2E7D46; --green-bg:rgba(46,125,70,.08);
     --slate:#394E6C; --slate-bg:rgba(57,78,108,.06);
-    --amber:#B07A16; --amber-bg:rgba(176,122,22,.10);
     --serif:"Libre Baskerville",Georgia,serif;
     --display:"Cormorant Garamond","Libre Baskerville",Georgia,serif;
     --sans:"Montserrat","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --arabic:"Cairo","Segoe UI Arabic",Tahoma,sans-serif;
     --radius:22px; --shadow:0 3px 18px rgba(44,44,44,.06);
   }
   @media (prefers-color-scheme: dark) {
@@ -35,7 +34,6 @@
       --burgundy:#D06A80; --burgundy-bg:rgba(208,106,128,.10);
       --green:#4FB06E; --green-bg:rgba(79,176,110,.10);
       --slate:#8CA3C7; --slate-bg:rgba(140,163,199,.10);
-      --amber:#D9A514; --amber-bg:rgba(217,165,20,.12);
       --shadow:0 8px 26px rgba(0,0,0,.5);
     }
   }
@@ -48,12 +46,33 @@
   }
   .wrap { max-width:900px; margin:0 auto; padding:0 24px; }
 
+  /* ── bilingual show/hide (matches the app's data-lang pattern) ── */
+  html:not([lang="ar"]) [data-lang="ar"] { display:none; }
+  html[lang="ar"] [data-lang="en"] { display:none; }
+  /* Arabic typography + RTL */
+  html[lang="ar"] body,
+  html[lang="ar"] .cover .brand, html[lang="ar"] h2, html[lang="ar"] .feat h3,
+  html[lang="ar"] .cover .kicker, html[lang="ar"] .summary .punch, html[lang="ar"] .cover .slogan,
+  html[lang="ar"] footer .s { font-family:var(--arabic) !important; letter-spacing:normal; }
+  html[lang="ar"] .cat-num, html[lang="ar"] .mark, html[lang="ar"] .feat h3 .tag { font-family:var(--display); }
+  html[lang="ar"] .call { padding:13px 44px 13px 18px; }
+  html[lang="ar"] .call::before { left:auto; right:15px; }
+  html[lang="ar"] .divider { background:linear-gradient(270deg, var(--gold), transparent); }
+
+  /* ── language toggle ── */
+  .lang-toggle {
+    position:fixed; top:16px; inset-inline-end:16px; z-index:50;
+    font-family:var(--sans); font-weight:600; font-size:13px; letter-spacing:.04em;
+    background:var(--card); color:var(--gold-deep); border:1px solid var(--gold);
+    border-radius:999px; padding:8px 16px; cursor:pointer; box-shadow:var(--shadow);
+    transition:transform .15s ease, background .15s ease;
+  }
+  .lang-toggle:hover { transform:translateY(-1px); background:rgba(187,139,65,.09); }
+
   /* ── cover ── */
   .cover {
     text-align:center; padding:72px 24px 48px;
-    background:
-      radial-gradient(130% 100% at 50% -25%, rgba(187,139,65,.12), transparent 60%),
-      var(--bg);
+    background:radial-gradient(130% 100% at 50% -25%, rgba(187,139,65,.12), transparent 60%), var(--bg);
     border-bottom:1px solid var(--line);
   }
   .mark {
@@ -61,11 +80,12 @@
     border:2px solid var(--gold); display:grid; place-items:center;
     font-family:var(--display); font-size:52px; font-weight:600; color:var(--gold); line-height:1;
   }
-  .cover .brand { font-family:var(--display); font-weight:600; font-size:clamp(30px,5vw,46px); color:var(--ink); margin:0; line-height:1.1; }
+  .cover .brand { font-family:var(--display); font-weight:600; font-size:clamp(28px,5vw,44px); color:var(--ink); margin:0; line-height:1.15; }
   .cover .brand .gold { color:var(--gold); }
   .cover .kicker { font-family:var(--sans); letter-spacing:.32em; text-transform:uppercase; font-size:12px; color:var(--gold-deep); margin:10px 0 0; }
+  html[lang="ar"] .cover .kicker { letter-spacing:normal; }
   .cover .slogan { font-family:var(--serif); font-style:italic; color:var(--soft); font-size:19px; margin:18px 0 0; }
-  .cover .lead { max-width:620px; margin:22px auto 0; color:var(--muted); font-size:16px; }
+  .cover .lead { max-width:640px; margin:22px auto 0; color:var(--muted); font-size:16px; }
 
   /* ── section nav ── */
   nav.jump {
@@ -73,21 +93,17 @@
     backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:12px 0;
   }
   nav.jump .wrap { display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; }
-  nav.jump::-webkit-scrollbar, nav.jump .wrap::-webkit-scrollbar { display:none; }
+  nav.jump .wrap::-webkit-scrollbar { display:none; }
   nav.jump a {
-    flex:none; font-size:12.5px; font-weight:500; letter-spacing:.02em; color:var(--muted);
-    text-decoration:none; padding:5px 12px; border-radius:999px; border:1px solid var(--line);
-    white-space:nowrap; transition:all .18s ease;
+    flex:none; font-size:12.5px; font-weight:500; color:var(--muted); text-decoration:none;
+    padding:5px 12px; border-radius:999px; border:1px solid var(--line); white-space:nowrap; transition:all .18s ease;
   }
   nav.jump a:hover { color:var(--gold-deep); border-color:var(--gold); background:rgba(187,139,65,.07); }
 
   /* ── sections ── */
   section.cat { padding:48px 0 8px; }
   .cat-head { display:flex; align-items:baseline; gap:14px; margin-bottom:6px; }
-  .cat-num {
-    font-family:var(--display); font-weight:600; font-size:34px; color:var(--gold);
-    line-height:1; min-width:44px;
-  }
+  .cat-num { font-family:var(--display); font-weight:600; font-size:34px; color:var(--gold); line-height:1; min-width:44px; }
   h2 { font-family:var(--serif); font-weight:700; font-size:clamp(21px,3vw,27px); color:var(--ink); margin:0; }
   .divider { height:1px; background:linear-gradient(90deg, var(--gold), transparent); margin:14px 0 26px; }
 
@@ -100,14 +116,14 @@
   }
   .feat:hover { transform:translateY(-3px); box-shadow:0 10px 28px rgba(44,44,44,.10); border-color:var(--gold); }
   .feat h3 { font-family:var(--serif); font-weight:700; font-size:16px; color:var(--ink); margin:0 0 6px; }
-  .feat h3 .tag { color:var(--gold); font-family:var(--display); font-weight:600; margin-right:8px; }
+  .feat h3 .tag { color:var(--gold); font-family:var(--display); font-weight:600; margin-inline-end:8px; }
   .feat p { margin:0; font-size:14px; color:var(--soft); line-height:1.6; }
   .feat strong { color:var(--ink); }
 
   /* ── callouts ── */
   .call { border-radius:14px; padding:13px 18px 13px 44px; margin:18px 0 4px; position:relative; border:1px solid var(--line); font-size:14.5px; }
   .call::before { position:absolute; left:15px; top:12px; font-size:16px; }
-  .call .k { font-weight:700; letter-spacing:.02em; }
+  .call .k { font-weight:700; }
   .tip     { background:rgba(187,139,65,.07); border-color:rgba(187,139,65,.35); }
   .tip::before { content:"\1F4A1"; } .tip .k { color:var(--gold-deep); }
   .warning { background:var(--burgundy-bg); border-color:rgba(128,0,32,.30); }
@@ -125,289 +141,283 @@
   footer { text-align:center; color:var(--muted); font-size:13px; margin-top:36px; padding:26px 0 60px; border-top:1px solid var(--line); }
   footer .s { font-family:var(--serif); font-style:italic; color:var(--gold-deep); }
 
-  /* ── print / PDF ── */
   @media print {
-    nav.jump { display:none; }
+    .lang-toggle, nav.jump { display:none; }
     body { font-size:11pt; background:#fff; color:#222; }
     .feat, .summary { box-shadow:none; break-inside:avoid; }
-    section.cat { break-inside:avoid-page; }
-    .cover { break-after:page; }
+    section.cat { break-inside:avoid-page; } .cover { break-after:page; }
     a { color:#8F6B2E; text-decoration:none; }
   }
 </style>
 </head>
 <body>
 
+<button class="lang-toggle" onclick="toggleLang()" aria-label="Switch language">
+  <span data-lang="en">العربية</span><span data-lang="ar">English</span>
+</button>
+
 <!-- ═══════════════ COVER ═══════════════ -->
 <header class="cover">
   <div class="mark">O</div>
-  <h1 class="brand">Opal Hotel <span class="gold">Social Media Growth Hub</span></h1>
-  <p class="kicker">Complete Feature Reference</p>
-  <p class="slogan">The True Meaning of Luxury</p>
-  <p class="lead">One elegant platform to reach guests, answer them personally, automate the repetitive parts, and turn conversations into bookings — built on WhatsApp's official Cloud API, with no code required.</p>
+  <h1 class="brand">
+    <span data-lang="en">Opal Hotel <span class="gold">Social Media Growth Hub</span></span>
+    <span data-lang="ar">مركز أوبال هوتل <span class="gold">للنمو عبر وسائل التواصل</span></span>
+  </h1>
+  <p class="kicker"><span data-lang="en">Complete Feature Reference</span><span data-lang="ar">دليل المزايا الكامل</span></p>
+  <p class="slogan"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></p>
+  <p class="lead">
+    <span data-lang="en">One elegant platform to reach guests, answer them personally, automate the repetitive parts, and turn conversations into bookings — built on WhatsApp's official Cloud API, with no code required.</span>
+    <span data-lang="ar">منصّة أنيقة واحدة للوصول إلى ضيوفك، والردّ عليهم بلمسة شخصية، وأتمتة المهام المتكررة، وتحويل المحادثات إلى حجوزات — مبنيّة على واجهة واتساب السحابية الرسمية، وبدون أي برمجة.</span>
+  </p>
 </header>
 
 <!-- ═══════════════ JUMP NAV ═══════════════ -->
 <nav class="jump"><div class="wrap">
-  <a href="#c1">Onboarding</a>
-  <a href="#c2">Contacts</a>
-  <a href="#c3">Templates</a>
-  <a href="#c4">Campaigns</a>
-  <a href="#c5">Team Inbox</a>
-  <a href="#c6">AI Assist</a>
-  <a href="#c7">Chatbot Builder</a>
-  <a href="#c8">Automation</a>
-  <a href="#c9">Commerce</a>
-  <a href="#c10">Deliverability</a>
-  <a href="#c11">Security</a>
-  <a href="#c12">Design</a>
-  <a href="#c13">Platform</a>
+  <a href="#c1"><span data-lang="en">Onboarding</span><span data-lang="ar">التهيئة</span></a>
+  <a href="#c2"><span data-lang="en">Contacts</span><span data-lang="ar">جهات الاتصال</span></a>
+  <a href="#c3"><span data-lang="en">Templates</span><span data-lang="ar">القوالب</span></a>
+  <a href="#c4"><span data-lang="en">Campaigns</span><span data-lang="ar">الحملات</span></a>
+  <a href="#c5"><span data-lang="en">Team Inbox</span><span data-lang="ar">صندوق الفريق</span></a>
+  <a href="#c6"><span data-lang="en">AI Assist</span><span data-lang="ar">الذكاء الاصطناعي</span></a>
+  <a href="#c7"><span data-lang="en">Chatbot Builder</span><span data-lang="ar">مُنشئ البوت</span></a>
+  <a href="#c8"><span data-lang="en">Automation</span><span data-lang="ar">الأتمتة</span></a>
+  <a href="#c9"><span data-lang="en">Commerce</span><span data-lang="ar">التجارة</span></a>
+  <a href="#c10"><span data-lang="en">Deliverability</span><span data-lang="ar">التوصيل</span></a>
+  <a href="#c11"><span data-lang="en">Security</span><span data-lang="ar">الأمان</span></a>
+  <a href="#c12"><span data-lang="en">Design</span><span data-lang="ar">التصميم</span></a>
+  <a href="#c13"><span data-lang="en">Platform</span><span data-lang="ar">المنصّة</span></a>
 </div></nav>
 
 <div class="wrap">
 
   <!-- 1 -->
   <section class="cat" id="c1">
-    <div class="cat-head"><span class="cat-num">1</span><h2>Effortless Onboarding &amp; Setup</h2></div>
+    <div class="cat-head"><span class="cat-num">1</span><h2><span data-lang="en">Effortless Onboarding &amp; Setup</span><span data-lang="ar">التهيئة والإعداد بلا جهد</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">1.1</span>One-Click WhatsApp Connection</h3><p>Connect your official WhatsApp Business number through Meta's guided sign-up — <strong>no tokens, no developer dashboards</strong>. Approve access once and you're live.</p></div>
-      <div class="feat"><h3><span class="tag">1.2</span>Guided Settings Hub</h3><p>Every setup task lives under one <strong>Settings</strong> area with clear tabs. Your team gets fully configured <strong>without technical help</strong>.</p></div>
-      <div class="feat"><h3><span class="tag">1.3</span>Multi-Brand Support</h3><p>Run more than one business account, cleanly separated. Owner-level users switch brands in a click, and every setting stays isolated.</p></div>
+      <div class="feat"><h3><span class="tag">1.1</span><span data-lang="en">One-Click WhatsApp Connection</span><span data-lang="ar">ربط واتساب بنقرة واحدة</span></h3><p><span data-lang="en">Connect your official WhatsApp Business number through Meta's guided sign-up — <strong>no tokens, no developer dashboards</strong>. Approve access once and you're live.</span><span data-lang="ar">اربط رقم واتساب للأعمال الرسمي عبر تسجيل مُوجَّه من ميتا — <strong>بلا رموز ولا لوحات مطوّرين</strong>. تمنح الإذن مرّة واحدة فتصبح جاهزًا للإرسال.</span></p></div>
+      <div class="feat"><h3><span class="tag">1.2</span><span data-lang="en">Guided Settings Hub</span><span data-lang="ar">مركز إعدادات مُوجَّه</span></h3><p><span data-lang="en">Every setup task lives under one <strong>Settings</strong> area with clear tabs. Your team gets fully configured <strong>without technical help</strong>.</span><span data-lang="ar">تجتمع كل مهام الإعداد في قسم <strong>الإعدادات</strong> بعلامات تبويب واضحة، فيكتمل تجهيز فريقك <strong>دون مساعدة تقنية</strong>.</span></p></div>
+      <div class="feat"><h3><span class="tag">1.3</span><span data-lang="en">Multi-Brand Support</span><span data-lang="ar">دعم عدّة علامات</span></h3><p><span data-lang="en">Run more than one business account, cleanly separated. Owner-level users switch brands in a click, and every setting stays isolated.</span><span data-lang="ar">أدِر أكثر من حساب أعمال بفصل تامّ. ينتقل المُلّاك بين العلامات بنقرة، وتبقى كل الإعدادات معزولة.</span></p></div>
     </div>
-    <div class="call success"><span class="k">✅ Success:</span> Most teams go from "just got access" to "sent our first message" in a single sitting.</div>
-    <div class="call note"><span class="k">📝 Note:</span> Connecting your WhatsApp number is the one required step before sending — everything else can wait.</div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">Most teams go from "just got access" to "sent our first message" in a single sitting.</span><span data-lang="ar">تنتقل معظم الفرق من "حصلنا على الوصول للتو" إلى "أرسلنا أول رسالة" في جلسة واحدة.</span></div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">Connecting your WhatsApp number is the one required step before sending — everything else can wait.</span><span data-lang="ar">ربط رقم واتساب هو الخطوة الوحيدة اللازمة قبل الإرسال — وما عداها يمكن تأجيله.</span></div>
   </section>
 
   <!-- 2 -->
   <section class="cat" id="c2">
-    <div class="cat-head"><span class="cat-num">2</span><h2>Contacts &amp; Audiences</h2></div>
+    <div class="cat-head"><span class="cat-num">2</span><h2><span data-lang="en">Contacts &amp; Audiences</span><span data-lang="ar">جهات الاتصال والجماهير</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">2.1</span>Customer Address Book</h3><p>Store every customer with <strong>name, phone, and custom attributes</strong>. Add people one at a time or import a whole spreadsheet.</p></div>
-      <div class="feat"><h3><span class="tag">2.2</span>CSV Import</h3><p>Upload a spreadsheet and the system <strong>cleans and validates every number</strong>, flagging problems before they cost you. A template shows the format.</p></div>
-      <div class="feat"><h3><span class="tag">2.3</span>Lists</h3><p>Group contacts by hand into named <strong>Lists</strong> — "VIP Guests," "Spa Members" — and target broadcasts precisely.</p></div>
-      <div class="feat"><h3><span class="tag">2.4</span>Smart Segments</h3><p>Build <strong>rule-based groups that fill themselves</strong> — "everyone tagged VIP." They update automatically, with a live preview of who matches.</p></div>
-      <div class="feat"><h3><span class="tag">2.5</span>Automatic Opt-Out</h3><p>When a customer replies <strong>STOP</strong>, they're instantly removed from all future broadcasts. You never police this manually.</p></div>
+      <div class="feat"><h3><span class="tag">2.1</span><span data-lang="en">Customer Address Book</span><span data-lang="ar">دفتر عناوين العملاء</span></h3><p><span data-lang="en">Store every customer with <strong>name, phone, and custom attributes</strong>. Add people one at a time or import a whole spreadsheet.</span><span data-lang="ar">احفظ كل عميل مع <strong>الاسم والهاتف وسمات مخصّصة</strong>. أضِف الأشخاص فردًا فردًا أو استورِد جدولًا كاملًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">2.2</span><span data-lang="en">CSV Import</span><span data-lang="ar">استيراد CSV</span></h3><p><span data-lang="en">Upload a spreadsheet and the system <strong>cleans and validates every number</strong>, flagging problems before they cost you. A template shows the format.</span><span data-lang="ar">ارفع جدولًا فيقوم النظام <strong>بتنظيف كل رقم والتحقق منه</strong>، ويُنبّهك للأخطاء قبل أن تكلّفك. ويوضّح القالب التنسيق المطلوب.</span></p></div>
+      <div class="feat"><h3><span class="tag">2.3</span><span data-lang="en">Lists</span><span data-lang="ar">القوائم</span></h3><p><span data-lang="en">Group contacts by hand into named <strong>Lists</strong> — "VIP Guests," "Spa Members" — and target broadcasts precisely.</span><span data-lang="ar">جمِّع جهات الاتصال يدويًا في <strong>قوائم</strong> مُسمّاة — "كبار الضيوف"، "أعضاء المنتجع" — واستهدف حملاتك بدقّة.</span></p></div>
+      <div class="feat"><h3><span class="tag">2.4</span><span data-lang="en">Smart Segments</span><span data-lang="ar">الشرائح الذكية</span></h3><p><span data-lang="en">Build <strong>rule-based groups that fill themselves</strong> — "everyone tagged VIP." They update automatically, with a live preview of who matches.</span><span data-lang="ar">أنشئ <strong>مجموعات تعتمد على قواعد وتملأ نفسها</strong> — "كل من وُسِم كبار الضيوف". تتحدّث تلقائيًا مع معاينة حيّة لمن ينطبق عليهم.</span></p></div>
+      <div class="feat"><h3><span class="tag">2.5</span><span data-lang="en">Automatic Opt-Out</span><span data-lang="ar">إلغاء الاشتراك التلقائي</span></h3><p><span data-lang="en">When a customer replies <strong>STOP</strong>, they're instantly removed from all future broadcasts. You never police this manually.</span><span data-lang="ar">حين يردّ العميل بكلمة <strong>إيقاف</strong>، يُستبعَد فورًا من كل الحملات المستقبلية — دون أي متابعة يدوية منك.</span></p></div>
     </div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> Only message people who've agreed to hear from you — non-consented sends can get your number restricted by Meta.</div>
-    <div class="call tip"><span class="k">💡 Tip:</span> Create a few sensible Lists early (by branch, by interest) — it makes every future broadcast faster to target.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">Only message people who've agreed to hear from you — non-consented sends can get your number restricted by Meta.</span><span data-lang="ar">راسِل فقط من وافقوا على التواصل معك — فالإرسال دون موافقة قد يُقيّد رقمك من قِبَل ميتا.</span></div>
+    <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">Create a few sensible Lists early (by branch, by interest) — it makes every future broadcast faster to target.</span><span data-lang="ar">أنشئ بضع قوائم منطقية مبكرًا (حسب الفرع أو الاهتمام) — يسهِّل ذلك استهداف كل حملة لاحقة.</span></div>
   </section>
 
   <!-- 3 -->
   <section class="cat" id="c3">
-    <div class="cat-head"><span class="cat-num">3</span><h2>Message Templates</h2></div>
+    <div class="cat-head"><span class="cat-num">3</span><h2><span data-lang="en">Message Templates</span><span data-lang="ar">قوالب الرسائل</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">3.1</span>No-Code Template Builder</h3><p>Design broadcast messages — <strong>headlines, body, buttons, media</strong> — in a simple form and submit them to Meta for approval from the app.</p></div>
-      <div class="feat"><h3><span class="tag">3.2</span>Personalization Blanks</h3><p>Drop in placeholders like a first name so <strong>every message feels one-to-one</strong>, even at scale.</p></div>
-      <div class="feat"><h3><span class="tag">3.3</span>Rich Formats</h3><p>Support <strong>image/document/video headers, buttons, coupon codes, and carousels</strong> — promotions that look polished.</p></div>
-      <div class="feat"><h3><span class="tag">3.4</span>Live Approval Status</h3><p>Each template shows <strong>Pending</strong> while Meta reviews, <strong>Approved</strong> when it's ready — you always know what you can send now.</p></div>
+      <div class="feat"><h3><span class="tag">3.1</span><span data-lang="en">No-Code Template Builder</span><span data-lang="ar">مُنشئ قوالب بلا برمجة</span></h3><p><span data-lang="en">Design broadcast messages — <strong>headlines, body, buttons, media</strong> — in a simple form and submit them to Meta for approval from the app.</span><span data-lang="ar">صمِّم رسائل البث — <strong>العناوين والنص والأزرار والوسائط</strong> — في نموذج بسيط وأرسِلها إلى ميتا للاعتماد من داخل التطبيق.</span></p></div>
+      <div class="feat"><h3><span class="tag">3.2</span><span data-lang="en">Personalization Blanks</span><span data-lang="ar">حقول التخصيص</span></h3><p><span data-lang="en">Drop in placeholders like a first name so <strong>every message feels one-to-one</strong>, even at scale.</span><span data-lang="ar">أدرِج حقولًا كالاسم الأول لتبدو <strong>كل رسالة شخصية</strong>، حتى عند الإرسال بالآلاف.</span></p></div>
+      <div class="feat"><h3><span class="tag">3.3</span><span data-lang="en">Rich Formats</span><span data-lang="ar">تنسيقات غنية</span></h3><p><span data-lang="en">Support <strong>image/document/video headers, buttons, coupon codes, and carousels</strong> — promotions that look polished.</span><span data-lang="ar">دعم <strong>رؤوس بالصور والمستندات والفيديو، وأزرار، ورموز قسائم، وعروض متعدّدة البطاقات</strong> — عروض ترويجية أنيقة.</span></p></div>
+      <div class="feat"><h3><span class="tag">3.4</span><span data-lang="en">Live Approval Status</span><span data-lang="ar">حالة الاعتماد اللحظية</span></h3><p><span data-lang="en">Each template shows <strong>Pending</strong> while Meta reviews, <strong>Approved</strong> when it's ready — you always know what you can send now.</span><span data-lang="ar">يُظهر كل قالب <strong>قيد المراجعة</strong> أثناء مراجعة ميتا، و<strong>معتمَد</strong> عند جاهزيته — فتعرف دائمًا ما يمكنك إرساله الآن.</span></p></div>
     </div>
-    <div class="call note"><span class="k">📝 Note:</span> WhatsApp requires templates outside the 24-hour reply window. This keeps you a trusted sender.</div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> You can only broadcast with <strong>Approved</strong> templates — approval takes minutes to hours; no need to resubmit.</div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">WhatsApp requires templates outside the 24-hour reply window. This keeps you a trusted sender.</span><span data-lang="ar">يشترط واتساب استخدام القوالب خارج نافذة الردّ (24 ساعة)، وهذا يُبقيك مُرسِلًا موثوقًا.</span></div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">You can only broadcast with <strong>Approved</strong> templates — approval takes minutes to hours; no need to resubmit.</span><span data-lang="ar">لا يمكن البثّ إلا بالقوالب <strong>المعتمَدة</strong> — يستغرق الاعتماد دقائق إلى ساعات، ولا داعي لإعادة الإرسال.</span></div>
   </section>
 
   <!-- 4 -->
   <section class="cat" id="c4">
-    <div class="cat-head"><span class="cat-num">4</span><h2>Broadcasts &amp; Campaigns</h2></div>
+    <div class="cat-head"><span class="cat-num">4</span><h2><span data-lang="en">Broadcasts &amp; Campaigns</span><span data-lang="ar">الحملات والبثّ الجماعي</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">4.1</span>One-to-Many Sending</h3><p>Pick a template and audience and <strong>reach your whole list in one click</strong>.</p></div>
-      <div class="feat"><h3><span class="tag">4.2</span>Send Now or Schedule</h3><p>Fire immediately or <strong>schedule for the perfect date and time</strong> — a weekend offer, a booking reminder.</p></div>
-      <div class="feat"><h3><span class="tag">4.3</span>Recurring Campaigns</h3><p>Set a message to <strong>repeat on a schedule</strong> so routine touchpoints go out on their own.</p></div>
-      <div class="feat"><h3><span class="tag">4.4</span>A/B Testing</h3><p><strong>Send two versions and let the numbers decide.</strong> The platform splits your audience fairly.</p></div>
-      <div class="feat"><h3><span class="tag">4.5</span>Send-Time Optimization</h3><p>Deliver at the <strong>ideal local time for each recipient</strong> — 9 AM in their own time zone.</p></div>
-      <div class="feat"><h3><span class="tag">4.6</span>Live Delivery Tracking</h3><p>Watch a <strong>real-time bar</strong> as messages move Queued → Sending → Sent, with per-message sent / delivered / read / failed.</p></div>
-      <div class="feat"><h3><span class="tag">4.7</span>Trackable Links</h3><p>Add a special link and <strong>see exactly who clicked</strong> — turning a broadcast into measurable interest.</p></div>
+      <div class="feat"><h3><span class="tag">4.1</span><span data-lang="en">One-to-Many Sending</span><span data-lang="ar">إرسال للجميع دفعة واحدة</span></h3><p><span data-lang="en">Pick a template and audience and <strong>reach your whole list in one click</strong>.</span><span data-lang="ar">اختر قالبًا وجمهورًا <strong>وتصل إلى قائمتك كاملة بنقرة واحدة</strong>.</span></p></div>
+      <div class="feat"><h3><span class="tag">4.2</span><span data-lang="en">Send Now or Schedule</span><span data-lang="ar">إرسال فوري أو مجدول</span></h3><p><span data-lang="en">Fire immediately or <strong>schedule for the perfect date and time</strong> — a weekend offer, a booking reminder.</span><span data-lang="ar">أرسِل فورًا أو <strong>جدوِل الوقت والتاريخ المثاليين</strong> — عرض نهاية أسبوع، أو تذكير بالحجز.</span></p></div>
+      <div class="feat"><h3><span class="tag">4.3</span><span data-lang="en">Recurring Campaigns</span><span data-lang="ar">حملات متكررة</span></h3><p><span data-lang="en">Set a message to <strong>repeat on a schedule</strong> so routine touchpoints go out on their own.</span><span data-lang="ar">اضبط رسالة <strong>لتتكرّر وفق جدول</strong> فتنطلق التذكيرات الدورية من تلقاء نفسها.</span></p></div>
+      <div class="feat"><h3><span class="tag">4.4</span><span data-lang="en">A/B Testing</span><span data-lang="ar">اختبار A/B</span></h3><p><span data-lang="en"><strong>Send two versions and let the numbers decide.</strong> The platform splits your audience fairly.</span><span data-lang="ar"><strong>أرسِل نسختين ودَع الأرقام تحسم.</strong> تقسّم المنصّة جمهورك بإنصاف.</span></p></div>
+      <div class="feat"><h3><span class="tag">4.5</span><span data-lang="en">Send-Time Optimization</span><span data-lang="ar">توقيت الإرسال الأمثل</span></h3><p><span data-lang="en">Deliver at the <strong>ideal local time for each recipient</strong> — 9 AM in their own time zone.</span><span data-lang="ar">سلِّم في <strong>التوقيت المحلي الأمثل لكل مُستلِم</strong> — التاسعة صباحًا بتوقيته هو.</span></p></div>
+      <div class="feat"><h3><span class="tag">4.6</span><span data-lang="en">Live Delivery Tracking</span><span data-lang="ar">تتبّع التسليم اللحظي</span></h3><p><span data-lang="en">Watch a <strong>real-time bar</strong> as messages move Queued → Sending → Sent, with per-message sent / delivered / read / failed.</span><span data-lang="ar">تابِع <strong>شريطًا لحظيًا</strong> بينما تنتقل الرسائل من قائمة الانتظار → إرسال → أُرسِلت، مع حالة كل رسالة: أُرسِلت / وصلت / قُرئت / فشلت.</span></p></div>
+      <div class="feat"><h3><span class="tag">4.7</span><span data-lang="en">Trackable Links</span><span data-lang="ar">روابط قابلة للتتبّع</span></h3><p><span data-lang="en">Add a special link and <strong>see exactly who clicked</strong> — turning a broadcast into measurable interest.</span><span data-lang="ar">أضِف رابطًا خاصًا <strong>واعرف بالضبط من نقر</strong> — فتتحوّل الحملة إلى اهتمام قابل للقياس.</span></p></div>
     </div>
-    <div class="call success"><span class="k">✅ Success:</span> You'll know within seconds whether a campaign is landing — and within minutes who's engaging.</div>
-    <div class="call tip"><span class="k">💡 Tip:</span> For your first broadcast, send to a test list of just your own number. Seeing it arrive builds instant confidence.</div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">You'll know within seconds whether a campaign is landing — and within minutes who's engaging.</span><span data-lang="ar">ستعرف خلال ثوانٍ إن كانت الحملة تصل — وخلال دقائق من يتفاعل معها.</span></div>
+    <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">For your first broadcast, send to a test list of just your own number. Seeing it arrive builds instant confidence.</span><span data-lang="ar">في أول حملة، أرسِل إلى قائمة تجريبية تحوي رقمك فقط. وصولها إليك يمنحك ثقة فورية.</span></div>
   </section>
 
   <!-- 5 -->
   <section class="cat" id="c5">
-    <div class="cat-head"><span class="cat-num">5</span><h2>The Shared Team Inbox</h2></div>
+    <div class="cat-head"><span class="cat-num">5</span><h2><span data-lang="en">The Shared Team Inbox</span><span data-lang="ar">صندوق الوارد المشترك للفريق</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">5.1</span>Two-Way Conversations</h3><p>Every reply lands in a <strong>shared inbox your whole team works from</strong> — like team email, but for WhatsApp.</p></div>
-      <div class="feat"><h3><span class="tag">5.2</span>Omnichannel Ready</h3><p>Built to bring <strong>WhatsApp, Instagram DMs, and Messenger into one view</strong>, so you answer from a single place.</p></div>
-      <div class="feat"><h3><span class="tag">5.3</span>Status &amp; Assignment</h3><p>Mark chats <strong>Open, Pending, or Closed</strong> and <strong>assign them to teammates</strong> so no two people reply at once.</p></div>
-      <div class="feat"><h3><span class="tag">5.4</span>Internal Notes</h3><p>Leave a <strong>private note</strong> the customer never sees but your team always does.</p></div>
-      <div class="feat"><h3><span class="tag">5.5</span>Canned Replies</h3><p>Save common answers as <strong>reusable snippets</strong> and drop them in instantly, personalized.</p></div>
-      <div class="feat"><h3><span class="tag">5.6</span>Response-Time Awareness</h3><p>Tracks <strong>first-response and resolution timing</strong> to keep service fast and consistent.</p></div>
-      <div class="feat"><h3><span class="tag">5.7</span>Rich Media</h3><p>Send and receive <strong>images, documents, audio, and video</strong> right in the thread.</p></div>
+      <div class="feat"><h3><span class="tag">5.1</span><span data-lang="en">Two-Way Conversations</span><span data-lang="ar">محادثات ثنائية الاتجاه</span></h3><p><span data-lang="en">Every reply lands in a <strong>shared inbox your whole team works from</strong> — like team email, but for WhatsApp.</span><span data-lang="ar">يصل كل ردّ إلى <strong>صندوق وارد مشترك يعمل منه فريقك كامل</strong> — كبريد الفريق، لكن لواتساب.</span></p></div>
+      <div class="feat"><h3><span class="tag">5.2</span><span data-lang="en">Omnichannel Ready</span><span data-lang="ar">جاهز لتعدّد القنوات</span></h3><p><span data-lang="en">Built to bring <strong>WhatsApp, Instagram DMs, and Messenger into one view</strong>, so you answer from a single place.</span><span data-lang="ar">مُصمَّم ليجمع <strong>واتساب ورسائل إنستغرام وماسنجر في شاشة واحدة</strong>، فتردّ من مكان واحد.</span></p></div>
+      <div class="feat"><h3><span class="tag">5.3</span><span data-lang="en">Status &amp; Assignment</span><span data-lang="ar">الحالة والإسناد</span></h3><p><span data-lang="en">Mark chats <strong>Open, Pending, or Closed</strong> and <strong>assign them to teammates</strong> so no two people reply at once.</span><span data-lang="ar">صنِّف المحادثات <strong>مفتوحة أو معلّقة أو مغلقة</strong> و<strong>أسنِدها إلى الزملاء</strong> فلا يردّ اثنان معًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">5.4</span><span data-lang="en">Internal Notes</span><span data-lang="ar">ملاحظات داخلية</span></h3><p><span data-lang="en">Leave a <strong>private note</strong> the customer never sees but your team always does.</span><span data-lang="ar">اترك <strong>ملاحظة خاصة</strong> لا يراها العميل أبدًا ويراها فريقك دائمًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">5.5</span><span data-lang="en">Canned Replies</span><span data-lang="ar">ردود جاهزة</span></h3><p><span data-lang="en">Save common answers as <strong>reusable snippets</strong> and drop them in instantly, personalized.</span><span data-lang="ar">احفظ الردود الشائعة كـ<strong>مقتطفات قابلة لإعادة الاستخدام</strong> وأدرِجها فورًا مع التخصيص.</span></p></div>
+      <div class="feat"><h3><span class="tag">5.6</span><span data-lang="en">Response-Time Awareness</span><span data-lang="ar">قياس زمن الاستجابة</span></h3><p><span data-lang="en">Tracks <strong>first-response and resolution timing</strong> to keep service fast and consistent.</span><span data-lang="ar">يقيس <strong>زمن أول ردّ ووقت الإغلاق</strong> لإبقاء الخدمة سريعة ومتّسقة.</span></p></div>
+      <div class="feat"><h3><span class="tag">5.7</span><span data-lang="en">Rich Media</span><span data-lang="ar">وسائط غنية</span></h3><p><span data-lang="en">Send and receive <strong>images, documents, audio, and video</strong> right in the thread.</span><span data-lang="ar">أرسِل واستقبِل <strong>الصور والمستندات والصوت والفيديو</strong> داخل المحادثة مباشرة.</span></p></div>
     </div>
-    <div class="call note"><span class="k">📝 Note:</span> WhatsApp allows free-typed replies only within 24 hours of a customer's last message — the inbox guides you to a template when that closes.</div>
-    <div class="call tip"><span class="k">💡 Tip:</span> Assign conversations as they arrive — the simplest way to stop double-replies and keep guests feeling cared for.</div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">WhatsApp allows free-typed replies only within 24 hours of a customer's last message — the inbox guides you to a template when that closes.</span><span data-lang="ar">يسمح واتساب بالردود الحرّة خلال 24 ساعة فقط من آخر رسالة للعميل — ويرشدك الصندوق إلى قالب عند انتهائها.</span></div>
+    <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">Assign conversations as they arrive — the simplest way to stop double-replies and keep guests feeling cared for.</span><span data-lang="ar">أسنِد المحادثات فور وصولها — أبسط وسيلة لمنع الردود المزدوجة وإشعار الضيوف بالاهتمام.</span></div>
   </section>
 
   <!-- 6 -->
   <section class="cat" id="c6">
-    <div class="cat-head"><span class="cat-num">6</span><h2>AI Assist</h2></div>
+    <div class="cat-head"><span class="cat-num">6</span><h2><span data-lang="en">AI Assist</span><span data-lang="ar">مساعد الذكاء الاصطناعي</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">6.1</span>Suggested Replies</h3><p>Get a <strong>ready-to-review draft answer</strong> in your knowledge base's voice — you approve before anything sends.</p></div>
-      <div class="feat"><h3><span class="tag">6.2</span>Conversation Summaries</h3><p>Turn a long thread into a <strong>one-paragraph summary</strong> so anyone is instantly up to speed.</p></div>
-      <div class="feat"><h3><span class="tag">6.3</span>Instant Translation</h3><p>Translate messages between <strong>Arabic and English</strong> in a click — serve every guest in their language.</p></div>
-      <div class="feat"><h3><span class="tag">6.4</span>Knowledge Base</h3><p>Upload <strong>PDFs, Word, text, spreadsheets</strong> and the AI answers using <em>your</em> information, indexed automatically.</p></div>
-      <div class="feat"><h3><span class="tag">6.5</span>Smart Message Tagging</h3><p>AI labels an incoming message's <strong>intent and sentiment</strong>, helping you spot urgent or unhappy customers.</p></div>
+      <div class="feat"><h3><span class="tag">6.1</span><span data-lang="en">Suggested Replies</span><span data-lang="ar">ردود مقترحة</span></h3><p><span data-lang="en">Get a <strong>ready-to-review draft answer</strong> in your knowledge base's voice — you approve before anything sends.</span><span data-lang="ar">احصل على <strong>مسودّة ردّ جاهزة للمراجعة</strong> بأسلوب قاعدة معرفتك — وتعتمدها قبل أن يُرسَل أي شيء.</span></p></div>
+      <div class="feat"><h3><span class="tag">6.2</span><span data-lang="en">Conversation Summaries</span><span data-lang="ar">تلخيص المحادثات</span></h3><p><span data-lang="en">Turn a long thread into a <strong>one-paragraph summary</strong> so anyone is instantly up to speed.</span><span data-lang="ar">حوّل محادثة طويلة إلى <strong>ملخّص من فقرة واحدة</strong> ليواكب أي شخص الموقف فورًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">6.3</span><span data-lang="en">Instant Translation</span><span data-lang="ar">ترجمة فورية</span></h3><p><span data-lang="en">Translate messages between <strong>Arabic and English</strong> in a click — serve every guest in their language.</span><span data-lang="ar">ترجِم الرسائل بين <strong>العربية والإنجليزية</strong> بنقرة — واخدم كل ضيف بلغته.</span></p></div>
+      <div class="feat"><h3><span class="tag">6.4</span><span data-lang="en">Knowledge Base</span><span data-lang="ar">قاعدة المعرفة</span></h3><p><span data-lang="en">Upload <strong>PDFs, Word, text, spreadsheets</strong> and the AI answers using <em>your</em> information, indexed automatically.</span><span data-lang="ar">ارفع <strong>ملفات PDF ووورد ونصوصًا وجداول</strong> فيُجيب الذكاء الاصطناعي من <em>معلوماتك أنت</em>، مفهرسةً تلقائيًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">6.5</span><span data-lang="en">Smart Message Tagging</span><span data-lang="ar">وسم الرسائل الذكي</span></h3><p><span data-lang="en">AI labels an incoming message's <strong>intent and sentiment</strong>, helping you spot urgent or unhappy customers.</span><span data-lang="ar">يصنّف الذكاء الاصطناعي <strong>نيّة الرسالة ومشاعرها</strong>، فيساعدك على رصد العملاء المستعجلين أو غير الراضين.</span></p></div>
     </div>
-    <div class="call success"><span class="k">✅ Success:</span> AI does the drafting and reading; your team keeps the judgment — nothing sends until a human clicks Send.</div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> AI features activate once your administrator adds an AI key on the server; until then they show a friendly fallback.</div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">AI does the drafting and reading; your team keeps the judgment — nothing sends until a human clicks Send.</span><span data-lang="ar">يتولّى الذكاء الاصطناعي الصياغة والقراءة، ويبقى القرار لفريقك — فلا يُرسَل شيء حتى ينقر إنسان "إرسال".</span></div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">AI features activate once your administrator adds an AI key on the server; until then they show a friendly fallback.</span><span data-lang="ar">تُفعَّل مزايا الذكاء الاصطناعي بمجرّد إضافة المسؤول لمفتاح الذكاء على الخادم؛ وحتى ذلك الحين تعرض ردًّا بديلًا لطيفًا.</span></div>
   </section>
 
   <!-- 7 -->
   <section class="cat" id="c7">
-    <div class="cat-head"><span class="cat-num">7</span><h2>The No-Code Chatbot Builder</h2></div>
+    <div class="cat-head"><span class="cat-num">7</span><h2><span data-lang="en">The No-Code Chatbot Builder</span><span data-lang="ar">مُنشئ البوت بدون برمجة</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">7.1</span>Visual Drag-and-Drop</h3><p>Build a chatbot by <strong>stacking simple steps</strong> and dragging them into order — no code, every step tooltipped.</p></div>
-      <div class="feat"><h3><span class="tag">7.2</span>Eight Building Blocks</h3><p><strong>Send message, Ask &amp; wait, Buttons/menu, Branch, Delay, AI answer, AI Agent, End</strong> — greet, qualify, answer, and route end-to-end.</p></div>
-      <div class="feat"><h3><span class="tag">7.3</span>Tappable Menus</h3><p>Offer <strong>up to ten quick-reply choices</strong> — "Book a room / Restaurant / Spa / Talk to a person" — and route on the pick.</p></div>
-      <div class="feat"><h3><span class="tag">7.4</span>Human-Feel Delays</h3><p>Insert a <strong>timed pause</strong> between messages so replies feel natural, not robotic.</p></div>
-      <div class="feat"><h3><span class="tag">7.5</span>AI-Powered Answers</h3><p>Add an <strong>AI step that answers from your knowledge base</strong>, or hand off to an <strong>autonomous AI agent</strong> until the goal is met.</p></div>
-      <div class="feat"><h3><span class="tag">7.6</span>Publish &amp; Reuse</h3><p>Save bots as drafts, <strong>publish when ready</strong>, and edit anytime. Published bots are the ones automations launch.</p></div>
+      <div class="feat"><h3><span class="tag">7.1</span><span data-lang="en">Visual Drag-and-Drop</span><span data-lang="ar">سحب وإفلات مرئي</span></h3><p><span data-lang="en">Build a chatbot by <strong>stacking simple steps</strong> and dragging them into order — no code, every step tooltipped.</span><span data-lang="ar">ابنِ بوتًا عبر <strong>ترتيب خطوات بسيطة</strong> وسحبها — بلا برمجة، ولكل خطوة تلميح موضِّح.</span></p></div>
+      <div class="feat"><h3><span class="tag">7.2</span><span data-lang="en">Eight Building Blocks</span><span data-lang="ar">ثماني لبنات</span></h3><p><span data-lang="en"><strong>Send message, Ask &amp; wait, Buttons/menu, Branch, Delay, AI answer, AI Agent, End</strong> — greet, qualify, answer, and route end-to-end.</span><span data-lang="ar"><strong>إرسال رسالة، اسأل وانتظر، أزرار/قائمة، تفرّع، مهلة، إجابة ذكاء اصطناعي، وكيل ذكاء، إنهاء</strong> — للترحيب والتأهيل والإجابة والتوجيه كاملًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">7.3</span><span data-lang="en">Tappable Menus</span><span data-lang="ar">قوائم قابلة للنقر</span></h3><p><span data-lang="en">Offer <strong>up to ten quick-reply choices</strong> — "Book a room / Restaurant / Spa / Talk to a person" — and route on the pick.</span><span data-lang="ar">قدِّم <strong>حتى عشرة خيارات ردّ سريع</strong> — "احجز غرفة / المطعم / المنتجع / التحدّث لموظّف" — ووجِّه حسب الاختيار.</span></p></div>
+      <div class="feat"><h3><span class="tag">7.4</span><span data-lang="en">Human-Feel Delays</span><span data-lang="ar">مهلات بإحساس بشري</span></h3><p><span data-lang="en">Insert a <strong>timed pause</strong> between messages so replies feel natural, not robotic.</span><span data-lang="ar">أدرِج <strong>مهلة زمنية</strong> بين الرسائل لتبدو الردود طبيعية لا آليّة.</span></p></div>
+      <div class="feat"><h3><span class="tag">7.5</span><span data-lang="en">AI-Powered Answers</span><span data-lang="ar">إجابات بالذكاء الاصطناعي</span></h3><p><span data-lang="en">Add an <strong>AI step that answers from your knowledge base</strong>, or hand off to an <strong>autonomous AI agent</strong> until the goal is met.</span><span data-lang="ar">أضِف <strong>خطوة ذكاء تُجيب من قاعدة معرفتك</strong>، أو سلِّم إلى <strong>وكيل ذكاء مستقل</strong> حتى يتحقّق الهدف.</span></p></div>
+      <div class="feat"><h3><span class="tag">7.6</span><span data-lang="en">Publish &amp; Reuse</span><span data-lang="ar">نشر وإعادة استخدام</span></h3><p><span data-lang="en">Save bots as drafts, <strong>publish when ready</strong>, and edit anytime. Published bots are the ones automations launch.</span><span data-lang="ar">احفظ البوتات كمسوّدات، و<strong>انشرها عند الجاهزية</strong>، وعدِّلها متى شئت. البوتات المنشورة هي ما تُطلِقه الأتمتة.</span></p></div>
     </div>
-    <div class="call tip"><span class="k">💡 Tip:</span> Start with a simple after-hours "Buttons" menu bot — it deflects common questions instantly and impresses guests with a fast reply.</div>
-    <div class="call note"><span class="k">📝 Note:</span> A saved bot doesn't run on its own — you connect it to a trigger that decides <em>when</em> it starts.</div>
+    <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">Start with a simple after-hours "Buttons" menu bot — it deflects common questions instantly and impresses guests with a fast reply.</span><span data-lang="ar">ابدأ ببوت قائمة "أزرار" بسيط لما بعد الدوام — يردّ على الأسئلة الشائعة فورًا ويُبهر الضيوف بسرعة الاستجابة.</span></div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">A saved bot doesn't run on its own — you connect it to a trigger that decides <em>when</em> it starts.</span><span data-lang="ar">البوت المحفوظ لا يعمل وحده — تربطه بمُحفِّز يحدّد <em>متى</em> ينطلق.</span></div>
   </section>
 
   <!-- 8 -->
   <section class="cat" id="c8">
-    <div class="cat-head"><span class="cat-num">8</span><h2>Automation &amp; Rules</h2></div>
+    <div class="cat-head"><span class="cat-num">8</span><h2><span data-lang="en">Automation &amp; Rules</span><span data-lang="ar">الأتمتة والقواعد</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">8.1</span>Trigger-Based Rules</h3><p>Tell the system <strong>when to act</strong> — on certain keywords, or when someone writes outside business hours.</p></div>
-      <div class="feat"><h3><span class="tag">8.2</span>Two Kinds of Action</h3><p>A rule can <strong>send an instant auto-reply</strong> or <strong>launch a published chatbot</strong> — turning "book" into a full booking flow.</p></div>
-      <div class="feat"><h3><span class="tag">8.3</span>Graceful Human Takeover</h3><p>The moment a teammate replies, <strong>the bot steps aside</strong> so the human leads.</p></div>
-      <div class="feat"><h3><span class="tag">8.4</span>Loop &amp; Spam Protection</h3><p>Built-in cooldowns prevent the system from ever <strong>replying in a rapid loop</strong> or over-messaging.</p></div>
+      <div class="feat"><h3><span class="tag">8.1</span><span data-lang="en">Trigger-Based Rules</span><span data-lang="ar">قواعد قائمة على المُحفِّزات</span></h3><p><span data-lang="en">Tell the system <strong>when to act</strong> — on certain keywords, or when someone writes outside business hours.</span><span data-lang="ar">أخبِر النظام <strong>متى يتصرّف</strong> — عند كلمات مفتاحية معيّنة، أو عندما يراسلك أحدهم خارج ساعات العمل.</span></p></div>
+      <div class="feat"><h3><span class="tag">8.2</span><span data-lang="en">Two Kinds of Action</span><span data-lang="ar">نوعان من الإجراءات</span></h3><p><span data-lang="en">A rule can <strong>send an instant auto-reply</strong> or <strong>launch a published chatbot</strong> — turning "book" into a full booking flow.</span><span data-lang="ar">يمكن للقاعدة <strong>إرسال ردّ تلقائي فوري</strong> أو <strong>إطلاق بوت منشور</strong> — فتتحوّل كلمة "احجز" إلى مسار حجز كامل.</span></p></div>
+      <div class="feat"><h3><span class="tag">8.3</span><span data-lang="en">Graceful Human Takeover</span><span data-lang="ar">تسليم لطيف للموظّف</span></h3><p><span data-lang="en">The moment a teammate replies, <strong>the bot steps aside</strong> so the human leads.</span><span data-lang="ar">لحظة ردّ أحد أعضاء الفريق، <strong>يتنحّى البوت</strong> ليقود الإنسان الحوار.</span></p></div>
+      <div class="feat"><h3><span class="tag">8.4</span><span data-lang="en">Loop &amp; Spam Protection</span><span data-lang="ar">حماية من التكرار والإزعاج</span></h3><p><span data-lang="en">Built-in cooldowns prevent the system from ever <strong>replying in a rapid loop</strong> or over-messaging.</span><span data-lang="ar">فترات تهدئة مدمجة تمنع النظام من <strong>الردّ في حلقة متسارعة</strong> أو الإفراط في المراسلة.</span></p></div>
     </div>
-    <div class="call success"><span class="k">✅ Success:</span> With a few rules, your Hub answers guests 24/7 — and hands off the moment a human touch is needed.</div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> Only <strong>published</strong> chatbots appear in the "Start a chatbot" action — publish yours first.</div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">With a few rules, your Hub answers guests 24/7 — and hands off the moment a human touch is needed.</span><span data-lang="ar">ببضع قواعد، يجيب مركزك الضيوف على مدار الساعة — ويُسلِّم فور الحاجة إلى لمسة بشرية.</span></div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">Only <strong>published</strong> chatbots appear in the "Start a chatbot" action — publish yours first.</span><span data-lang="ar">تظهر البوتات <strong>المنشورة</strong> فقط في إجراء "تشغيل بوت" — فانشر بوتك أولًا.</span></div>
   </section>
 
   <!-- 9 -->
   <section class="cat" id="c9">
-    <div class="cat-head"><span class="cat-num">9</span><h2>Commerce &amp; Orders</h2></div>
+    <div class="cat-head"><span class="cat-num">9</span><h2><span data-lang="en">Commerce &amp; Orders</span><span data-lang="ar">التجارة والطلبات</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">9.1</span>Product Catalog Connection</h3><p>Link your <strong>Meta product catalog</strong> so customers browse and order right inside WhatsApp.</p></div>
-      <div class="feat"><h3><span class="tag">9.2</span>Product Messages</h3><p>Send <strong>single products or curated lists</strong> into a conversation to guide a sale.</p></div>
-      <div class="feat"><h3><span class="tag">9.3</span>Inbound Order Capture</h3><p>When a customer sends a cart, the order <strong>lands automatically</strong> with items, quantities, and totals.</p></div>
-      <div class="feat"><h3><span class="tag">9.4</span>Order Pipeline</h3><p>Move orders <strong>New → Confirmed → Shipped → Delivered</strong>, and the system <strong>messages the customer at each step</strong>.</p></div>
+      <div class="feat"><h3><span class="tag">9.1</span><span data-lang="en">Product Catalog Connection</span><span data-lang="ar">ربط كتالوج المنتجات</span></h3><p><span data-lang="en">Link your <strong>Meta product catalog</strong> so customers browse and order right inside WhatsApp.</span><span data-lang="ar">اربط <strong>كتالوج منتجاتك في ميتا</strong> ليتصفّح العملاء ويطلبوا داخل واتساب مباشرة.</span></p></div>
+      <div class="feat"><h3><span class="tag">9.2</span><span data-lang="en">Product Messages</span><span data-lang="ar">رسائل المنتجات</span></h3><p><span data-lang="en">Send <strong>single products or curated lists</strong> into a conversation to guide a sale.</span><span data-lang="ar">أرسِل <strong>منتجًا مفردًا أو قوائم مُنتقاة</strong> داخل المحادثة لتوجيه عملية البيع.</span></p></div>
+      <div class="feat"><h3><span class="tag">9.3</span><span data-lang="en">Inbound Order Capture</span><span data-lang="ar">التقاط الطلبات الواردة</span></h3><p><span data-lang="en">When a customer sends a cart, the order <strong>lands automatically</strong> with items, quantities, and totals.</span><span data-lang="ar">حين يرسل العميل سلّة، يصل الطلب <strong>تلقائيًا</strong> بالأصناف والكميات والإجماليات.</span></p></div>
+      <div class="feat"><h3><span class="tag">9.4</span><span data-lang="en">Order Pipeline</span><span data-lang="ar">مسار الطلبات</span></h3><p><span data-lang="en">Move orders <strong>New → Confirmed → Shipped → Delivered</strong>, and the system <strong>messages the customer at each step</strong>.</span><span data-lang="ar">انقل الطلبات <strong>جديد → مؤكَّد → شُحِن → سُلِّم</strong>، ويقوم النظام <strong>بمراسلة العميل عند كل خطوة</strong>.</span></p></div>
     </div>
-    <div class="call note"><span class="k">📝 Note:</span> Orders light up once an administrator connects a product catalog in Settings → Commerce.</div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">Orders light up once an administrator connects a product catalog in Settings → Commerce.</span><span data-lang="ar">تُفعَّل الطلبات بمجرّد ربط المسؤول لكتالوج المنتجات من الإعدادات ← التجارة.</span></div>
   </section>
 
   <!-- 10 -->
   <section class="cat" id="c10">
-    <div class="cat-head"><span class="cat-num">10</span><h2>Deliverability &amp; Quality</h2></div>
+    <div class="cat-head"><span class="cat-num">10</span><h2><span data-lang="en">Deliverability &amp; Quality</span><span data-lang="ar">التوصيل والجودة</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">10.1</span>Rate-Limited Sending</h3><p>Messages send at a <strong>controlled, safe pace</strong> that respects your WhatsApp tier and protects your reputation.</p></div>
-      <div class="feat"><h3><span class="tag">10.2</span>Automatic Quality Guardrail</h3><p>The platform <strong>watches your number's quality rating</strong> and <strong>pauses sending automatically</strong> if it's at risk — resume with a click.</p></div>
-      <div class="feat"><h3><span class="tag">10.3</span>Reliable Background Engine</h3><p>Broadcasts, scheduled sends, and timed bot steps run on a <strong>dedicated engine with automatic retries</strong> — nothing is silently dropped.</p></div>
+      <div class="feat"><h3><span class="tag">10.1</span><span data-lang="en">Rate-Limited Sending</span><span data-lang="ar">إرسال بمعدّل مضبوط</span></h3><p><span data-lang="en">Messages send at a <strong>controlled, safe pace</strong> that respects your WhatsApp tier and protects your reputation.</span><span data-lang="ar">تُرسَل الرسائل بـ<strong>وتيرة آمنة ومضبوطة</strong> تحترم فئتك في واتساب وتحمي سمعتك.</span></p></div>
+      <div class="feat"><h3><span class="tag">10.2</span><span data-lang="en">Automatic Quality Guardrail</span><span data-lang="ar">حارس جودة تلقائي</span></h3><p><span data-lang="en">The platform <strong>watches your number's quality rating</strong> and <strong>pauses sending automatically</strong> if it's at risk — resume with a click.</span><span data-lang="ar">تراقب المنصّة <strong>تقييم جودة رقمك</strong> و<strong>توقف الإرسال تلقائيًا</strong> إن كان في خطر — وتستأنف بنقرة.</span></p></div>
+      <div class="feat"><h3><span class="tag">10.3</span><span data-lang="en">Reliable Background Engine</span><span data-lang="ar">محرّك خلفي موثوق</span></h3><p><span data-lang="en">Broadcasts, scheduled sends, and timed bot steps run on a <strong>dedicated engine with automatic retries</strong> — nothing is silently dropped.</span><span data-lang="ar">تعمل الحملات والإرسالات المجدولة وخطوات البوت المؤقّتة على <strong>محرّك مخصّص بإعادة محاولة تلقائية</strong> — فلا يسقط شيء بصمت.</span></p></div>
     </div>
-    <div class="call success"><span class="k">✅ Success:</span> Your number stays healthy and trusted — the difference between messages that arrive and messages that get blocked.</div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">Your number stays healthy and trusted — the difference between messages that arrive and messages that get blocked.</span><span data-lang="ar">يبقى رقمك سليمًا وموثوقًا — وهو الفرق بين رسائل تصل ورسائل تُحجَب.</span></div>
   </section>
 
   <!-- 11 -->
   <section class="cat" id="c11">
-    <div class="cat-head"><span class="cat-num">11</span><h2>Security &amp; Privacy</h2></div>
+    <div class="cat-head"><span class="cat-num">11</span><h2><span data-lang="en">Security &amp; Privacy</span><span data-lang="ar">الأمان والخصوصية</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">11.1</span>Secure Sign-In</h3><p>Protected by <strong>short-lived, verified sessions</strong> with rotating, revocable refresh tokens — modern, bank-style auth.</p></div>
-      <div class="feat"><h3><span class="tag">11.2</span>Role-Based Access</h3><p>Team members get <strong>the right level of access</strong> for their role, keeping sensitive actions with the right people.</p></div>
-      <div class="feat"><h3><span class="tag">11.3</span>Verified Webhooks</h3><p>Every incoming Meta message is <strong>signature-verified</strong>, so only genuine WhatsApp traffic is processed.</p></div>
-      <div class="feat"><h3><span class="tag">11.4</span>Consent Records</h3><p>Opt-outs are <strong>stored and enforced structurally</strong> — a clean, auditable record of who agreed.</p></div>
-      <div class="feat"><h3><span class="tag">11.5</span>Strict Data Separation</h3><p>Every record is scoped to its owning brand, so <strong>one account can never see another's</strong> data.</p></div>
+      <div class="feat"><h3><span class="tag">11.1</span><span data-lang="en">Secure Sign-In</span><span data-lang="ar">تسجيل دخول آمن</span></h3><p><span data-lang="en">Protected by <strong>short-lived, verified sessions</strong> with rotating, revocable refresh tokens — modern, bank-style auth.</span><span data-lang="ar">محميّ بـ<strong>جلسات مُتحقَّقة قصيرة الأمد</strong> برموز تحديث متبدّلة وقابلة للإبطال — أمان حديث بمستوى البنوك.</span></p></div>
+      <div class="feat"><h3><span class="tag">11.2</span><span data-lang="en">Role-Based Access</span><span data-lang="ar">صلاحيات حسب الدور</span></h3><p><span data-lang="en">Team members get <strong>the right level of access</strong> for their role, keeping sensitive actions with the right people.</span><span data-lang="ar">يحصل كل عضو على <strong>مستوى الوصول المناسب</strong> لدوره، فتبقى الإجراءات الحسّاسة بيد أصحابها.</span></p></div>
+      <div class="feat"><h3><span class="tag">11.3</span><span data-lang="en">Verified Webhooks</span><span data-lang="ar">تحقّق من الويب هوك</span></h3><p><span data-lang="en">Every incoming Meta message is <strong>signature-verified</strong>, so only genuine WhatsApp traffic is processed.</span><span data-lang="ar">يُتحقَّق من توقيع <strong>كل رسالة واردة من ميتا</strong>، فلا يُعالَج إلا مرور واتساب الأصيل.</span></p></div>
+      <div class="feat"><h3><span class="tag">11.4</span><span data-lang="en">Consent Records</span><span data-lang="ar">سجلّات الموافقة</span></h3><p><span data-lang="en">Opt-outs are <strong>stored and enforced structurally</strong> — a clean, auditable record of who agreed.</span><span data-lang="ar">تُحفَظ حالات إلغاء الاشتراك و<strong>تُطبَّق هيكليًا</strong> — سجلّ نظيف وقابل للتدقيق لمن وافق.</span></p></div>
+      <div class="feat"><h3><span class="tag">11.5</span><span data-lang="en">Strict Data Separation</span><span data-lang="ar">فصل صارم للبيانات</span></h3><p><span data-lang="en">Every record is scoped to its owning brand, so <strong>one account can never see another's</strong> data.</span><span data-lang="ar">كل سجلّ مرتبط بعلامته المالكة، فـ<strong>لا يرى حساب بيانات حساب آخر</strong> أبدًا.</span></p></div>
     </div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> Keep login credentials private — anyone with access can message customers as your business.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">Keep login credentials private — anyone with access can message customers as your business.</span><span data-lang="ar">احتفظ ببيانات الدخول سرّية — فمن يملك الوصول يمكنه مراسلة العملاء باسم نشاطك.</span></div>
   </section>
 
   <!-- 12 -->
   <section class="cat" id="c12">
-    <div class="cat-head"><span class="cat-num">12</span><h2>Design, Language &amp; Accessibility</h2></div>
+    <div class="cat-head"><span class="cat-num">12</span><h2><span data-lang="en">Design, Language &amp; Accessibility</span><span data-lang="ar">التصميم واللغة وإمكانية الوصول</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">12.1</span>Bilingual Out of the Box</h3><p>The whole interface works in <strong>English and Arabic</strong>, with full right-to-left layout.</p></div>
-      <div class="feat"><h3><span class="tag">12.2</span>Light &amp; Dark Themes</h3><p>Switch between an elegant <strong>cream-and-gold light theme</strong> and a dramatic <strong>black-and-gold dark theme</strong> — your choice is remembered.</p></div>
-      <div class="feat"><h3><span class="tag">12.3</span>Luxury Visual Identity</h3><p>Serif headings, warm gold accents, and generous spacing give a <strong>refined, on-brand feel</strong> — it looks like Opal.</p></div>
-      <div class="feat"><h3><span class="tag">12.4</span>Responsive Everywhere</h3><p>Adapts cleanly to <strong>desktop, tablet, and phone</strong>, so your team can work the inbox from anywhere.</p></div>
-      <div class="feat"><h3><span class="tag">12.5</span>Accessible by Design</h3><p>Colors, focus outlines, and labels meet <strong>accessibility contrast standards</strong> — usable by everyone.</p></div>
+      <div class="feat"><h3><span class="tag">12.1</span><span data-lang="en">Bilingual Out of the Box</span><span data-lang="ar">ثنائي اللغة جاهزًا</span></h3><p><span data-lang="en">The whole interface works in <strong>English and Arabic</strong>, with full right-to-left layout.</span><span data-lang="ar">تعمل الواجهة كاملة بـ<strong>الإنجليزية والعربية</strong>، مع تخطيط كامل من اليمين إلى اليسار.</span></p></div>
+      <div class="feat"><h3><span class="tag">12.2</span><span data-lang="en">Light &amp; Dark Themes</span><span data-lang="ar">مظهر فاتح وداكن</span></h3><p><span data-lang="en">Switch between an elegant <strong>cream-and-gold light theme</strong> and a dramatic <strong>black-and-gold dark theme</strong> — your choice is remembered.</span><span data-lang="ar">بدّل بين <strong>مظهر فاتح كريمي بلمسات ذهبية</strong> و<strong>مظهر داكن أسود بذهبي جريء</strong> — ويُحفَظ اختيارك.</span></p></div>
+      <div class="feat"><h3><span class="tag">12.3</span><span data-lang="en">Luxury Visual Identity</span><span data-lang="ar">هوية بصرية فاخرة</span></h3><p><span data-lang="en">Serif headings, warm gold accents, and generous spacing give a <strong>refined, on-brand feel</strong> — it looks like Opal.</span><span data-lang="ar">عناوين بخطوط رقيقة، ولمسات ذهبية دافئة، ومساحات مريحة تمنح <strong>إحساسًا راقيًا متّسقًا مع العلامة</strong> — يبدو كأوبال تمامًا.</span></p></div>
+      <div class="feat"><h3><span class="tag">12.4</span><span data-lang="en">Responsive Everywhere</span><span data-lang="ar">متجاوب في كل مكان</span></h3><p><span data-lang="en">Adapts cleanly to <strong>desktop, tablet, and phone</strong>, so your team can work the inbox from anywhere.</span><span data-lang="ar">يتكيّف بسلاسة مع <strong>الحاسوب والجهاز اللوحي والهاتف</strong>، فيعمل فريقك من أي مكان.</span></p></div>
+      <div class="feat"><h3><span class="tag">12.5</span><span data-lang="en">Accessible by Design</span><span data-lang="ar">مُهيّأ لإمكانية الوصول</span></h3><p><span data-lang="en">Colors, focus outlines, and labels meet <strong>accessibility contrast standards</strong> — usable by everyone.</span><span data-lang="ar">الألوان وحدود التركيز والتسميات تفي بـ<strong>معايير التباين لإمكانية الوصول</strong> — قابل للاستخدام من الجميع.</span></p></div>
     </div>
-    <div class="call tip"><span class="k">💡 Tip:</span> Use the light theme for daytime desk work and dark in the evening — the toggle lives at the top-right of the app.</div>
+    <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">Use the light theme for daytime desk work and dark in the evening — the toggle lives at the top-right of the app.</span><span data-lang="ar">استخدم المظهر الفاتح لعمل النهار والداكن مساءً — ويوجد زرّ التبديل أعلى يسار التطبيق.</span></div>
   </section>
 
   <!-- 13 -->
   <section class="cat" id="c13">
-    <div class="cat-head"><span class="cat-num">13</span><h2>Platform &amp; Administration</h2></div>
+    <div class="cat-head"><span class="cat-num">13</span><h2><span data-lang="en">Platform &amp; Administration</span><span data-lang="ar">المنصّة والإدارة</span></h2></div>
     <div class="divider"></div>
     <div class="grid">
-      <div class="feat"><h3><span class="tag">13.1</span>Team Management</h3><p>Add and manage <strong>teammates and permission levels</strong> from Settings, and reset passwords when needed.</p></div>
-      <div class="feat"><h3><span class="tag">13.2</span>Self-Hosted &amp; Private</h3><p>Runs on <strong>your own infrastructure</strong> — your data stays yours, with no third-party middleman.</p></div>
-      <div class="feat"><h3><span class="tag">13.3</span>Modern, Reliable Foundation</h3><p>Built on proven technology, the Hub is <strong>stable, maintainable, and ready to grow</strong> with you.</p></div>
-      <div class="feat"><h3><span class="tag">13.4</span>Built-In User Guide</h3><p>A complete, plain-language <strong>user guide ships with the platform</strong>, so new members learn it independently.</p></div>
+      <div class="feat"><h3><span class="tag">13.1</span><span data-lang="en">Team Management</span><span data-lang="ar">إدارة الفريق</span></h3><p><span data-lang="en">Add and manage <strong>teammates and permission levels</strong> from Settings, and reset passwords when needed.</span><span data-lang="ar">أضِف وأدِر <strong>أعضاء الفريق ومستويات صلاحياتهم</strong> من الإعدادات، وأعِد ضبط كلمات المرور عند الحاجة.</span></p></div>
+      <div class="feat"><h3><span class="tag">13.2</span><span data-lang="en">Self-Hosted &amp; Private</span><span data-lang="ar">استضافة ذاتية وخصوصية</span></h3><p><span data-lang="en">Runs on <strong>your own infrastructure</strong> — your data stays yours, with no third-party middleman.</span><span data-lang="ar">يعمل على <strong>بنيتك التحتية الخاصة</strong> — تبقى بياناتك ملكك، دون وسيط خارجي.</span></p></div>
+      <div class="feat"><h3><span class="tag">13.3</span><span data-lang="en">Modern, Reliable Foundation</span><span data-lang="ar">أساس حديث وموثوق</span></h3><p><span data-lang="en">Built on proven technology, the Hub is <strong>stable, maintainable, and ready to grow</strong> with you.</span><span data-lang="ar">مبنيّ على تقنيات مُجرَّبة، فالمركز <strong>مستقرّ وسهل الصيانة وجاهز للنمو</strong> معك.</span></p></div>
+      <div class="feat"><h3><span class="tag">13.4</span><span data-lang="en">Built-In User Guide</span><span data-lang="ar">دليل مستخدم مدمج</span></h3><p><span data-lang="en">A complete, plain-language <strong>user guide ships with the platform</strong>, so new members learn it independently.</span><span data-lang="ar">يأتي مع المنصّة <strong>دليل مستخدم كامل بلغة بسيطة</strong>، فيتعلّمه الأعضاء الجدد بأنفسهم.</span></p></div>
     </div>
-    <div class="call success"><span class="k">✅ Success:</span> Everything is in one system you control — from the first hello to a repeat booking, with no scattered tools to stitch together.</div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">Everything is in one system you control — from the first hello to a repeat booking, with no scattered tools to stitch together.</span><span data-lang="ar">كل شيء في نظام واحد تتحكّم به — من أول تحية إلى حجز متكرّر، دون أدوات متفرّقة تحتاج إلى جمعها.</span></div>
   </section>
 
   <!-- SUMMARY -->
   <div class="summary">
-    <h2>In Summary</h2>
-    <p>The Opal Hotel Social Media Growth Hub brings <strong>broadcasting, a shared team inbox, AI assistance, no-code chatbots, commerce, and airtight security</strong> into one refined, bilingual platform. It lets a small team deliver <strong>big-hotel responsiveness</strong> — instant answers around the clock, personal service at scale, and campaigns that actually get read — while protecting your number's reputation and your customers' trust.</p>
-    <p class="punch">It's not just messaging software. It's how Opal delivers the true meaning of luxury — in every conversation.</p>
+    <h2><span data-lang="en">In Summary</span><span data-lang="ar">الخلاصة</span></h2>
+    <p><span data-lang="en">The Opal Hotel Social Media Growth Hub brings <strong>broadcasting, a shared team inbox, AI assistance, no-code chatbots, commerce, and airtight security</strong> into one refined, bilingual platform. It lets a small team deliver <strong>big-hotel responsiveness</strong> — instant answers around the clock, personal service at scale, and campaigns that actually get read — while protecting your number's reputation and your customers' trust.</span><span data-lang="ar">يجمع مركز أوبال هوتل للنمو <strong>البثّ الجماعي، وصندوق وارد مشترك للفريق، ومساعدة بالذكاء الاصطناعي، وبوتات بلا برمجة، وتجارة، وأمانًا محكمًا</strong> في منصّة واحدة راقية وثنائية اللغة. تمكّن فريقًا صغيرًا من تقديم <strong>سرعة استجابة فندق كبير</strong> — ردود فورية على مدار الساعة، وخدمة شخصية على نطاق واسع، وحملات تُقرأ فعلًا — مع حماية سمعة رقمك وثقة عملائك.</span></p>
+    <p class="punch"><span data-lang="en">It's not just messaging software. It's how Opal delivers the true meaning of luxury — in every conversation.</span><span data-lang="ar">إنه ليس مجرّد برنامج مراسلة. إنه الطريقة التي تقدّم بها أوبال المعنى الحقيقي للفخامة — في كل محادثة.</span></p>
   </div>
 
   <footer>
-    Opal Hotel Social Media Growth Hub &nbsp;·&nbsp; <span class="s">The True Meaning of Luxury</span> &nbsp;·&nbsp; Feature Reference
+    <span data-lang="en">Opal Hotel Social Media Growth Hub</span><span data-lang="ar">مركز أوبال هوتل للنمو عبر وسائل التواصل</span>
+    &nbsp;·&nbsp; <span class="s"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></span>
   </footer>
 
 </div>
 
+<script>
+  function toggleLang() {
+    var html = document.documentElement;
+    var ar = html.lang !== 'ar';
+    html.lang = ar ? 'ar' : 'en';
+    html.dir = ar ? 'rtl' : 'ltr';
+    try { localStorage.setItem('opal-features-lang', html.lang); } catch (e) {}
+  }
+  // Restore last choice
+  try {
+    var saved = localStorage.getItem('opal-features-lang');
+    if (saved === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; }
+  } catch (e) {}
+</script>
+
 <!-- ============================================================
-     OUTPUT 3 — PDF STYLING INSTRUCTIONS (for print / export to PDF)
-     ============================================================
-     THEME COLORS
-       • Primary accent (headers, feature tags, links):  Gold  #BB8B41
-         - deeper gold for text on light:                       #8F6B2E
-         - secondary/champagne gold:                            #C2A670
-       • Page background (cover + body):  Cream  #FFFCF3
-       • Body text:  Charcoal  #2C2C2C   ·   muted:  #726D5E
-       • Callout accents:
-           Tip      → Gold      #BB8B41  (bg rgba(187,139,65,.07))
-           Warning  → Burgundy  #800020  (bg rgba(128,0,32,.06))
-           Note     → Slate-blue #394E6C (bg rgba(57,78,108,.06))
-           Success  → Green     #2E7D46  (bg rgba(46,125,70,.08))
-
-     FONT HIERARCHY
-       • H1 / Cover title:  "Cormorant Garamond" 600, 30–46px  (display serif)
-       • H2 / Category:     "Libre Baskerville" 700, 21–27px    (serif)
-       • H3 / Feature name: "Libre Baskerville" 700, 16px       (serif)
-       • Body / callout:    "Montserrat" 400, 14–15.5px         (sans)
-       • Slogan / accents:  "Libre Baskerville" italic          (serif italic)
-
-     COVER PAGE
-       • Place the Opal gold "O" mark (or full OPAL HOTEL logo) centered at top,
-         ~88px, gold #BB8B41 on cream.
-       • Title "Opal Hotel Social Media Growth Hub" with "Social Media Growth Hub"
-         in gold; kicker "COMPLETE FEATURE REFERENCE"; italic slogan beneath.
-       • Force a page break after the cover (see @media print: .cover{break-after:page}).
-
-     PAGE SETUP
-       • A4 or US Letter, portrait, ~18mm margins.
-       • Keep feature cards and category sections from splitting across pages
-         (break-inside: avoid — already set in @media print).
-
-     FOOTER (add via your PDF tool's header/footer, e.g. wkhtmltopdf --footer-*)
-       • Left:   "Opal Hotel Social Media Growth Hub"
-       • Center: "The True Meaning of Luxury"
-       • Right:  "Page [page] of [topage]   ·   v1.0 · 2026-07"
-
-     HOW TO EXPORT
-       • Open this file in a browser → Print → "Save as PDF" (background graphics ON),
-         or run:  wkhtmltopdf --enable-local-file-access FeatureList.html FeatureList.pdf
+     OUTPUT 3 — PDF STYLING INSTRUCTIONS (print / export to PDF)
+     THEME COLORS: Gold #BB8B41 (deep #8F6B2E, champagne #C2A670) · Cream #FFFCF3 ·
+       Charcoal text #2C2C2C / muted #726D5E · Tip=Gold · Warning=Burgundy #800020 ·
+       Note=Slate #394E6C · Success=Green #2E7D46.
+     FONTS: H1/cover "Cormorant Garamond" 600 · H2/H3 "Libre Baskerville" 700 ·
+       body/callout "Montserrat" 400 · Arabic "Cairo" (auto when lang=ar, RTL).
+     COVER: centered gold "O" mark ~88px; title with "Growth Hub" in gold;
+       italic slogan; page break after cover.
+     PAGE: A4/Letter portrait, ~18mm margins; keep cards/sections unbroken.
+     FOOTER: left product name · center slogan · right "Page X of Y · v1.0 · 2026-07".
+     EXPORT: pick the language you want, then Print → Save as PDF (backgrounds ON).
      ============================================================ -->
 </body>
 </html>
