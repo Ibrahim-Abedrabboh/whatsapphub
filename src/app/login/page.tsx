@@ -65,7 +65,7 @@ export default function LoginPage() {
       <aside className="auth__aside">
         <div className="brand">
           <span className="mark" aria-hidden />
-          <span><span className="b1">whatsapp</span><span className="b2">hub</span></span>
+          <span><span className="b1">Opal Hotel Social Media Growth</span>{" "}<span className="b2">Hub</span></span>
         </div>
         <div>
           <p className="auth__pitch">Your audience, on <em>WhatsApp</em>, at scale.</p>

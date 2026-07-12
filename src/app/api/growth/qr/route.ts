@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import QRCode from "qrcode";
-import { getAuthContext } from "@/lib/users";
 
 export const runtime = "nodejs";
 
-/** GET /api/growth/qr?data=<text> — an Opal-themed SVG QR code (charcoal on cream). */
+/** GET /api/growth/qr?data=<text> — public Opal-themed SVG QR (charcoal on cream).
+ *  Stateless generator (no data access) — used by both the app /growth page and
+ *  the public landing tool, so it stays outside auth. */
 export async function GET(req: NextRequest) {
-  if (!(await getAuthContext(req))) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-
   const data = req.nextUrl.searchParams.get("data") ?? "";
   if (!data || data.length > 2000) return NextResponse.json({ error: "invalid data" }, { status: 400 });
 
