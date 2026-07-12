@@ -12,7 +12,7 @@ export interface ChatbotBuilderProps {
   onCancel: () => void;
 }
 
-const ADDABLE: BlockType[] = ["message", "question", "branch", "ai", "aiAgent", "end"];
+const ADDABLE: BlockType[] = ["message", "question", "buttons", "branch", "ai", "aiAgent", "end"];
 
 export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBuilderProps) {
   const [name, setName] = useState(initial?.name ?? "");
@@ -91,13 +91,15 @@ export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBui
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <span className="badge badge--DRAFT" aria-hidden>⠿ {i + 1}</span>
-              <strong>{BLOCK_META[b.type].label}</strong>
+              <strong title={BLOCK_META[b.type].help} style={{ cursor: "help" }}>{BLOCK_META[b.type].label}</strong>
               <button type="button" className="btn btn--ghost" style={{ minHeight: 28, padding: "2px 8px", fontSize: 12 }} onClick={() => remove(b.id)} aria-label={`Remove step ${i + 1}`}>Remove</button>
             </div>
 
-            {(b.type === "message" || b.type === "question") && (
+            {(b.type === "message" || b.type === "question" || b.type === "buttons") && (
               <div className="field">
-                <label className="label" htmlFor={`text-${b.id}`}>Text — use {"{{name}}"} / {"{{phone}}"}</label>
+                <label className="label" htmlFor={`text-${b.id}`}>
+                  {b.type === "buttons" ? "Prompt" : "Text"} — use {"{{name}}"} / {"{{phone}}"}
+                </label>
                 <textarea id={`text-${b.id}`} className="input" rows={2} value={b.text ?? ""} onChange={(e) => patch(b.id, { text: e.target.value })} />
               </div>
             )}
@@ -151,13 +153,39 @@ export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBui
                 </div>
               </div>
             )}
+
+            {b.type === "buttons" && (
+              <div>
+                <p className="note" style={{ marginTop: 0 }}>Up to 3 choices. The customer replies with the number or the label; each routes to a step.</p>
+                {(b.options ?? []).map((o, oi) => (
+                  <div key={oi} style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6 }}>
+                    <input
+                      className="input" style={{ flex: "1 1 140px" }} placeholder="button label" maxLength={24}
+                      value={o.label} aria-label={`Option ${oi + 1} label`}
+                      onChange={(e) => patch(b.id, { options: (b.options ?? []).map((x, k) => (k === oi ? { ...x, label: e.target.value } : x)) })}
+                    />
+                    <select
+                      className="input" style={{ flex: "1 1 140px" }} value={o.nextId} aria-label={`Option ${oi + 1} target`}
+                      onChange={(e) => patch(b.id, { options: (b.options ?? []).map((x, k) => (k === oi ? { ...x, nextId: e.target.value } : x)) })}
+                    >
+                      <option value="">→ go to…</option>
+                      {blocks.filter((x) => x.id !== b.id).map((x) => <option key={x.id} value={x.id}>{optionLabel(x, blocks.indexOf(x))}</option>)}
+                    </select>
+                    <button type="button" className="btn btn--ghost" style={{ minHeight: 30 }} onClick={() => patch(b.id, { options: (b.options ?? []).filter((_, k) => k !== oi) })} aria-label={`Remove option ${oi + 1}`}>×</button>
+                  </div>
+                ))}
+                {(b.options ?? []).length < 3 && (
+                  <button type="button" className="btn btn--ghost" style={{ minHeight: 30, fontSize: 12 }} onClick={() => patch(b.id, { options: [...(b.options ?? []), { label: "", nextId: "" }] })}>+ Add button</button>
+                )}
+              </div>
+            )}
           </li>
         ))}
       </ol>
 
       <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 12 }}>
         {ADDABLE.map((t) => (
-          <button key={t} type="button" className="btn btn--ghost" style={{ minHeight: 32, fontSize: 12 }} onClick={() => add(t)}>+ {BLOCK_META[t].label}</button>
+          <button key={t} type="button" className="btn btn--ghost" style={{ minHeight: 32, fontSize: 12 }} title={BLOCK_META[t].help} onClick={() => add(t)}>+ {BLOCK_META[t].label}</button>
         ))}
       </div>
 

@@ -35,6 +35,12 @@ export function substitute(text: string, vars: Record<string, string>): string {
 
 const turnKey = (nodeId: string) => `__turn:${nodeId}`;
 
+/** Render a buttons node as its prompt + a numbered menu of the option labels. */
+function buttonsMenu(node: Extract<ChatbotNode, { type: "buttons" }>, vars: Record<string, string>): string {
+  const lines = node.options.map((o, i) => `${i + 1}. ${o.label}`);
+  return [substitute(node.text, vars), ...lines].join("\n");
+}
+
 /** Walk non-wait nodes from `nodeId`, emitting outbound, until a wait-node
  *  (park) or end (done). A `question` emits its prompt on arrival, then parks. */
 async function walk(flow: ChatbotFlow, nodeId: string | undefined, session: SessionState, respond: NodeResponder): Promise<AdvanceResult> {
@@ -59,8 +65,10 @@ async function walk(flow: ChatbotFlow, nodeId: string | undefined, session: Sess
     if (node.type === "end") {
       return { session: { currentNodeId: cursor, variables: vars, status: "DONE" }, outbound, waiting: false, done: true };
     }
-    // wait-node: question emits its prompt on arrival, then parks; branch/aiAgent just park.
+    // wait-node: question emits its prompt on arrival; buttons emits its menu;
+    // branch/aiAgent just park for the next inbound message.
     if (node.type === "question") outbound.push(substitute(node.text, vars));
+    if (node.type === "buttons") outbound.push(buttonsMenu(node, vars));
     return { session: { currentNodeId: cursor, variables: vars, status: "ACTIVE" }, outbound, waiting: true, done: false };
   }
   // ran off the end with no explicit end node
@@ -89,6 +97,15 @@ export async function advance(flow: ChatbotFlow, session: SessionState, inboundT
     const nextId = hit ? hit.nextId : node.defaultNextId;
     if (!nextId) return { session: { ...session, variables: vars }, outbound: [], waiting: true, done: false }; // no route — keep waiting
     return walk(flow, nextId, { ...session, variables: vars }, respond);
+  }
+  if (node.type === "buttons") {
+    const raw = inboundText.trim();
+    const num = Number(raw);
+    const byNumber = Number.isInteger(num) && num >= 1 && num <= node.options.length ? num - 1 : -1;
+    const idx = byNumber >= 0 ? byNumber : node.options.findIndex((o) => raw.toLowerCase().includes(o.label.toLowerCase()));
+    const chosen = idx >= 0 ? node.options[idx] : undefined;
+    if (!chosen) return { session: { ...session, variables: vars }, outbound: [buttonsMenu(node, vars)], waiting: true, done: false }; // re-prompt
+    return walk(flow, chosen.nextId, { ...session, variables: vars }, respond);
   }
   if (node.type === "aiAgent") {
     const turn = Number(vars[turnKey(node.id)] ?? "0") + 1;

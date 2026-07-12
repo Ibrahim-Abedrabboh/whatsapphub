@@ -334,6 +334,15 @@ const ChatbotNodeSchema = z.discriminatedUnion("type", [
       .min(1, "Add at least one branch case"),
     defaultNextId: z.string().optional(),
   }),
+  z.object({
+    id: z.string().min(1),
+    type: z.literal("buttons"),
+    text: z.string().trim().min(1, "Prompt text is required").max(1000),
+    options: z
+      .array(z.object({ label: z.string().trim().min(1, "Add a label").max(24), nextId: z.string().min(1) }))
+      .min(1, "Add at least one option")
+      .max(3, "WhatsApp allows up to 3 buttons"),
+  }),
   z.object({ id: z.string().min(1), type: z.literal("ai"), nextId: z.string().optional() }),
   z.object({
     id: z.string().min(1),
@@ -365,6 +374,9 @@ export const ChatbotFlowSchema = z
       if (node.type === "branch") {
         node.cases.forEach((c, i) => refs.push({ id: c.nextId, path: ["nodes", key, "cases", i, "nextId"] }));
         if (node.defaultNextId) refs.push({ id: node.defaultNextId, path: ["nodes", key, "defaultNextId"] });
+      }
+      if (node.type === "buttons") {
+        node.options.forEach((o, i) => refs.push({ id: o.nextId, path: ["nodes", key, "options", i, "nextId"] }));
       }
     }
     for (const r of refs) {

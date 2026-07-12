@@ -106,3 +106,35 @@ describe("advance — ai / aiAgent", () => {
     expect(t1.done).toBe(true);
   });
 });
+
+describe("advance — buttons", () => {
+  const f = flow("bt", {
+    bt: { id: "bt", type: "buttons", text: "Choose:", options: [{ label: "Pizza", nextId: "p" }, { label: "Pasta", nextId: "q" }] },
+    p: { id: "p", type: "message", text: "Pizza!", nextId: "e" },
+    q: { id: "q", type: "message", text: "Pasta!", nextId: "e" },
+    e: { id: "e", type: "end" },
+  });
+  it("emits the prompt + numbered menu on arrival and parks", async () => {
+    const r = await startRun(f, respond);
+    expect(r.session.currentNodeId).toBe("bt");
+    expect(r.waiting).toBe(true);
+    expect(r.outbound).toEqual(["Choose:\n1. Pizza\n2. Pasta"]);
+  });
+  it("routes on the option number", async () => {
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "2", respond);
+    expect(r.outbound).toEqual(["Pasta!"]);
+  });
+  it("routes on the option label (case-insensitive)", async () => {
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "PIZZA please", respond);
+    expect(r.outbound).toEqual(["Pizza!"]);
+  });
+  it("re-sends the menu when the reply matches nothing", async () => {
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "burger", respond);
+    expect(r.waiting).toBe(true);
+    expect(r.session.currentNodeId).toBe("bt");
+    expect(r.outbound).toEqual(["Choose:\n1. Pizza\n2. Pasta"]);
+  });
+});
