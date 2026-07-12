@@ -158,3 +158,57 @@ export function parseTags(text: string): AiTags {
 export async function tagMessage(text: string): Promise<AiTags> {
   return parseTags(await complete({ system: TAG_SYSTEM, user: text, maxTokens: 60 }));
 }
+
+/** Max characters per KnowledgeDoc.content (mirrors KnowledgeSchema). */
+export const KB_DOC_MAX = 20000;
+
+/**
+ * Collapse the messy whitespace that PDF/DOCX extraction leaves behind: strip
+ * carriage returns, trim trailing spaces on each line, and squeeze 3+ blank
+ * lines down to a paragraph break. Pure.
+ */
+export function normalizeExtractedText(raw: string): string {
+  return raw
+    .replace(/\r\n?/g, "\n")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+/**
+ * Split text into chunks of at most `max` characters, preferring to break on
+ * paragraph, then line, then whitespace boundaries so a chunk never cuts a word
+ * in half unless a single "word" is itself longer than `max`. Pure.
+ */
+export function chunkText(text: string, max = KB_DOC_MAX): string[] {
+  const clean = text.trim();
+  if (clean.length <= max) return clean.length ? [clean] : [];
+
+  const chunks: string[] = [];
+  let rest = clean;
+  while (rest.length > max) {
+    const window = rest.slice(0, max);
+    // Prefer the last natural boundary inside the window; fall back to a hard
+    // cut only when there is no boundary at all (e.g. one giant token).
+    let cut = Math.max(window.lastIndexOf("\n\n"), window.lastIndexOf("\n"), window.lastIndexOf(" "));
+    if (cut <= 0) cut = max;
+    chunks.push(rest.slice(0, cut).trim());
+    rest = rest.slice(cut).trim();
+  }
+  if (rest.length) chunks.push(rest);
+  return chunks;
+}
+
+/**
+ * Titles for the docs produced from one uploaded file. A single chunk keeps the
+ * bare base name; multiple chunks are numbered "base (1/n)". Each title is
+ * clamped to `maxLen` (KnowledgeSchema caps title at 120). Pure.
+ */
+export function fileDocTitles(base: string, count: number, maxLen = 120): string[] {
+  const clean = base.trim() || "Untitled";
+  if (count <= 1) return [clean.slice(0, maxLen)];
+  return Array.from({ length: count }, (_, i) => {
+    const suffix = ` (${i + 1}/${count})`;
+    return clean.slice(0, maxLen - suffix.length) + suffix;
+  });
+}

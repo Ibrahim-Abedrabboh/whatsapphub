@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { apiFetch } from "@/lib/apiFetch";
+
+const ACCEPT = ".txt,.md,.csv,.pdf,.docx";
 
 interface Doc { id: string; title: string; content: string; source: string | null }
 
@@ -12,6 +14,8 @@ export default function KnowledgeManager() {
   const [content, setContent] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
     const r = await apiFetch("/api/knowledge");
@@ -31,6 +35,20 @@ export default function KnowledgeManager() {
     const j = await r.json().catch(() => ({}));
     setBusy(false);
     if (r.ok) { setMsg(editingId ? "Updated." : "Created."); resetForm(); await load(); }
+    else setMsg(`Error: ${j.error ?? r.status}`);
+  }
+
+  async function upload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true); setMsg(null);
+    const body = new FormData();
+    body.append("file", file);
+    const r = await apiFetch("/api/knowledge/upload", { method: "POST", body }); // let the browser set the multipart boundary
+    const j = await r.json().catch(() => ({}));
+    setUploading(false);
+    if (fileRef.current) fileRef.current.value = ""; // allow re-uploading the same filename
+    if (r.ok) { setMsg(`Imported ${j.created} doc${j.created === 1 ? "" : "s"} from "${file.name}".`); await load(); }
     else setMsg(`Error: ${j.error ?? r.status}`);
   }
 
@@ -59,6 +77,21 @@ export default function KnowledgeManager() {
           {editingId && <button type="button" className="btn btn--ghost" onClick={resetForm}>Cancel</button>}
         </div>
         {msg && <p className="note" style={{ marginTop: 10 }}>{msg}</p>}
+
+        <div className="field" style={{ marginTop: 16, borderTop: "1px solid var(--border)", paddingTop: 16 }}>
+          <span className="label">Or upload a file</span>
+          <p className="note" style={{ marginTop: 0 }}>.txt, .md, .csv, .pdf, .docx — long files are split into multiple docs automatically.</p>
+          <input
+            ref={fileRef}
+            type="file"
+            className="input"
+            accept={ACCEPT}
+            aria-label="Upload a knowledge file"
+            disabled={uploading}
+            onChange={upload}
+          />
+          {uploading && <p className="note" style={{ marginTop: 8 }}>Extracting text…</p>}
+        </div>
       </form>
 
       <div className="card">
