@@ -27,7 +27,7 @@ export function demoPhone(n: number): string {
 // Prisma model delegate names in FK-safe delete order (children first). The
 // entrypoint iterates this for `--clear`. `contactListMembership` has a
 // composite PK (no id) — the entrypoint clears it by demo listId.
-export const CLEAR_ORDER = [
+export const CLEAR_ORDER: readonly string[] = [
   "messageEvent",
   "broadcastRecipient",
   "broadcast",

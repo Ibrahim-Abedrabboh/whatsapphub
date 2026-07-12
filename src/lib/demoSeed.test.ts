@@ -28,7 +28,7 @@ describe("demoPhone", () => {
 });
 
 describe("CLEAR_ORDER", () => {
-  const idx = (m: string) => CLEAR_ORDER.indexOf(m as typeof CLEAR_ORDER[number]);
+  const idx = (m: string) => CLEAR_ORDER.indexOf(m);
   it("lists children before their parents", () => {
     expect(idx("messageEvent")).toBeLessThan(idx("broadcastRecipient"));
     expect(idx("broadcastRecipient")).toBeLessThan(idx("broadcast"));
