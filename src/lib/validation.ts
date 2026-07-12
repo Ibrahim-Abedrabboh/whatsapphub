@@ -307,6 +307,79 @@ export const KnowledgeSchema = z.object({
   source: z.string().trim().max(40).optional(),
 });
 
+// No-code chatbot flow (V2 M3). A state machine: startId + nodes keyed by id.
+// Wait-nodes (question | branch | aiAgent) pause for the next inbound message.
+const ChatbotNodeSchema = z.discriminatedUnion("type", [
+  z.object({
+    id: z.string().min(1),
+    type: z.literal("message"),
+    text: z.string().trim().min(1, "Message text is required").max(1000),
+    nextId: z.string().optional(),
+  }),
+  z.object({
+    id: z.string().min(1),
+    type: z.literal("question"),
+    text: z.string().trim().min(1, "Question text is required").max(1000),
+    saveAs: z.string().trim().regex(/^[a-zA-Z_][a-zA-Z0-9_]*$/, "saveAs must be a valid variable name"),
+    nextId: z.string().optional(),
+  }),
+  z.object({
+    id: z.string().min(1),
+    type: z.literal("branch"),
+    cases: z
+      .array(z.object({ keywords: z.array(z.string().trim().min(1)).min(1, "Add a keyword"), nextId: z.string().min(1) }))
+      .min(1, "Add at least one branch case"),
+    defaultNextId: z.string().optional(),
+  }),
+  z.object({ id: z.string().min(1), type: z.literal("ai"), nextId: z.string().optional() }),
+  z.object({
+    id: z.string().min(1),
+    type: z.literal("aiAgent"),
+    goal: z.string().trim().max(500).optional(),
+    maxTurns: z.number().int().min(1).max(20).optional(),
+    nextId: z.string().optional(),
+  }),
+  z.object({ id: z.string().min(1), type: z.literal("end") }),
+]);
+
+export const ChatbotFlowSchema = z
+  .object({ startId: z.string().min(1), nodes: z.record(z.string(), ChatbotNodeSchema) })
+  .superRefine((flow, ctx) => {
+    // Every node's map key must equal its own id.
+    for (const [key, node] of Object.entries(flow.nodes)) {
+      if (node.id !== key) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Node key "${key}" does not match its id "${node.id}"`, path: ["nodes", key] });
+      }
+    }
+    // startId must resolve to a node.
+    if (!flow.nodes[flow.startId]) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: `startId "${flow.startId}" is not a node`, path: ["startId"] });
+    }
+    // Every outgoing reference must resolve.
+    const refs: { id: string; path: (string | number)[] }[] = [];
+    for (const [key, node] of Object.entries(flow.nodes)) {
+      if ("nextId" in node && node.nextId) refs.push({ id: node.nextId, path: ["nodes", key, "nextId"] });
+      if (node.type === "branch") {
+        node.cases.forEach((c, i) => refs.push({ id: c.nextId, path: ["nodes", key, "cases", i, "nextId"] }));
+        if (node.defaultNextId) refs.push({ id: node.defaultNextId, path: ["nodes", key, "defaultNextId"] });
+      }
+    }
+    for (const r of refs) {
+      if (!flow.nodes[r.id]) {
+        ctx.addIssue({ code: z.ZodIssueCode.custom, message: `Reference to unknown node "${r.id}"`, path: r.path });
+      }
+    }
+  });
+
+export type ChatbotFlow = z.infer<typeof ChatbotFlowSchema>;
+
+// Create / full-update payload for a chatbot.
+export const CreateChatbotSchema = z.object({
+  name: z.string().trim().min(1, "Name is required").max(80),
+  status: z.enum(["DRAFT", "PUBLISHED"]).default("DRAFT"),
+  flow: ChatbotFlowSchema,
+});
+
 // Per-client canned reply (V2 §2.3). Used for both create and full update.
 export const CannedReplySchema = z.object({
   title: z.string().trim().min(1, "Title is required").max(80),
