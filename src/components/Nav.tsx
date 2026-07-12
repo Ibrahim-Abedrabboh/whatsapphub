@@ -20,6 +20,7 @@ export default function Nav() {
         <Link href="/templates">Templates</Link>
         <Link href="/campaigns">Campaigns</Link>
         <Link href="/chatbot">Chatbot</Link>
+        <Link href="/growth">Growth</Link>
         <Link href="/settings">Settings</Link>
         <ClientSwitcher />
         <ThemeToggle />
