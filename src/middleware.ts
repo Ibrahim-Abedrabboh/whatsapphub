@@ -5,7 +5,7 @@ import { verifyToken, ACCESS_COOKIE } from "@/lib/auth";
 // (V2 M4 §2.9) — trailing slash matters: a bare "/r" prefix would over-match.
 const PUBLIC_PREFIXES = ["/login", "/api/auth", "/api/webhooks", "/api/health", "/api/leads", "/r/"];
 // Public exact paths (prefix match would over-match, e.g. "/" matches everything).
-const PUBLIC_EXACT = new Set(["/", "/chatbots", "/contacts-template.csv", "/tutorial.html"]);
+const PUBLIC_EXACT = new Set(["/", "/chatbots", "/contacts-template.csv", "/tutorial.html", "/USER-GUIDE.html"]);
 
 // Edge runtime: verifies ONLY the short-lived (15m) access token. No Redis here,
 // so refresh/rotation/revocation live in /api/auth/refresh (Node). When the

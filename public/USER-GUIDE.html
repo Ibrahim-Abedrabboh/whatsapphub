@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Opal Hotel Social Media Growth Hub — User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     Opal Hotel Social Media Growth Hub — User Guide
+     Theme tokens from opal-hotel-theme.xml (v3.0) · cream & gold.
+     Light by default; follows the OS for dark (reversed black+gold).
+     ============================================================ */
+  :root {
+    --bg:#FFFCF3; --sunken:#F5F1E4; --card:#FFFFFF; --elevated:#FBF8EF;
+    --ink:#2C2C2C; --soft:#3D3D3D; --muted:#726D5E; --micro:#635F51;
+    --gold:#BB8B41; --gold-2:#C2A670; --gold-deep:#8F6B2E;
+    --line:#E7E0CE; --line2:#DCD3BC;
+    --burgundy:#800020; --burgundy-bg:rgba(128,0,32,.06);
+    --green:#2E7D46; --green-bg:rgba(46,125,70,.08);
+    --slate:#394E6C; --slate-bg:rgba(57,78,108,.06);
+    --amber:#B07A16; --amber-bg:rgba(176,122,22,.10);
+    --serif:"Libre Baskerville",Didot,"Bodoni MT",Baskerville,Georgia,serif;
+    --sans:"Helvetica Neue",Helvetica,Arial,"Segoe UI",sans-serif;
+    --radius:25px; --shadow:0 2px 14px rgba(44,44,44,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:#0B0B0B; --sunken:#111111; --card:#171717; --elevated:#1E1E1E;
+      --ink:#FFFCF3; --soft:#E7E0CE; --muted:#A79E86; --micro:#8F876F;
+      --line:#262626; --line2:#333333;
+      --burgundy:#D06A80; --burgundy-bg:rgba(208,106,128,.10);
+      --green:#4FB06E; --green-bg:rgba(79,176,110,.10);
+      --slate:#8CA3C7; --slate-bg:rgba(140,163,199,.10);
+      --amber:#D9A514; --amber-bg:rgba(217,165,20,.12);
+      --shadow:0 8px 24px rgba(0,0,0,.45);
+    }
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap { max-width:840px; margin:0 auto; padding:0 24px 80px; }
+
+  /* ── header ── */
+  header.masthead {
+    text-align:center; padding:64px 24px 40px; border-bottom:1px solid var(--line);
+    background:
+      radial-gradient(120% 90% at 50% -20%, rgba(187,139,65,.10), transparent 60%),
+      var(--bg);
+  }
+  .mark {
+    width:76px; height:76px; margin:0 auto 18px; border-radius:50%;
+    border:2px solid var(--gold); display:grid; place-items:center;
+    font-family:var(--serif); font-size:40px; color:var(--gold); line-height:1;
+  }
+  .brand {
+    font-family:var(--serif); font-weight:700; letter-spacing:.22em;
+    text-transform:uppercase; font-size:clamp(22px,4vw,30px); color:var(--gold); margin:0;
+  }
+  .brand-sub {
+    font-family:var(--serif); letter-spacing:.16em; text-transform:uppercase;
+    font-size:13px; color:var(--muted); margin:8px 0 0;
+  }
+  .slogan { font-family:var(--serif); font-style:italic; color:var(--soft); font-size:18px; margin:16px 0 0; }
+  .doc-title { font-family:var(--sans); font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold-deep); margin:22px 0 0; }
+
+  /* ── typography ── */
+  h2 {
+    font-family:var(--serif); font-weight:700; font-size:clamp(24px,3.4vw,32px);
+    color:var(--ink); margin:56px 0 6px; padding-top:14px; scroll-margin-top:20px;
+  }
+  h2 .num { color:var(--gold); font-weight:400; margin-right:10px; }
+  h3 { font-family:var(--serif); font-weight:700; font-size:19px; color:var(--ink); margin:30px 0 8px; }
+  h2 + p.lead { color:var(--muted); margin-top:2px; }
+  p { margin:12px 0; }
+  a { color:var(--gold-deep); }
+  strong { color:var(--ink); }
+  hr { border:0; border-top:1px solid var(--line); margin:40px 0; }
+  ul, ol { padding-left:22px; }
+  li { margin:6px 0; }
+  code {
+    background:var(--sunken); border:1px solid var(--line); border-radius:6px;
+    padding:1px 6px; font-family:"Geist Mono","Courier New",monospace; font-size:.9em; color:var(--gold-deep);
+  }
+
+  /* ── intro / TOC ── */
+  .intro { font-size:18px; color:var(--soft); }
+  nav.toc {
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:22px 26px; margin:34px 0;
+  }
+  nav.toc h4 { font-family:var(--sans); font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold-deep); margin:0 0 12px; }
+  nav.toc ol { columns:2; column-gap:32px; margin:0; }
+  @media (max-width:560px){ nav.toc ol { columns:1; } }
+  nav.toc a { color:var(--soft); text-decoration:none; }
+  nav.toc a:hover { color:var(--gold-deep); }
+
+  /* ── callouts ── */
+  .call { border-radius:14px; padding:14px 18px 14px 44px; margin:18px 0; position:relative; border:1px solid var(--line); }
+  .call::before { position:absolute; left:14px; top:13px; font-size:16px; }
+  .call .k { font-weight:700; display:block; margin-bottom:2px; font-size:13px; letter-spacing:.04em; }
+  .tip     { background:rgba(187,139,65,.07); border-color:rgba(187,139,65,.35); }
+  .tip::before { content:"\1F4A1"; } .tip .k { color:var(--gold-deep); }
+  .warning { background:var(--burgundy-bg); border-color:rgba(128,0,32,.30); }
+  .warning::before { content:"\26A0\FE0F"; } .warning .k { color:var(--burgundy); }
+  .note    { background:var(--slate-bg); border-color:rgba(57,78,108,.28); }
+  .note::before { content:"\1F4DD"; } .note .k { color:var(--slate); }
+  .success { background:var(--green-bg); border-color:rgba(46,125,70,.30); }
+  .success::before { content:"\2705"; } .success .k { color:var(--green); }
+
+  /* ── tables ── */
+  .tbl-wrap { overflow-x:auto; margin:18px 0; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
+  th, td { text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); font-size:14.5px; vertical-align:top; }
+  th { font-family:var(--sans); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); background:var(--sunken); }
+  tr:last-child td { border-bottom:0; }
+
+  footer { text-align:center; color:var(--muted); font-size:13px; margin-top:60px; padding-top:24px; border-top:1px solid var(--line); }
+  footer .slogan-sm { font-family:var(--serif); font-style:italic; color:var(--gold-deep); }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="mark">O</div>
+  <p class="brand">Opal Hotel</p>
+  <p class="brand-sub">Social Media Growth Hub</p>
+  <p class="slogan">The True Meaning of Luxury</p>
+  <p class="doc-title">Complete Beginner's Guide</p>
+</header>
+
+<div class="wrap">
+
+  <p class="intro">Welcome. This guide walks you through <strong>everything</strong> the Opal Hotel Social Media Growth Hub can do, one click at a time. If you can send a WhatsApp message on your phone, you can run this — no technical skills required. Take it section by section; nothing here can break anything.</p>
+
+  <nav class="toc">
+    <h4>What's inside</h4>
+    <ol>
+      <li><a href="#s1">What this is</a></li>
+      <li><a href="#s2">Before you start</a></li>
+      <li><a href="#s3">Logging in</a></li>
+      <li><a href="#s4">The main menu</a></li>
+      <li><a href="#s5">Adding contacts</a></li>
+      <li><a href="#s6">Lists</a></li>
+      <li><a href="#s7">Message templates</a></li>
+      <li><a href="#s8">Sending a broadcast</a></li>
+      <li><a href="#s9">The inbox</a></li>
+      <li><a href="#s10">Building a chatbot</a></li>
+      <li><a href="#s11">Automation</a></li>
+      <li><a href="#s12">Orders &amp; selling</a></li>
+      <li><a href="#s13">Settings</a></li>
+      <li><a href="#s14">Troubleshooting</a></li>
+      <li><a href="#s15">Glossary</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="s1"><span class="num">1</span>What This Is</h2>
+  <p>The Opal Hotel Social Media Growth Hub is a <strong>website your team logs into</strong> to talk to guests and customers on WhatsApp — far more powerfully than from a phone. With it you can:</p>
+  <ul>
+    <li>📇 Keep an organized <strong>address book</strong> of your customers</li>
+    <li>📣 Send <strong>one message to many people at once</strong> (a “broadcast”)</li>
+    <li>💬 <strong>Chat back and forth</strong> with guests in a shared inbox</li>
+    <li>🤖 Build a <strong>chatbot</strong> that answers automatically, 24/7</li>
+    <li>🛍️ Take <strong>orders</strong> from a product catalog (optional)</li>
+  </ul>
+  <div class="call note"><span class="k">Note</span>Everything happens in your <strong>web browser</strong> (Chrome, Safari, Edge…). There's nothing to download or install.</div>
+
+  <h2 id="s2"><span class="num">2</span>What You'll Need Before You Start</h2>
+  <ol>
+    <li><strong>The web address (link)</strong> for your Hub — bookmark it.</li>
+    <li><strong>Your login email and password</strong> — your administrator creates these.</li>
+    <li><strong>A connected WhatsApp Business number</strong> — set up once by an admin (Section 13). You don't need it to start learning.</li>
+    <li><strong>A modern browser</strong> on a computer (best) or phone.</li>
+  </ol>
+  <div class="call tip"><span class="k">Tip</span>Use a laptop or desktop for setup tasks like broadcasts and chatbots — there's more room to work. The inbox is comfortable on a phone too.</div>
+  <div class="call warning"><span class="k">Warning — keep your password private</span>Anyone with your login can message customers as your business. Don't share it, and don't reuse a password from another site.</div>
+
+  <h2 id="s3"><span class="num">3</span>Logging In</h2>
+  <ol>
+    <li>Open your browser and go to <strong>your Hub link</strong>.</li>
+    <li>You'll see a <strong>“Sign in”</strong> screen.</li>
+    <li>Type your login <strong>Email</strong>, then your <strong>Password</strong>.</li>
+    <li>Click the <strong>Sign in</strong> button.</li>
+  </ol>
+  <div class="call success"><span class="k">Success looks like</span>The page changes to a <strong>Dashboard</strong> with a menu across the top. You're in!</div>
+  <div class="call warning"><span class="k">Common mistake — extra spaces</span>If sign-in fails, check for an accidental space before your email or password (common when copy-pasting).</div>
+  <div class="call tip"><span class="k">Tip — light or dark</span>Use the <strong>☀ / ☾ toggle</strong> (top-right) to switch between the light cream theme and the dark black-and-gold theme. Your choice is remembered.</div>
+
+  <h2 id="s4"><span class="num">4</span>Getting Your Bearings — The Main Menu</h2>
+  <p class="lead">Across the top of every screen is your main menu.</p>
+  <div class="tbl-wrap"><table>
+    <tr><th>Menu item</th><th>What it's for</th></tr>
+    <tr><td><strong>Dashboard</strong></td><td>Your home screen — a quick overview</td></tr>
+    <tr><td><strong>Inbox</strong></td><td>Live back-and-forth chats with customers</td></tr>
+    <tr><td><strong>Orders</strong></td><td>Customer orders (if you sell products)</td></tr>
+    <tr><td><strong>Contacts</strong></td><td>Your customer address book</td></tr>
+    <tr><td><strong>Lists</strong></td><td>Groups of contacts (e.g. “VIPs”)</td></tr>
+    <tr><td><strong>Templates</strong></td><td>Pre-approved message designs for broadcasts</td></tr>
+    <tr><td><strong>Campaigns</strong></td><td>Send a message to many people at once</td></tr>
+    <tr><td><strong>Chatbot</strong></td><td>Build automatic-reply bots</td></tr>
+    <tr><td><strong>Settings</strong></td><td>Setup: your number, team, AI, automation…</td></tr>
+  </table></div>
+  <p>At the far right you'll also find a <strong>Logout</strong> button and the theme toggle. The gold logo in the top-left always returns you to the Dashboard.</p>
+
+  <h2 id="s5"><span class="num">5</span>Your Address Book — Adding Contacts</h2>
+  <h3>Add one person</h3>
+  <ol>
+    <li>Click <strong>Contacts</strong>.</li>
+    <li>In the <strong>“Add contact”</strong> form, enter a <strong>First name</strong> and a <strong>Phone</strong> with country code, e.g. <code>+966 50 000 0000</code>.</li>
+    <li>Click <strong>Add</strong>.</li>
+  </ol>
+  <div class="call success"><span class="k">Success looks like</span>The new person appears in the contacts table below the form.</div>
+  <div class="call warning"><span class="k">Common mistake — phone format</span>Always include the country code. <code>501234567</code> won't work; <code>+966501234567</code> will.</div>
+  <h3>Add many at once (import a spreadsheet)</h3>
+  <ol>
+    <li>On the Contacts page, find the <strong>Upload CSV</strong> option.</li>
+    <li>Download the <strong>example file</strong> if offered — it shows the exact columns (a phone column and a name column).</li>
+    <li>Put your customers into that format and <strong>Save as CSV</strong> (in Excel: <em>File → Save As → CSV</em>).</li>
+    <li>Click <strong>Choose file</strong>, pick your CSV, and click <strong>Upload</strong>.</li>
+  </ol>
+  <div class="call warning"><span class="k">Warning — consent matters</span>Only upload people who have <strong>agreed</strong> to hear from you on WhatsApp. Messaging people who didn't opt in can get your number blocked by Meta.</div>
+  <div class="call note"><span class="k">Note</span>Customers who reply <strong>STOP</strong> are automatically removed from all future broadcasts.</div>
+
+  <h2 id="s6"><span class="num">6</span>Grouping Customers — Lists</h2>
+  <p>A <strong>List</strong> is a named group of contacts, like a folder (e.g. “VIP guests”, “Newsletter”).</p>
+  <ol>
+    <li>Click <strong>Lists</strong>.</li>
+    <li>In the <strong>“New list”</strong> form, type a name and click <strong>Create</strong>.</li>
+    <li>Add contacts to a list from the Contacts area.</li>
+  </ol>
+  <div class="call tip"><span class="k">Tip</span>Lists are how you choose <strong>who</strong> receives a broadcast. Make a few sensible lists early — it pays off later.</div>
+  <div class="call note"><span class="k">Note — Lists vs Segments</span>A <strong>List</strong> is a group you build by hand. A <strong>Segment</strong> fills itself automatically from rules. Beginners can happily stick to Lists.</div>
+
+  <h2 id="s7"><span class="num">7</span>Message Templates (and why WhatsApp requires them)</h2>
+  <div class="call note"><span class="k">Note — the “24-hour window”</span>WhatsApp only lets you send a <strong>free-typed</strong> message within <strong>24 hours</strong> of the customer's last message. Outside that (e.g. a first promotional blast), WhatsApp requires a <strong>pre-approved template</strong>. This protects people from spam.</div>
+  <p>A <strong>template</strong> is a message design that <strong>Meta reviews and approves</strong> before you can broadcast it. It can include blanks like <code>{{1}}</code> that fill with each person's name.</p>
+  <ol>
+    <li>Click <strong>Templates</strong> → <strong>New template</strong>.</li>
+    <li>Give it a <strong>name</strong>, choose a <strong>language</strong>, and write the <strong>body</strong>. Use <code>{{1}}</code>, <code>{{2}}</code> as personalization blanks.</li>
+    <li><strong>Submit</strong> — it goes to Meta for review.</li>
+  </ol>
+  <div class="call success"><span class="k">Success looks like</span>Your template appears as <strong>PENDING</strong>, then becomes <strong>APPROVED</strong> (minutes to a few hours).</div>
+  <div class="call warning"><span class="k">Common mistake</span>You can only broadcast with <strong>APPROVED</strong> templates. Be patient; don't re-submit repeatedly.</div>
+
+  <h2 id="s8"><span class="num">8</span>Sending a Broadcast</h2>
+  <p>A <strong>broadcast</strong> (or campaign) sends one template to a whole List at once.</p>
+  <ol>
+    <li>Click <strong>Campaigns</strong> → start a new broadcast.</li>
+    <li><strong>Choose a template</strong> (an APPROVED one).</li>
+    <li><strong>Choose your audience</strong> — a List or Segment.</li>
+    <li><strong>Fill the blanks</strong> — map <code>{{1}}</code> to each contact's name.</li>
+    <li>Choose <strong>Send now</strong> or <strong>Schedule</strong> for later.</li>
+    <li>Click <strong>Send</strong>.</li>
+  </ol>
+  <div class="call success"><span class="k">Success looks like</span>A live progress bar showing <strong>Queued → Sending → Sent</strong>, with a count that climbs as it delivers.</div>
+  <div class="call tip"><span class="k">Tip — start small</span>For your first broadcast, make a tiny test List with just your own number and send to that first. Seeing it arrive builds confidence fast.</div>
+  <div class="call warning"><span class="k">Common mistake</span>Double-check the audience before you hit send — a broadcast can't be “unsent”.</div>
+
+  <h2 id="s9"><span class="num">9</span>The Inbox — Chatting With Customers</h2>
+  <ol>
+    <li>Click <strong>Inbox</strong>. Conversations are on the left; click one to open it.</li>
+    <li>Type your reply in the box at the bottom and press <strong>Send</strong>.</li>
+  </ol>
+  <p><strong>Organizing (great for teams):</strong> mark a chat <strong>Open / Pending / Closed</strong>, <strong>assign</strong> it to a teammate, leave a private <strong>internal note</strong> the customer never sees, or drop in a saved <strong>canned reply</strong>.</p>
+  <p><strong>AI helpers (if switched on):</strong> <strong>Suggest reply</strong>, <strong>Summarize</strong>, and <strong>Translate</strong> (Arabic ↔ English).</p>
+  <div class="call note"><span class="k">Note — you're always in control</span>AI <strong>suggests</strong>; nothing reaches the customer until <strong>you</strong> click Send.</div>
+  <div class="call warning"><span class="k">Warning — the 24-hour window again</span>If a customer hasn't messaged in over 24 hours, WhatsApp blocks free-typed replies — reach them with an approved <strong>template</strong> instead.</div>
+
+  <h2 id="s10"><span class="num">10</span>Building a Chatbot</h2>
+  <p>A <strong>chatbot</strong> replies to customers automatically — perfect for FAQs, collecting info, or guiding a booking while your team sleeps.</p>
+  <ol>
+    <li>Click <strong>Chatbot</strong> → <strong>+ New chatbot</strong> and give it a <strong>name</strong>.</li>
+    <li>Add <strong>steps</strong> (building blocks). Hover any step button for a tooltip.</li>
+  </ol>
+  <div class="tbl-wrap"><table>
+    <tr><th>Step</th><th>What it does</th></tr>
+    <tr><td><strong>Send message</strong></td><td>Sends a line of text, then continues</td></tr>
+    <tr><td><strong>Ask &amp; wait</strong></td><td>Asks a question, saves the reply</td></tr>
+    <tr><td><strong>Buttons / menu</strong></td><td>Offers up to 10 choices; branches on the pick</td></tr>
+    <tr><td><strong>Branch on reply</strong></td><td>Routes by keywords the customer types</td></tr>
+    <tr><td><strong>Delay</strong></td><td>Waits a set time before the next step</td></tr>
+    <tr><td><strong>AI answer</strong></td><td>Answers from your uploaded knowledge documents</td></tr>
+    <tr><td><strong>AI Agent</strong></td><td>Hands off to a smart AI that chats until done</td></tr>
+    <tr><td><strong>End</strong></td><td>Ends the conversation</td></tr>
+  </table></div>
+  <p><strong>Drag</strong> steps to reorder. In <strong>Buttons</strong>/<strong>Branch</strong> steps, each choice's <strong>“→ go to…”</strong> dropdown picks the next step. Use <code>{{name}}</code> to insert the customer's name. Then set <strong>Status → Published</strong> and click <strong>Save</strong>.</p>
+  <div class="call success"><span class="k">Success looks like</span>Your bot appears in the list with a green <strong>PUBLISHED</strong> badge.</div>
+  <div class="call warning"><span class="k">Warning — AI steps need setup</span>“AI answer” and “AI Agent” only give real answers if your admin turned on AI and uploaded knowledge documents. The other 6 step types work regardless.</div>
+  <div class="call note"><span class="k">Note</span>A saved bot doesn't run by itself — connect it to a <strong>trigger</strong> next.</div>
+
+  <h2 id="s11"><span class="num">11</span>Automation — Making the Bot Start</h2>
+  <p><strong>Automation rules</strong> decide <em>when</em> something automatic happens.</p>
+  <ol>
+    <li>Go to <strong>Settings → Automation</strong> → new rule; give it a name.</li>
+    <li>Choose a <strong>Trigger</strong>: <strong>Keyword match</strong> (words in the message) or <strong>Outside business hours</strong>.</li>
+    <li>Choose an <strong>Action</strong>: <strong>Send auto-reply text</strong>, or <strong>Start a chatbot</strong> (pick a Published bot).</li>
+    <li><strong>Save</strong>.</li>
+  </ol>
+  <div class="call warning"><span class="k">Common mistake — bot missing from the dropdown</span>Only <strong>Published</strong> chatbots appear under “Start a chatbot.” Publish it in the builder first.</div>
+  <div class="call tip"><span class="k">Tip</span>A human can take over anytime — if you reply manually to a chat the bot is handling, the bot steps aside.</div>
+
+  <h2 id="s12"><span class="num">12</span>Orders &amp; Selling Products (optional)</h2>
+  <p>If your business sells from a product catalog, the Hub can receive orders.</p>
+  <ul>
+    <li>Customers send a <strong>cart</strong> from WhatsApp; it appears under <strong>Orders</strong>.</li>
+    <li>Each order moves <strong>NEW → CONFIRMED → SHIPPED → DELIVERED</strong> (or CANCELLED).</li>
+    <li>Moving an order forward <strong>messages the customer automatically</strong> (when the 24-hour window allows).</li>
+  </ul>
+  <div class="call note"><span class="k">Note</span>An admin must connect your catalog in <strong>Settings → Commerce</strong> first; until then the Orders screen stays empty. You can cancel an order any time before it's shipped.</div>
+
+  <h2 id="s13"><span class="num">13</span>The Settings Menu — One-Time Setup</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>Tab</th><th>What it's for</th></tr>
+    <tr><td><strong>WhatsApp connection</strong></td><td>Connect your WhatsApp Business number. <em>Required before you can send anything.</em></td></tr>
+    <tr><td><strong>Team</strong></td><td>Add teammates and set their permission level</td></tr>
+    <tr><td><strong>Canned replies</strong></td><td>Save reusable message snippets for the inbox</td></tr>
+    <tr><td><strong>AI knowledge</strong></td><td>Upload documents your AI steps answer from</td></tr>
+    <tr><td><strong>Automation</strong></td><td>The rules from Section 11</td></tr>
+    <tr><td><strong>WhatsApp Flows</strong></td><td>Advanced interactive forms (until Meta approves)</td></tr>
+    <tr><td><strong>Commerce</strong></td><td>Connect your product catalog to enable Orders</td></tr>
+  </table></div>
+  <div class="call tip"><span class="k">Tip — admin start order</span><strong>WhatsApp connection</strong> first (nothing works without a number), then <strong>Team</strong>, then optionally <strong>AI knowledge</strong> and <strong>Commerce</strong>.</div>
+  <div class="call warning"><span class="k">Warning — turning on AI is a technical step</span>Activating AI requires your administrator to add a secret “API key” on the server. If AI buttons say <em>“AI not configured,”</em> that key hasn't been added yet.</div>
+
+  <h2 id="s14"><span class="num">14</span>Troubleshooting</h2>
+  <p><strong>I can't sign in.</strong> Check for extra spaces; confirm the correct link; ask an admin to reset your password.</p>
+  <p><strong>My broadcast won't send / the template isn't selectable.</strong> It must be <strong>APPROVED</strong> (not PENDING), and you must pick an audience.</p>
+  <p><strong>I can't reply — the box is blocked.</strong> It's the <strong>24-hour window</strong>; use an approved template to re-open the chat.</p>
+  <p><strong>My chatbot doesn't start.</strong> Is it <strong>Published</strong>? Did you add an <strong>Automation rule</strong> with a “Start a chatbot” action pointing at it?</p>
+  <p><strong>AI reply just says “a team member will follow up.”</strong> AI isn't switched on — the admin must add the AI key and upload knowledge documents.</p>
+  <p><strong>A scheduled broadcast or a chatbot “Delay” never continued.</strong> These rely on the system's background <strong>worker</strong>; if it's down, timed actions stall. Ask your admin to check it.</p>
+  <p><strong>Orders screen is empty.</strong> A product catalog must be connected in <strong>Settings → Commerce</strong>.</p>
+
+  <h2 id="s15"><span class="num">15</span>Glossary</h2>
+  <div class="tbl-wrap"><table>
+    <tr><th>Term</th><th>Plain-English meaning</th></tr>
+    <tr><td><strong>Broadcast / Campaign</strong></td><td>One message sent to many contacts at once</td></tr>
+    <tr><td><strong>Template</strong></td><td>A pre-written message design Meta must approve before broadcasting</td></tr>
+    <tr><td><strong>Approved / Pending</strong></td><td>A template's review status — Approved = ready, Pending = under review</td></tr>
+    <tr><td><strong>Contact</strong></td><td>One customer in your address book</td></tr>
+    <tr><td><strong>List</strong></td><td>A group of contacts you build by hand</td></tr>
+    <tr><td><strong>Segment</strong></td><td>A smart group that fills automatically from rules</td></tr>
+    <tr><td><strong>Inbox</strong></td><td>The shared space where customer chats live</td></tr>
+    <tr><td><strong>Canned reply</strong></td><td>A saved snippet you drop into the inbox</td></tr>
+    <tr><td><strong>Chatbot</strong></td><td>An automatic step-by-step responder you build</td></tr>
+    <tr><td><strong>Step / Node</strong></td><td>One building block in a chatbot</td></tr>
+    <tr><td><strong>Trigger</strong></td><td>The condition that starts an automation</td></tr>
+    <tr><td><strong>24-hour window</strong></td><td>WhatsApp's rule: free-type only within 24h of the customer's last message; otherwise use a template</td></tr>
+    <tr><td><strong>Opt-out / STOP</strong></td><td>Reply STOP → auto-removed from broadcasts</td></tr>
+    <tr><td><strong>Catalog</strong></td><td>Your list of products (in Meta) that enables Orders</td></tr>
+    <tr><td><strong>AI knowledge</strong></td><td>Documents you upload so AI steps answer from your real info</td></tr>
+    <tr><td><strong>Worker</strong></td><td>A behind-the-scenes helper that sends broadcasts and runs timed/delayed actions</td></tr>
+    <tr><td><strong>CSV</strong></td><td>A simple spreadsheet format (“Save as CSV”) for importing contacts</td></tr>
+  </table></div>
+
+  <hr />
+  <p>You now have everything to run the Opal Hotel Social Media Growth Hub confidently — from your first contact to a live, AI-assisted chatbot. Start small, send yourself a test broadcast, and build from there. 🎉</p>
+
+  <footer>
+    Opal Hotel Social Media Growth Hub · <span class="slogan-sm">The True Meaning of Luxury</span>
+  </footer>
+
+</div>
+</body>
+</html>

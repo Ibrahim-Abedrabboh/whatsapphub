@@ -296,18 +296,17 @@ html[lang="ar"] .lp-kicker, html[lang="ar"] .auth__pitch { letter-spacing:normal
    Landing — centered hero, ember palette, mono technical accents.
    ============================================================ */
 .dk {
-  --dk-bg:#0B0B0B; --dk-panel:#141414; --dk-line:#1F1F1F;
-  --dk-ink:#FFFFFF; --dk-ink2:#6B6B6B; --dk-muted:#9A9A9A;
+  --dk-bg:#FFFCF3; --dk-panel:#FFFFFF; --dk-line:#E7E0CE;
+  --dk-ink:#2C2C2C; --dk-ink2:#8F8674; --dk-muted:#726D5E;
   --dk-green:var(--ember); --dk-grad:linear-gradient(120deg,var(--ember),var(--ember-2));
   min-height:100dvh; color:var(--dk-ink);
   background:
-    radial-gradient(58% 44% at 50% -4%, rgba(255,90,31,.16), transparent 70%),
+    radial-gradient(58% 44% at 50% -4%, rgba(187,139,65,.14), transparent 70%),
     var(--dk-bg);
 }
-:root[data-theme="light"] .dk {
-  --dk-bg:#FAFAFA; --dk-panel:#FFFFFF; --dk-line:#E5E5E5;
-  --dk-ink:#0B0B0B; --dk-ink2:#9A9A9A; --dk-muted:#5A5A5A;
-  --dk-green:var(--ember); --dk-grad:linear-gradient(120deg,var(--ember),var(--ember-2));
+:root[data-theme="dark"] .dk {
+  --dk-bg:#0B0B0B; --dk-panel:#171717; --dk-line:#262626;
+  --dk-ink:#FFFCF3; --dk-ink2:#8F876F; --dk-muted:#A79E86;
 }
 .dk-wrap { max-width:1120px; margin:0 auto; padding:0 clamp(20px,5vw,32px); }
 .dk .theme-toggle { background:var(--dk-panel); border-color:var(--dk-line); color:var(--dk-ink); }
@@ -342,8 +341,8 @@ html[lang="ar"] .lp-kicker, html[lang="ar"] .auth__pitch { letter-spacing:normal
 
 /* hero */
 .dk-hero { text-align:center; padding:clamp(36px,7vw,84px) 0 clamp(28px,5vw,46px); }
-.dk-h1 { font-family:var(--font-display); font-weight:600; letter-spacing:-.025em;
-  font-size:clamp(44px,9vw,100px); line-height:1.02; margin:0 auto 20px; max-width:15ch; }
+.dk-h1 { font-family:var(--font-display); font-weight:700; letter-spacing:normal;
+  font-size:clamp(30px,5.5vw,56px); line-height:1.14; margin:0 auto 20px; max-width:20ch; }
 .dk-h1 .em { color:var(--dk-green); }
 .dk-h1 .sub { color:var(--dk-ink2); }
 html[lang="ar"] .dk-h1 { letter-spacing:normal; line-height:1.4; font-weight:700; }
