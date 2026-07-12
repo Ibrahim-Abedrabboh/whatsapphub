@@ -6,7 +6,8 @@ import { apiFetch } from "@/lib/apiFetch";
 type Trigger =
   | { type: "keyword"; keywords: string[] }
   | { type: "away"; days: number[]; start: string; end: string; tzOffset?: number };
-type Action = { type: "sendText"; body: string };
+type Action = { type: "sendText"; body: string } | { type: "startChatbot"; chatbotId: string };
+interface BotOption { id: string; name: string; status: string }
 interface Rule { id: string; name: string; enabled: boolean; trigger: Trigger; action: Action }
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -14,6 +15,12 @@ const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 function triggerSummary(t: Trigger): string {
   if (t.type === "keyword") return `keyword: ${t.keywords.join(", ")}`;
   return `away · ${t.days.map((d) => DAYS[d]).join("/")} ${t.start}–${t.end}`;
+}
+
+function actionSummary(a: Action, bots: { id: string; name: string }[]): string {
+  if (a.type === "sendText") return "auto-reply";
+  const bot = bots.find((b) => b.id === a.chatbotId);
+  return `start bot: ${bot?.name ?? a.chatbotId}`;
 }
 
 export default function AutomationRulesManager() {
@@ -27,18 +34,23 @@ export default function AutomationRulesManager() {
   const [end, setEnd] = useState("17:00");
   const [tzOffset, setTzOffset] = useState(180);
   const [body, setBody] = useState("");
+  const [actionType, setActionType] = useState<"sendText" | "startChatbot">("sendText");
+  const [chatbotId, setChatbotId] = useState("");
+  const [bots, setBots] = useState<BotOption[]>([]);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   const load = useCallback(async () => {
-    const r = await apiFetch("/api/automation-rules");
-    if (r.ok) setRules((await r.json()).rules);
+    const [rr, br] = await Promise.all([apiFetch("/api/automation-rules"), apiFetch("/api/chatbots")]);
+    if (rr.ok) setRules((await rr.json()).rules);
+    if (br.ok) setBots(((await br.json()).chatbots as BotOption[]).filter((b) => b.status === "PUBLISHED"));
   }, []);
   useEffect(() => { void load(); }, [load]);
 
   function resetForm() {
     setEditingId(null); setName(""); setKind("keyword"); setKeywords("");
     setDays([1, 2, 3, 4, 5]); setStart("09:00"); setEnd("17:00"); setTzOffset(180); setBody("");
+    setActionType("sendText"); setChatbotId("");
   }
 
   function buildTrigger(): Trigger {
@@ -47,10 +59,14 @@ export default function AutomationRulesManager() {
       : { type: "away", days, start, end, tzOffset };
   }
 
+  function buildAction(): Action {
+    return actionType === "startChatbot" ? { type: "startChatbot", chatbotId } : { type: "sendText", body };
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true); setMsg(null);
-    const payload = { name, enabled: true, trigger: buildTrigger(), action: { type: "sendText", body } };
+    const payload = { name, enabled: true, trigger: buildTrigger(), action: buildAction() };
     const r = editingId
       ? await apiFetch(`/api/automation-rules/${editingId}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...payload, enabled: rules.find((x) => x.id === editingId)?.enabled ?? true }) })
       : await apiFetch("/api/automation-rules", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
@@ -61,7 +77,10 @@ export default function AutomationRulesManager() {
   }
 
   function edit(rule: Rule) {
-    setEditingId(rule.id); setName(rule.name); setKind(rule.trigger.type); setBody(rule.action.body); setMsg(null);
+    setEditingId(rule.id); setName(rule.name); setKind(rule.trigger.type); setMsg(null);
+    setActionType(rule.action.type);
+    if (rule.action.type === "sendText") { setBody(rule.action.body); setChatbotId(""); }
+    else { setChatbotId(rule.action.chatbotId); setBody(""); }
     if (rule.trigger.type === "keyword") setKeywords(rule.trigger.keywords.join(", "));
     else { setDays(rule.trigger.days); setStart(rule.trigger.start); setEnd(rule.trigger.end); setTzOffset(rule.trigger.tzOffset ?? 0); }
   }
@@ -121,9 +140,27 @@ export default function AutomationRulesManager() {
           </>
         )}
         <div className="field">
-          <label className="label" htmlFor="rules-body">Auto-reply text</label>
-          <textarea id="rules-body" className="input" value={body} onChange={(e) => setBody(e.target.value)} required rows={3} />
+          <label className="label" htmlFor="rules-action">Action</label>
+          <select id="rules-action" className="input" value={actionType} onChange={(e) => setActionType(e.target.value as "sendText" | "startChatbot")}>
+            <option value="sendText">Send auto-reply text</option>
+            <option value="startChatbot">Start a chatbot</option>
+          </select>
         </div>
+        {actionType === "sendText" ? (
+          <div className="field">
+            <label className="label" htmlFor="rules-body">Auto-reply text</label>
+            <textarea id="rules-body" className="input" value={body} onChange={(e) => setBody(e.target.value)} required rows={3} />
+          </div>
+        ) : (
+          <div className="field">
+            <label className="label" htmlFor="rules-chatbot">Chatbot to start</label>
+            <select id="rules-chatbot" className="input" value={chatbotId} onChange={(e) => setChatbotId(e.target.value)} required>
+              <option value="">Select a published chatbot…</option>
+              {bots.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
+            </select>
+            {bots.length === 0 && <p className="note" style={{ marginTop: 6 }}>No published chatbots yet — build one on the Chatbot page and set it to Published.</p>}
+          </div>
+        )}
         <div style={{ display: "flex", gap: 8 }}>
           <button className="btn" type="submit" disabled={busy}>{busy ? "Saving…" : editingId ? "Save" : "Create"}</button>
           {editingId && <button type="button" className="btn btn--ghost" onClick={resetForm}>Cancel</button>}
@@ -134,12 +171,13 @@ export default function AutomationRulesManager() {
       <div className="card">
         <h3>Rules</h3>
         <table className="table">
-          <thead><tr><th>Name</th><th>Trigger</th><th></th></tr></thead>
+          <thead><tr><th>Name</th><th>Trigger</th><th>Action</th><th></th></tr></thead>
           <tbody>
             {rules.map((rule) => (
               <tr key={rule.id}>
                 <td>{rule.name} {!rule.enabled && <span className="badge badge--PENDING">off</span>}</td>
                 <td className="muted" style={{ fontSize: 12 }}>{triggerSummary(rule.trigger)}</td>
+                <td className="muted" style={{ fontSize: 12 }}>{actionSummary(rule.action, bots)}</td>
                 <td style={{ display: "flex", gap: 6 }}>
                   <button type="button" className="btn btn--ghost" onClick={() => toggle(rule)}>{rule.enabled ? "Disable" : "Enable"}</button>
                   <button type="button" className="btn btn--ghost" onClick={() => edit(rule)}>Edit</button>
@@ -147,7 +185,7 @@ export default function AutomationRulesManager() {
                 </td>
               </tr>
             ))}
-            {rules.length === 0 && <tr><td colSpan={3} className="muted" style={{ padding: 16 }}>No rules yet.</td></tr>}
+            {rules.length === 0 && <tr><td colSpan={4} className="muted" style={{ padding: 16 }}>No rules yet.</td></tr>}
           </tbody>
         </table>
       </div>
