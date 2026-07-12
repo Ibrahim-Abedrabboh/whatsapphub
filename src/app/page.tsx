@@ -86,6 +86,14 @@ export default function Landing() {
           </div>
         </section>
 
+        <section id="growth" className="dk-getstarted">
+          <div className="dk-features__head">
+            <h2><T en="Free WhatsApp tools" ar="أدوات واتساب مجانية" /> <span className="sub"><T en="link · QR · button" ar="رابط · رمز · زر" /></span></h2>
+            <p><T en="Enter your WhatsApp number to generate a click-to-chat link, a printable QR code, and a website button — free, no sign-up." ar="أدخِل رقم واتساب لتوليد رابط للمحادثة، ورمز QR قابل للطباعة، وزرّ لموقعك — مجانًا وبلا تسجيل." /></p>
+          </div>
+          <GrowthTools />
+        </section>
+
         <section id="features" className="dk-features">
           <div className="dk-features__head">
             <h2><T en="Everything you need" ar="كل ما تحتاجه" /> <span className="sub"><T en="on WhatsApp" ar="على واتساب" /></span></h2>
@@ -104,14 +112,6 @@ export default function Landing() {
               </article>
             ))}
           </div>
-        </section>
-
-        <section id="growth" className="dk-getstarted">
-          <div className="dk-features__head">
-            <h2><T en="Free WhatsApp tools" ar="أدوات واتساب مجانية" /> <span className="sub"><T en="link · QR · button" ar="رابط · رمز · زر" /></span></h2>
-            <p><T en="Enter your WhatsApp number to generate a click-to-chat link, a printable QR code, and a website button — free, no sign-up." ar="أدخِل رقم واتساب لتوليد رابط للمحادثة، ورمز QR قابل للطباعة، وزرّ لموقعك — مجانًا وبلا تسجيل." /></p>
-          </div>
-          <GrowthTools />
         </section>
 
         <section id="get-started" className="dk-getstarted">
