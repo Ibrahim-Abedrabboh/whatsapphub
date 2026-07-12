@@ -63,7 +63,7 @@ export default function Landing() {
 
         <section className="dk-hero">
           <h1 className="dk-h1 reveal d1">
-            <span data-lang="en"><span className="em">WhatsApp</span> 💬 messaging<br /><span className="sub">your customers love</span></span>
+            <span data-lang="en"><span style={{ whiteSpace: "nowrap" }}><span className="em">WhatsApp</span> 💬 messaging</span><br /><span className="sub">your customers love</span></span>
             <span data-lang="ar">رسائل <span className="em">واتساب</span> 💬<br /><span className="sub">يحبّها عملاؤك</span></span>
           </h1>
           <p className="dk-lead reveal d2">

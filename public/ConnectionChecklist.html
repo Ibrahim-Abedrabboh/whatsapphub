@@ -3,15 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Channel Connection Checklist — Opal Hotel Social Media Growth Hub</title>
+<title>Channel Connection Checklist — Opal Hotel · قائمة ربط القنوات</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet" />
 <style>
-  /* ============================================================
-     Channel Connection Checklist — Opal Hotel Social Media Growth Hub
-     Palette from opal-hotel-theme.xml (v3.0): cream & gold. Print-ready.
-     ============================================================ */
+  /* Channel Connection Checklist — Opal (cream & gold), bilingual EN/AR, print-ready */
   :root {
     --bg:#FFFCF3; --sunken:#F5F1E4; --card:#FFFFFF; --elevated:#FBF8EF;
     --ink:#2C2C2C; --soft:#3D3D3D; --muted:#726D5E; --micro:#635F51;
@@ -23,6 +20,7 @@
     --serif:"Libre Baskerville",Georgia,serif;
     --display:"Cormorant Garamond","Libre Baskerville",Georgia,serif;
     --sans:"Montserrat","Helvetica Neue",Helvetica,Arial,sans-serif;
+    --arabic:"Cairo","Segoe UI Arabic",Tahoma,sans-serif;
     --radius:20px; --shadow:0 3px 18px rgba(44,44,44,.06);
   }
   @media (prefers-color-scheme: dark) {
@@ -37,68 +35,69 @@
     }
   }
   * { box-sizing:border-box; }
-  body {
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased;
-  }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15px; line-height:1.65; -webkit-font-smoothing:antialiased; }
   .wrap { max-width:820px; margin:0 auto; padding:0 24px 60px; }
 
-  /* header */
+  /* bilingual */
+  html:not([lang="ar"]) [data-lang="ar"] { display:none; }
+  html[lang="ar"] [data-lang="en"] { display:none; }
+  html[lang="ar"] body, html[lang="ar"] .brand, html[lang="ar"] h2, html[lang="ar"] .kicker,
+  html[lang="ar"] .slogan, html[lang="ar"] .item, html[lang="ar"] .where, html[lang="ar"] td,
+  html[lang="ar"] .call, html[lang="ar"] .lead, html[lang="ar"] footer .s, html[lang="ar"] .s-sub { font-family:var(--arabic) !important; letter-spacing:normal; }
+  html[lang="ar"] .s-num, html[lang="ar"] .mark { font-family:var(--display); }
+  html[lang="ar"] .call { padding:12px 42px 12px 18px; }
+  html[lang="ar"] .call::before { left:auto; right:14px; }
+  html[lang="ar"] th { text-align:right; }
+  html[lang="ar"] .kicker { letter-spacing:normal; }
+
+  /* language toggle */
+  .lang-toggle {
+    position:fixed; top:14px; inset-inline-end:14px; z-index:50; font-family:var(--sans); font-weight:600; font-size:13px;
+    background:var(--card); color:var(--gold-deep); border:1px solid var(--gold); border-radius:999px; padding:8px 15px; cursor:pointer; box-shadow:var(--shadow);
+  }
+  .lang-toggle:hover { background:rgba(187,139,65,.09); }
+
   header.top {
     text-align:center; padding:56px 24px 34px; border-bottom:1px solid var(--line);
     background:radial-gradient(130% 100% at 50% -25%, rgba(187,139,65,.12), transparent 60%), var(--bg);
   }
-  .mark {
-    width:74px; height:74px; margin:0 auto 18px; border-radius:50%; border:2px solid var(--gold);
-    display:grid; place-items:center; font-family:var(--display); font-size:44px; font-weight:600; color:var(--gold); line-height:1;
-  }
-  .brand { font-family:var(--display); font-weight:600; font-size:clamp(26px,4.4vw,38px); color:var(--ink); margin:0; line-height:1.15; }
+  .mark { width:74px; height:74px; margin:0 auto 18px; border-radius:50%; border:2px solid var(--gold); display:grid; place-items:center; font-family:var(--display); font-size:44px; font-weight:600; color:var(--gold); line-height:1; }
+  .brand { font-family:var(--display); font-weight:600; font-size:clamp(26px,4.4vw,38px); color:var(--ink); margin:0; line-height:1.2; }
   .brand .gold { color:var(--gold); }
   .kicker { font-family:var(--sans); letter-spacing:.3em; text-transform:uppercase; font-size:11.5px; color:var(--gold-deep); margin:10px 0 0; }
   .slogan { font-family:var(--serif); font-style:italic; color:var(--soft); font-size:17px; margin:14px 0 0; }
   .lead { max-width:640px; margin:20px auto 0; color:var(--muted); font-size:15px; }
-  .print-btn {
-    margin:18px auto 0; display:inline-flex; align-items:center; gap:8px; font-family:var(--sans); font-weight:600;
-    font-size:13px; background:var(--gold); color:#fff; border:0; border-radius:999px; padding:9px 20px; cursor:pointer;
-  }
+  .print-btn { margin:18px auto 0; display:inline-flex; align-items:center; gap:8px; font-family:var(--sans); font-weight:600; font-size:13px; background:var(--gold); color:#fff; border:0; border-radius:999px; padding:9px 20px; cursor:pointer; }
   .print-btn:hover { background:var(--gold-deep); }
 
-  /* sections */
   section { padding:34px 0 4px; }
-  .s-head { display:flex; align-items:baseline; gap:13px; margin-bottom:4px; }
+  .s-head { display:flex; align-items:baseline; gap:13px; margin-bottom:4px; flex-wrap:wrap; }
   .s-num { font-family:var(--display); font-weight:600; font-size:30px; color:var(--gold); line-height:1; min-width:40px; }
   h2 { font-family:var(--serif); font-weight:700; font-size:clamp(19px,2.6vw,24px); color:var(--ink); margin:0; }
-  .s-sub { color:var(--muted); font-size:13px; font-style:italic; margin-inline-start:8px; }
+  .s-sub { color:var(--muted); font-size:13px; font-style:italic; }
   .divider { height:1px; background:linear-gradient(90deg, var(--gold), transparent); margin:12px 0 20px; }
+  html[lang="ar"] .divider { background:linear-gradient(270deg, var(--gold), transparent); }
 
-  /* checklist */
   .card { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:10px 20px; }
   ul.check { list-style:none; margin:0; padding:0; }
   ul.check li { display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px solid var(--line); }
   ul.check li:last-child { border-bottom:0; }
-  ul.check input[type="checkbox"] {
-    appearance:none; -webkit-appearance:none; flex:none; width:20px; height:20px; margin-top:2px;
-    border:2px solid var(--gold); border-radius:6px; cursor:pointer; position:relative; background:transparent; transition:background .15s;
-  }
+  ul.check input[type="checkbox"] { appearance:none; -webkit-appearance:none; flex:none; width:20px; height:20px; margin-top:2px; border:2px solid var(--gold); border-radius:6px; cursor:pointer; position:relative; background:transparent; transition:background .15s; }
   ul.check input[type="checkbox"]:checked { background:var(--gold); }
-  ul.check input[type="checkbox"]:checked::after {
-    content:"\2713"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-size:13px; font-weight:700;
-  }
+  ul.check input[type="checkbox"]:checked::after { content:"\2713"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-size:13px; font-weight:700; }
   ul.check .item { font-size:14.5px; }
   ul.check .item b { color:var(--ink); }
   ul.check .where { display:block; color:var(--muted); font-size:12.5px; margin-top:1px; }
 
-  /* matrix table */
   .tbl-wrap { overflow-x:auto; margin:4px 0; }
   table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
   th, td { padding:10px 12px; border-bottom:1px solid var(--line); font-size:13.5px; text-align:left; }
   th { font-family:var(--sans); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-deep); background:var(--sunken); }
   td.c, th.c { text-align:center; }
   tr:last-child td { border-bottom:0; }
-  .yes { color:var(--green); font-weight:700; }
-  .no { color:var(--micro); }
+  .yes { color:var(--green); font-weight:700; } .no { color:var(--micro); }
+  code { background:var(--sunken); border:1px solid var(--line); border-radius:5px; padding:0 5px; font-family:"Courier New",monospace; font-size:.86em; color:var(--gold-deep); }
 
-  /* callouts */
   .call { border-radius:13px; padding:12px 18px 12px 42px; margin:16px 0 4px; position:relative; border:1px solid var(--line); font-size:14px; }
   .call::before { position:absolute; left:14px; top:11px; font-size:15px; }
   .call .k { font-weight:700; }
@@ -110,148 +109,158 @@
   footer { text-align:center; color:var(--muted); font-size:12.5px; margin-top:44px; padding-top:22px; border-top:1px solid var(--line); }
   footer .s { font-family:var(--serif); font-style:italic; color:var(--gold-deep); }
 
-  @media print {
-    .print-btn { display:none; }
-    body { font-size:10.5pt; background:#fff; color:#222; }
-    .card, table { box-shadow:none; break-inside:avoid; }
-    section { break-inside:avoid; }
-    header.top { break-after:avoid; }
-    ul.check input[type="checkbox"] { border-color:#8F6B2E; }
-  }
+  @media print { .lang-toggle, .print-btn { display:none; } body { font-size:10.5pt; background:#fff; color:#222; } .card, table { box-shadow:none; break-inside:avoid; } section { break-inside:avoid; } }
 </style>
 </head>
 <body>
 
+<button class="lang-toggle" onclick="toggleLang()" aria-label="Switch language">
+  <span data-lang="en">العربية</span><span data-lang="ar">English</span>
+</button>
+
 <header class="top">
   <div class="mark">O</div>
-  <h1 class="brand">Channel Connection <span class="gold">Checklist</span></h1>
-  <p class="kicker">Opal Hotel Social Media Growth Hub</p>
-  <p class="slogan">The True Meaning of Luxury</p>
-  <p class="lead">Everything you need to gather to connect <b>WhatsApp Cloud API, Facebook Page, Messenger, Instagram Inbox, and Instagram Page</b> into one unified team inbox. Tick each item as you collect it — it all comes from Meta, through one app and one Business Portfolio.</p>
-  <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+  <h1 class="brand">
+    <span data-lang="en">Channel Connection <span class="gold">Checklist</span></span>
+    <span data-lang="ar">قائمة ربط <span class="gold">القنوات</span></span>
+  </h1>
+  <p class="kicker"><span data-lang="en">Opal Hotel Social Media Growth Hub</span><span data-lang="ar">مركز أوبال هوتل للنمو عبر وسائل التواصل</span></p>
+  <p class="slogan"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></p>
+  <p class="lead">
+    <span data-lang="en">Everything you need to gather to connect <b>WhatsApp Cloud API, Facebook Page, Messenger, Instagram Inbox, and Instagram Page</b> into one unified team inbox. Tick each item as you collect it — it all comes from Meta, through one app and one Business Portfolio.</span>
+    <span data-lang="ar">كل ما تحتاج لتجهيزه لربط <b>واتساب كلاود API، وصفحة فيسبوك، وماسنجر، وصندوق إنستغرام، وصفحة إنستغرام</b> في صندوق فريق موحّد. علِّم كل بند فور تجهيزه — وكلّه يأتي من ميتا، عبر تطبيق واحد وحافظة أعمال واحدة.</span>
+  </p>
+  <button class="print-btn" onclick="window.print()"><span data-lang="en">🖨️ Print / Save as PDF</span><span data-lang="ar">🖨️ طباعة / حفظ PDF</span></button>
 </header>
 
 <div class="wrap">
 
   <!-- 0 -->
   <section>
-    <div class="s-head"><span class="s-num">0</span><h2>Shared Foundation</h2><span class="s-sub">needed for every channel</span></div>
+    <div class="s-head"><span class="s-num">0</span><h2><span data-lang="en">Shared Foundation</span><span data-lang="ar">الأساس المشترك</span></h2><span class="s-sub"><span data-lang="en">needed for every channel</span><span data-lang="ar">لازم لكل قناة</span></span></div>
     <div class="divider"></div>
     <div class="card"><ul class="check">
-      <li><input type="checkbox" /><span class="item"><b>Meta App</b> created<span class="where">developers.facebook.com → Create App</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Meta App ID</b><span class="where">App → Settings → Basic</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Meta App Secret</b> — verifies every incoming webhook<span class="where">App → Settings → Basic</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Business Portfolio</b> owning your number, Page &amp; Instagram account<span class="where">business.facebook.com</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Webhook Verify Token</b> — a secret phrase <b>you choose</b><span class="where">Any string; used once when Meta connects the webhook</span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Meta App</span><span data-lang="ar">تطبيق ميتا</span></b> <span data-lang="en">created</span><span data-lang="ar">مُنشأ</span><span class="where"><span data-lang="en">developers.facebook.com → Create App</span><span data-lang="ar">developers.facebook.com ← إنشاء تطبيق</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Meta App ID</span><span data-lang="ar">معرّف التطبيق (App ID)</span></b><span class="where"><span data-lang="en">App → Settings → Basic</span><span data-lang="ar">التطبيق ← الإعدادات ← أساسي</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Meta App Secret</span><span data-lang="ar">سرّ التطبيق (App Secret)</span></b> <span data-lang="en">— verifies every incoming webhook</span><span data-lang="ar">— للتحقق من كل ويب هوك وارد</span><span class="where"><span data-lang="en">App → Settings → Basic</span><span data-lang="ar">التطبيق ← الإعدادات ← أساسي</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Business Portfolio</span><span data-lang="ar">حافظة الأعمال</span></b> <span data-lang="en">owning your number, Page &amp; Instagram account</span><span data-lang="ar">المالكة لرقمك وصفحتك وحساب إنستغرام</span><span class="where">business.facebook.com</span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Webhook Verify Token</span><span data-lang="ar">رمز التحقق للويب هوك</span></b> <span data-lang="en">— a secret phrase <b>you choose</b></span><span data-lang="ar">— عبارة سرّية <b>تختارها أنت</b></span></span></li>
     </ul></div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> The <b>App Secret</b> and <b>Verify Token</b> are <b>reused across all channels</b> — you don't need a separate one per channel.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">The <b>App Secret</b> and <b>Verify Token</b> are <b>reused across all channels</b> — you don't need a separate one per channel.</span><span data-lang="ar"><b>سرّ التطبيق</b> و<b>رمز التحقق</b> <b>يُستخدمان لكل القنوات</b> — فلا حاجة لواحد منفصل لكل قناة.</span></div>
   </section>
 
   <!-- 1 -->
   <section>
-    <div class="s-head"><span class="s-num">1</span><h2>WhatsApp Cloud API</h2></div>
+    <div class="s-head"><span class="s-num">1</span><h2><span data-lang="en">WhatsApp Cloud API</span><span data-lang="ar">واتساب كلاود API</span></h2></div>
     <div class="divider"></div>
     <div class="card"><ul class="check">
-      <li><input type="checkbox" /><span class="item"><b>Phone Number ID</b><span class="where">WhatsApp → API Setup</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>WhatsApp Business Account ID (WABA)</b><span class="where">WhatsApp → API Setup</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Access Token</b> — permanent / system-user token<span class="where">Business Settings → System Users → Generate token</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>App ID</b> <i>(shared)</i> — for media &amp; template-header uploads<span class="where">From the Shared Foundation</span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Phone Number ID</span><span data-lang="ar">معرّف رقم الهاتف (Phone Number ID)</span></b><span class="where"><span data-lang="en">WhatsApp → API Setup</span><span data-lang="ar">واتساب ← إعداد الـ API</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">WhatsApp Business Account ID (WABA)</span><span data-lang="ar">معرّف حساب واتساب للأعمال (WABA)</span></b><span class="where"><span data-lang="en">WhatsApp → API Setup</span><span data-lang="ar">واتساب ← إعداد الـ API</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Access Token</span><span data-lang="ar">رمز الوصول (Access Token)</span></b> <span data-lang="en">— permanent / system-user token</span><span data-lang="ar">— دائم / لمستخدم نظام</span><span class="where"><span data-lang="en">Business Settings → System Users → Generate token</span><span data-lang="ar">إعدادات الأعمال ← مستخدمو النظام ← توليد رمز</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">App ID</span><span data-lang="ar">معرّف التطبيق</span></b> <span data-lang="en"><i>(shared)</i> — for media &amp; template-header uploads</span><span data-lang="ar"><i>(مشترك)</i> — لرفع الوسائط وترويسات القوالب</span></span></li>
     </ul></div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> The <b>Phone Number ID</b> and the <b>WABA ID</b> are <b>different numbers</b>, and <b>neither is the Business Portfolio ID</b>. Using the wrong one makes template features fail — take both straight from <b>WhatsApp → API Setup</b>.</div>
-    <div class="call tip"><span class="k">💡 Tip:</span> The easiest route is the built-in <b>one-click Embedded Signup</b> — log in with Facebook, pick your number, and the <b>WABA, Phone Number ID, and token are captured automatically</b>. No manual copying.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">The <b>Phone Number ID</b> and the <b>WABA ID</b> are <b>different numbers</b>, and <b>neither is the Business Portfolio ID</b>. Take both straight from <b>WhatsApp → API Setup</b>.</span><span data-lang="ar"><b>معرّف رقم الهاتف</b> و<b>معرّف WABA</b> <b>رقمان مختلفان</b>، و<b>لا أحدهما هو معرّف حافظة الأعمال</b>. خذهما مباشرة من <b>واتساب ← إعداد الـ API</b>.</span></div>
+    <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">The easiest route is the built-in <b>one-click Embedded Signup</b> — log in with Facebook, pick your number, and the <b>WABA, Phone Number ID, and token are captured automatically</b>.</span><span data-lang="ar">أسهل طريقة هي <b>التسجيل المُدمج بنقرة واحدة</b> — سجّل الدخول بفيسبوك، واختر رقمك، فيُلتقط <b>WABA ومعرّف الرقم والرمز تلقائيًا</b>.</span></div>
   </section>
 
   <!-- 2 -->
   <section>
-    <div class="s-head"><span class="s-num">2</span><h2>Facebook Page + Messenger</h2></div>
+    <div class="s-head"><span class="s-num">2</span><h2><span data-lang="en">Facebook Page + Messenger</span><span data-lang="ar">صفحة فيسبوك + ماسنجر</span></h2></div>
     <div class="divider"></div>
     <div class="card"><ul class="check">
-      <li><input type="checkbox" /><span class="item"><b>Facebook Page ID</b><span class="where">The Page → About / Page settings</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Page Access Token</b> (long-lived)<span class="where">Generated from the app with the <code>pages_messaging</code> permission</span></span></li>
-      <li><input type="checkbox" /><span class="item">Page <b>subscribed to the app's webhook</b><span class="where">Fields: <code>messages</code>, <code>messaging_postbacks</code></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Facebook Page ID</span><span data-lang="ar">معرّف صفحة فيسبوك (Page ID)</span></b><span class="where"><span data-lang="en">The Page → About / Page settings</span><span data-lang="ar">الصفحة ← حول / إعدادات الصفحة</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Page Access Token</span><span data-lang="ar">رمز وصول الصفحة</span></b> <span data-lang="en">(long-lived)</span><span data-lang="ar">(طويل الأمد)</span><span class="where"><span data-lang="en">Generated from the app with the <code>pages_messaging</code> permission</span><span data-lang="ar">يُولَّد من التطبيق بصلاحية <code>pages_messaging</code></span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><span data-lang="en">Page <b>subscribed to the app's webhook</b></span><span data-lang="ar"><b>اشتراك الصفحة</b> في ويب هوك التطبيق</span><span class="where"><span data-lang="en">Fields: <code>messages</code>, <code>messaging_postbacks</code></span><span data-lang="ar">الحقول: <code>messages</code>، <code>messaging_postbacks</code></span></span></span></li>
     </ul></div>
-    <div class="call note"><span class="k">📝 Note:</span> Messenger and the Facebook Page <b>share the same Page ID + Page Access Token</b> — one token covers both.</div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">Messenger and the Facebook Page <b>share the same Page ID + Page Access Token</b> — one token covers both.</span><span data-lang="ar">ماسنجر وصفحة فيسبوك <b>يتشاركان نفس معرّف الصفحة ورمز وصولها</b> — رمز واحد يكفي لكليهما.</span></div>
   </section>
 
   <!-- 3 -->
   <section>
-    <div class="s-head"><span class="s-num">3</span><h2>Instagram Inbox + Instagram Page</h2></div>
+    <div class="s-head"><span class="s-num">3</span><h2><span data-lang="en">Instagram Inbox + Instagram Page</span><span data-lang="ar">صندوق إنستغرام + صفحة إنستغرام</span></h2></div>
     <div class="divider"></div>
     <div class="card"><ul class="check">
-      <li><input type="checkbox" /><span class="item"><b>Instagram Business Account ID</b> — the IG "asset" id used to route inbound<span class="where">The IG Professional account linked to the Page</span></span></li>
-      <li><input type="checkbox" /><span class="item"><b>Page Access Token</b> of the linked Facebook Page<span class="where">Instagram messaging uses the connected Page's token</span></span></li>
-      <li><input type="checkbox" /><span class="item">IG account is a <b>Professional (Business/Creator)</b> account, linked to the Page</span></li>
-      <li><input type="checkbox" /><span class="item">App granted <code>instagram_manage_messages</code> / <code>instagram_basic</code></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Instagram Business Account ID</span><span data-lang="ar">معرّف حساب إنستغرام للأعمال</span></b> <span data-lang="en">— the IG "asset" id used to route inbound</span><span data-lang="ar">— معرّف "أصل" إنستغرام الذي تُوجَّه به الرسائل الواردة</span><span class="where"><span data-lang="en">The IG Professional account linked to the Page</span><span data-lang="ar">حساب إنستغرام الاحترافي المرتبط بالصفحة</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Page Access Token</span><span data-lang="ar">رمز وصول الصفحة</span></b> <span data-lang="en">of the linked Facebook Page</span><span data-lang="ar">لصفحة فيسبوك المرتبطة</span><span class="where"><span data-lang="en">Instagram messaging uses the connected Page's token</span><span data-lang="ar">مراسلة إنستغرام تستخدم رمز الصفحة المتّصلة</span></span></span></li>
+      <li><input type="checkbox" /><span class="item"><span data-lang="en">IG account is a <b>Professional (Business/Creator)</b> account, linked to the Page</span><span data-lang="ar">حساب إنستغرام <b>احترافي (أعمال/منشئ)</b> ومرتبط بالصفحة</span></span></li>
+      <li><input type="checkbox" /><span class="item"><span data-lang="en">App granted <code>instagram_manage_messages</code> / <code>instagram_basic</code></span><span data-lang="ar">مُنح التطبيق <code>instagram_manage_messages</code> / <code>instagram_basic</code></span></span></li>
     </ul></div>
-    <div class="call warning"><span class="k">⚠️ Warning:</span> Instagram DMs <b>cannot</b> be managed from a personal IG account — convert it to a <b>Professional</b> account and link it to the Facebook Page first.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">Instagram DMs <b>cannot</b> be managed from a personal IG account — convert it to a <b>Professional</b> account and link it to the Facebook Page first.</span><span data-lang="ar">لا يمكن إدارة رسائل إنستغرام من حساب شخصي — حوّله إلى حساب <b>احترافي</b> واربطه بصفحة فيسبوك أولًا.</span></div>
   </section>
 
   <!-- 4 PERMISSIONS -->
   <section>
-    <div class="s-head"><span class="s-num">4</span><h2>Meta App Permissions</h2><span class="s-sub">request these on the app</span></div>
+    <div class="s-head"><span class="s-num">4</span><h2><span data-lang="en">Meta App Permissions</span><span data-lang="ar">صلاحيات تطبيق ميتا</span></h2><span class="s-sub"><span data-lang="en">request these on the app</span><span data-lang="ar">اطلبها على التطبيق</span></span></div>
     <div class="divider"></div>
-    <p style="color:var(--muted);font-size:14px;margin:0 0 14px">First add the right <b>products</b> to your Meta app, then request each <b>permission</b> below. In development they work for app testers/roles; for the public they need <b>Advanced Access</b> (granted through App Review).</p>
+    <p style="color:var(--muted);font-size:14px;margin:0 0 14px"><span data-lang="en">First add the right <b>products</b> to your Meta app, then request each <b>permission</b> below. In development they work for app testers/roles; for the public they need <b>Advanced Access</b> (via App Review).</span><span data-lang="ar">أضِف أولًا <b>المنتجات</b> المناسبة إلى تطبيق ميتا، ثم اطلب كل <b>صلاحية</b> أدناه. في التطوير تعمل لمختبِري التطبيق وأدواره؛ وللعموم تحتاج <b>وصولًا متقدّمًا</b> (عبر مراجعة التطبيق).</span></p>
     <div class="card"><ul class="check">
-      <li><input type="checkbox" /><span class="item"><b>Products added:</b> WhatsApp · Messenger · Instagram · Facebook Login for Business<span class="where">App dashboard → Add products</span></span></li>
+      <li><input type="checkbox" /><span class="item"><b><span data-lang="en">Products added:</span><span data-lang="ar">المنتجات المُضافة:</span></b> WhatsApp · Messenger · Instagram · <span data-lang="en">Facebook Login for Business</span><span data-lang="ar">تسجيل دخول فيسبوك للأعمال</span><span class="where"><span data-lang="en">App dashboard → Add products</span><span data-lang="ar">لوحة التطبيق ← إضافة منتجات</span></span></span></li>
     </ul></div>
     <div class="tbl-wrap" style="margin-top:14px"><table>
-      <thead><tr><th>Permission</th><th class="c">WhatsApp</th><th class="c">Messenger</th><th class="c">Instagram</th></tr></thead>
+      <thead><tr><th><span data-lang="en">Permission</span><span data-lang="ar">الصلاحية</span></th><th class="c">WhatsApp</th><th class="c">Messenger</th><th class="c">Instagram</th></tr></thead>
       <tbody>
-        <tr><td><code>whatsapp_business_messaging</code><span class="where">Send &amp; receive WhatsApp messages</span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
-        <tr><td><code>whatsapp_business_management</code><span class="where">Manage WABA, phone numbers, templates</span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
-        <tr><td><code>business_management</code><span class="where">Manage assets in Business Manager</span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><code>pages_show_list</code><span class="where">List &amp; select the Page</span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><code>pages_manage_metadata</code><span class="where">Subscribe the Page to webhooks</span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><code>pages_messaging</code><span class="where">Send &amp; receive Page/IG messages</span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><code>pages_read_engagement</code><span class="where">Read Page context for messaging</span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><code>instagram_basic</code><span class="where">Access the linked IG account</span></td><td class="c no">—</td><td class="c no">—</td><td class="c yes">✓</td></tr>
-        <tr><td><code>instagram_manage_messages</code><span class="where">Send &amp; receive Instagram DMs</span></td><td class="c no">—</td><td class="c no">—</td><td class="c yes">✓</td></tr>
+        <tr><td><code>whatsapp_business_messaging</code><span class="where"><span data-lang="en">Send &amp; receive WhatsApp messages</span><span data-lang="ar">إرسال واستقبال رسائل واتساب</span></span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
+        <tr><td><code>whatsapp_business_management</code><span class="where"><span data-lang="en">Manage WABA, numbers, templates</span><span data-lang="ar">إدارة WABA والأرقام والقوالب</span></span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
+        <tr><td><code>business_management</code><span class="where"><span data-lang="en">Manage assets in Business Manager</span><span data-lang="ar">إدارة الأصول في مدير الأعمال</span></span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><code>pages_show_list</code><span class="where"><span data-lang="en">List &amp; select the Page</span><span data-lang="ar">عرض واختيار الصفحة</span></span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><code>pages_manage_metadata</code><span class="where"><span data-lang="en">Subscribe the Page to webhooks</span><span data-lang="ar">اشتراك الصفحة في الويب هوك</span></span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><code>pages_messaging</code><span class="where"><span data-lang="en">Send &amp; receive Page/IG messages</span><span data-lang="ar">إرسال واستقبال رسائل الصفحة/إنستغرام</span></span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><code>pages_read_engagement</code><span class="where"><span data-lang="en">Read Page context for messaging</span><span data-lang="ar">قراءة سياق الصفحة للمراسلة</span></span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><code>instagram_basic</code><span class="where"><span data-lang="en">Access the linked IG account</span><span data-lang="ar">الوصول لحساب إنستغرام المرتبط</span></span></td><td class="c no">—</td><td class="c no">—</td><td class="c yes">✓</td></tr>
+        <tr><td><code>instagram_manage_messages</code><span class="where"><span data-lang="en">Send &amp; receive Instagram DMs</span><span data-lang="ar">إرسال واستقبال رسائل إنستغرام</span></span></td><td class="c no">—</td><td class="c no">—</td><td class="c yes">✓</td></tr>
       </tbody>
     </table></div>
-    <div class="call warning"><span class="k">⚠️ Advanced Access:</span> Every permission above starts at <b>Standard Access</b> (works only for app admins/testers). Each must be upgraded to <b>Advanced Access</b> via <b>App Review</b> before real customers can message you on Messenger or Instagram.</div>
-    <div class="call note"><span class="k">📝 Note:</span> Instagram messaging runs on the <b>Messenger platform</b>, which is why it also needs the <code>pages_*</code> permissions — the IG account is reached through its connected Facebook Page.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ Advanced Access:</span><span data-lang="ar">⚠️ الوصول المتقدّم:</span></span> <span data-lang="en">Every permission above starts at <b>Standard Access</b> (app admins/testers only) and must be upgraded to <b>Advanced Access</b> via <b>App Review</b> before real customers can message you on Messenger or Instagram.</span><span data-lang="ar">تبدأ كل صلاحية أعلاه بـ<b>وصول قياسي</b> (لمشرفي/مختبِري التطبيق فقط) ويجب ترقيتها إلى <b>وصول متقدّم</b> عبر <b>مراجعة التطبيق</b> قبل أن يراسلك العملاء الحقيقيون على ماسنجر أو إنستغرام.</span></div>
+    <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">Instagram messaging runs on the <b>Messenger platform</b>, which is why it also needs the <code>pages_*</code> permissions — the IG account is reached through its connected Facebook Page.</span><span data-lang="ar">مراسلة إنستغرام تعمل على <b>منصّة ماسنجر</b>، ولذلك تحتاج صلاحيات <code>pages_*</code> — إذ يُوصَل حساب إنستغرام عبر صفحة فيسبوك المرتبطة به.</span></div>
   </section>
 
   <!-- MATRIX -->
   <section>
-    <div class="s-head"><span class="s-num">✓</span><h2>The Complete "Prepare This" Matrix</h2></div>
+    <div class="s-head"><span class="s-num">✓</span><h2><span data-lang="en">The Complete "Prepare This" Matrix</span><span data-lang="ar">مصفوفة ما يجب تجهيزه الكاملة</span></h2></div>
     <div class="divider"></div>
     <div class="tbl-wrap"><table>
-      <thead><tr><th>Item</th><th class="c">WhatsApp</th><th class="c">Messenger / FB</th><th class="c">Instagram</th></tr></thead>
+      <thead><tr><th><span data-lang="en">Item</span><span data-lang="ar">البند</span></th><th class="c">WhatsApp</th><th class="c"><span data-lang="en">Messenger / FB</span><span data-lang="ar">ماسنجر / فيسبوك</span></th><th class="c">Instagram</th></tr></thead>
       <tbody>
-        <tr><td>Meta <b>App ID</b></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td>Meta <b>App Secret</b></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><b>Webhook Verify Token</b></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
-        <tr><td><b>Phone Number ID</b></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
-        <tr><td><b>WABA ID</b></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
-        <tr><td><b>WhatsApp Access Token</b></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
-        <tr><td><b>Facebook Page ID</b></td><td class="c no">—</td><td class="c yes">✓</td><td class="c no">—</td></tr>
-        <tr><td><b>Page Access Token</b></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓ <span style="color:var(--muted);font-weight:400">(same)</span></td></tr>
-        <tr><td><b>Instagram Business Account ID</b></td><td class="c no">—</td><td class="c no">—</td><td class="c yes">✓</td></tr>
+        <tr><td><span data-lang="en">Meta <b>App ID</b></span><span data-lang="ar">معرّف <b>التطبيق</b></span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><span data-lang="en">Meta <b>App Secret</b></span><span data-lang="ar"><b>سرّ التطبيق</b></span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><span data-lang="en"><b>Webhook Verify Token</b></span><span data-lang="ar"><b>رمز التحقق للويب هوك</b></span></td><td class="c yes">✓</td><td class="c yes">✓</td><td class="c yes">✓</td></tr>
+        <tr><td><span data-lang="en"><b>Phone Number ID</b></span><span data-lang="ar"><b>معرّف رقم الهاتف</b></span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
+        <tr><td><span data-lang="en"><b>WABA ID</b></span><span data-lang="ar"><b>معرّف WABA</b></span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
+        <tr><td><span data-lang="en"><b>WhatsApp Access Token</b></span><span data-lang="ar"><b>رمز وصول واتساب</b></span></td><td class="c yes">✓</td><td class="c no">—</td><td class="c no">—</td></tr>
+        <tr><td><span data-lang="en"><b>Facebook Page ID</b></span><span data-lang="ar"><b>معرّف صفحة فيسبوك</b></span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c no">—</td></tr>
+        <tr><td><span data-lang="en"><b>Page Access Token</b></span><span data-lang="ar"><b>رمز وصول الصفحة</b></span></td><td class="c no">—</td><td class="c yes">✓</td><td class="c yes">✓ <span style="color:var(--muted);font-weight:400"><span data-lang="en">(same)</span><span data-lang="ar">(نفسه)</span></span></td></tr>
+        <tr><td><span data-lang="en"><b>Instagram Business Account ID</b></span><span data-lang="ar"><b>معرّف حساب إنستغرام للأعمال</b></span></td><td class="c no">—</td><td class="c no">—</td><td class="c yes">✓</td></tr>
       </tbody>
     </table></div>
   </section>
 
   <!-- BEFORE GO LIVE -->
   <section>
-    <div class="s-head"><span class="s-num">★</span><h2>Before You Go Live</h2></div>
+    <div class="s-head"><span class="s-num">★</span><h2><span data-lang="en">Before You Go Live</span><span data-lang="ar">قبل الانطلاق</span></h2></div>
     <div class="divider"></div>
-    <div class="call warning"><span class="k">⚠️ App Review:</span> WhatsApp works with a verified number right away, but <b>Messenger and Instagram messaging only reach the public after Meta approves your app's permissions (App Review)</b>. Until then they work only for people added as <b>testers/roles</b> on the app — plan time for this review.</div>
-    <div class="call success"><span class="k">✅ Success:</span> With the shared foundation, each channel's IDs, and <b>one long-lived (non-expiring) token per channel</b>, your WhatsApp, Messenger, and Instagram conversations all flow into the same unified team inbox.</div>
+    <div class="call warning"><span class="k"><span data-lang="en">⚠️ App Review:</span><span data-lang="ar">⚠️ مراجعة التطبيق:</span></span> <span data-lang="en">WhatsApp works with a verified number right away, but <b>Messenger and Instagram messaging only reach the public after Meta approves your app's permissions (App Review)</b>. Until then they work only for app testers/roles — plan time for this review.</span><span data-lang="ar">يعمل واتساب برقم مُوثَّق فورًا، لكن <b>مراسلة ماسنجر وإنستغرام لا تصل للعموم إلا بعد اعتماد ميتا لصلاحيات تطبيقك (مراجعة التطبيق)</b>. وحتى ذلك الحين تعمل لمختبِري التطبيق فقط — فخصّص وقتًا للمراجعة.</span></div>
+    <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">With the shared foundation, each channel's IDs, and <b>one long-lived token per channel</b>, your WhatsApp, Messenger, and Instagram conversations all flow into the same unified team inbox.</span><span data-lang="ar">مع الأساس المشترك، ومعرّفات كل قناة، و<b>رمز طويل الأمد لكل قناة</b>، تتدفّق محادثات واتساب وماسنجر وإنستغرام كلها إلى صندوق الفريق الموحّد نفسه.</span></div>
   </section>
 
   <footer>
-    Opal Hotel Social Media Growth Hub &nbsp;·&nbsp; <span class="s">The True Meaning of Luxury</span> &nbsp;·&nbsp; Channel Connection Checklist
+    <span data-lang="en">Opal Hotel Social Media Growth Hub</span><span data-lang="ar">مركز أوبال هوتل للنمو عبر وسائل التواصل</span> &nbsp;·&nbsp; <span class="s"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></span>
   </footer>
 
 </div>
 
-<!-- ============================================================
-     PDF: open in a browser → "Print / Save as PDF" (backgrounds ON).
-     Theme: Gold #BB8B41 · Cream #FFFCF3 · Charcoal #2C2C2C · callouts
-     Tip=Gold / Warning=Burgundy #800020 / Note=Slate #394E6C / Success=Green #2E7D46.
-     Fonts: Cormorant Garamond (display) · Libre Baskerville (headings) · Montserrat (body).
-     A4/Letter portrait, ~18mm margins; sections kept unbroken.
-     ============================================================ -->
+<script>
+  function toggleLang() {
+    var html = document.documentElement;
+    var ar = html.lang !== 'ar';
+    html.lang = ar ? 'ar' : 'en';
+    html.dir = ar ? 'rtl' : 'ltr';
+    try { localStorage.setItem('opal-connect-lang', html.lang); } catch (e) {}
+  }
+  try { if (localStorage.getItem('opal-connect-lang') === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; } } catch (e) {}
+</script>
+
+<!-- PDF: pick a language → Print / Save as PDF (backgrounds ON). Theme: Gold #BB8B41 · Cream #FFFCF3 ·
+     callouts Tip=Gold / Warning=Burgundy #800020 / Note=Slate #394E6C / Success=Green #2E7D46.
+     Fonts: Cormorant Garamond + Libre Baskerville + Montserrat; Arabic = Cairo (auto, RTL). A4/Letter portrait. -->
 </body>
 </html>
