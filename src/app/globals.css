@@ -399,6 +399,28 @@ html[lang="ar"] .dk-feat--lead h3 { letter-spacing:normal; }
   justify-content:space-between; flex-wrap:wrap; gap:14px; color:var(--dk-muted); font-size:14px; }
 .dk-foot a { color:var(--dk-muted); } .dk-foot a:hover { color:var(--dk-ink); }
 
+/* Chatbot "How it works" slider (/chatbots) — same dk palette. */
+.dk-steps { position:relative; max-width:680px; margin:0 auto; }
+.dk-steps__viewport { overflow:hidden; border:1px solid var(--dk-line); border-radius:18px; background:var(--dk-panel); }
+.dk-steps__track { display:flex; transition:transform .5s cubic-bezier(.4,0,.2,1); }
+.dk-steps__slide { flex:0 0 100%; box-sizing:border-box; padding:clamp(30px,5vw,52px);
+  text-align:center; display:flex; flex-direction:column; align-items:center; gap:12px; }
+.dk-steps__n { font-family:var(--font-mono); font-size:12px; letter-spacing:.22em; color:var(--dk-ink2); }
+html[lang="ar"] .dk-steps__n { letter-spacing:normal; }
+.dk-steps__ic { color:var(--dk-green); }
+.dk-steps__title { font-size:20px; font-weight:600; margin:0; }
+.dk-steps__body { color:var(--dk-muted); line-height:1.6; margin:0; max-width:46ch; font-size:15px; }
+.dk-steps__nav { display:flex; align-items:center; justify-content:space-between; margin-top:18px; }
+.dk-steps__arrow { display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px;
+  border-radius:50%; background:var(--dk-panel); border:1px solid var(--dk-line); color:var(--dk-ink);
+  font-size:20px; line-height:1; cursor:pointer; transition:border-color .15s ease; }
+.dk-steps__arrow:hover { border-color:color-mix(in oklab, var(--dk-green) 45%, var(--dk-line)); }
+.dk-steps__dots { display:flex; gap:8px; align-items:center; justify-content:center; }
+.dk-dot { width:8px; height:8px; padding:0; border-radius:50%; background:var(--dk-line); border:none;
+  cursor:pointer; transition:width .2s ease, background .2s ease; }
+.dk-dot[aria-current="true"] { width:22px; border-radius:5px; background:var(--dk-grad); }
+@media (prefers-reduced-motion: reduce) { .dk-steps__track { transition:none; } }
+
 /* ── elevated login: split brand panel + form ── */
 .auth { min-height:100dvh; display:grid; grid-template-columns:1.05fr .95fr; }
 @media (max-width:820px){ .auth { grid-template-columns:1fr; } }
