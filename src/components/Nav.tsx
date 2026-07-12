@@ -18,6 +18,7 @@ export default function Nav() {
         <Link href="/lists">Lists</Link>
         <Link href="/templates">Templates</Link>
         <Link href="/campaigns">Campaigns</Link>
+        <Link href="/chatbot">Chatbot</Link>
         <Link href="/settings">Settings</Link>
         <ClientSwitcher />
         <LogoutButton />
