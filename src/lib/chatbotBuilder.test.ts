@@ -82,3 +82,22 @@ describe("flowToBlocks round-trip", () => {
     expect(ids).toEqual(["br", "e"]);
   });
 });
+
+describe("blocksToFlow / flowToBlocks buttons", () => {
+  it("compiles a buttons node with options and passes schema", () => {
+    const blocks: Block[] = [
+      b({ id: "bt", type: "buttons", text: "Pick", options: [{ label: "Yes", nextId: "e" }] }),
+      b({ id: "e", type: "end" }),
+    ];
+    const flow = blocksToFlow(blocks);
+    expect(flow.nodes.bt).toEqual({ id: "bt", type: "buttons", text: "Pick", options: [{ label: "Yes", nextId: "e" }] });
+    expect(ChatbotFlowSchema.safeParse(flow).success).toBe(true);
+  });
+  it("recovers a buttons node id via flowToBlocks", () => {
+    const flow = blocksToFlow([
+      b({ id: "bt", type: "buttons", text: "Pick", options: [{ label: "Yes", nextId: "e" }] }),
+      b({ id: "e", type: "end" }),
+    ]);
+    expect(flowToBlocks(flow).map((x) => x.id).sort()).toEqual(["bt", "e"]);
+  });
+});

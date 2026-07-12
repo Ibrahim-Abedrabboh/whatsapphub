@@ -263,3 +263,23 @@ describe("AutomationRuleSchema action", () => {
     expect(AutomationRuleSchema.safeParse({ ...base, action: { type: "explode" } }).success).toBe(false);
   });
 });
+
+describe("ChatbotFlowSchema buttons node", () => {
+  const withNode = (btn: Record<string, unknown>) => ({
+    startId: "b",
+    nodes: { b: { id: "b", type: "buttons", ...btn }, e: { id: "e", type: "end" } },
+  });
+  it("accepts a valid buttons node", () => {
+    expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick one", options: [{ label: "Yes", nextId: "e" }] })).success).toBe(true);
+  });
+  it("rejects buttons with no options", () => {
+    expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: [] })).success).toBe(false);
+  });
+  it("rejects more than 3 options", () => {
+    const opts = [1, 2, 3, 4].map((n) => ({ label: `o${n}`, nextId: "e" }));
+    expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: opts })).success).toBe(false);
+  });
+  it("rejects a dangling option target", () => {
+    expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: [{ label: "Yes", nextId: "ghost" }] })).success).toBe(false);
+  });
+});
