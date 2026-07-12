@@ -156,7 +156,7 @@ export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBui
 
             {b.type === "buttons" && (
               <div>
-                <p className="note" style={{ marginTop: 0 }}>Up to 3 choices. The customer replies with the number or the label; each routes to a step.</p>
+                <p className="note" style={{ marginTop: 0 }}>Up to 10 choices. The customer replies with the number or the label; each routes to a step.</p>
                 {(b.options ?? []).map((o, oi) => (
                   <div key={oi} style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 6 }}>
                     <input
@@ -174,7 +174,7 @@ export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBui
                     <button type="button" className="btn btn--ghost" style={{ minHeight: 30 }} onClick={() => patch(b.id, { options: (b.options ?? []).filter((_, k) => k !== oi) })} aria-label={`Remove option ${oi + 1}`}>×</button>
                   </div>
                 ))}
-                {(b.options ?? []).length < 3 && (
+                {(b.options ?? []).length < 10 && (
                   <button type="button" className="btn btn--ghost" style={{ minHeight: 30, fontSize: 12 }} onClick={() => patch(b.id, { options: [...(b.options ?? []), { label: "", nextId: "" }] })}>+ Add button</button>
                 )}
               </div>

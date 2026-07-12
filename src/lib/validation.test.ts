@@ -275,8 +275,12 @@ describe("ChatbotFlowSchema buttons node", () => {
   it("rejects buttons with no options", () => {
     expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: [] })).success).toBe(false);
   });
-  it("rejects more than 3 options", () => {
-    const opts = [1, 2, 3, 4].map((n) => ({ label: `o${n}`, nextId: "e" }));
+  it("accepts up to 10 options", () => {
+    const opts = Array.from({ length: 10 }, (_, n) => ({ label: `o${n}`, nextId: "e" }));
+    expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: opts })).success).toBe(true);
+  });
+  it("rejects more than 10 options", () => {
+    const opts = Array.from({ length: 11 }, (_, n) => ({ label: `o${n}`, nextId: "e" }));
     expect(ChatbotFlowSchema.safeParse(withNode({ text: "Pick", options: opts })).success).toBe(false);
   });
   it("rejects a dangling option target", () => {
