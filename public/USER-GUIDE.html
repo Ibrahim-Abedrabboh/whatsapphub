@@ -3,16 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Opal Hotel Social Media Growth Hub — User Guide</title>
+<title>Opal Hotel Social Media Growth Hub — User Guide · دليل المستخدم</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 <style>
-  /* ============================================================
-     Opal Hotel Social Media Growth Hub — User Guide
-     Theme tokens from opal-hotel-theme.xml (v3.0) · cream & gold.
-     Light by default; follows the OS for dark (reversed black+gold).
-     ============================================================ */
+  /* Opal Hotel Social Media Growth Hub — User Guide · bilingual EN/AR, cream & gold */
   :root {
     --bg:#FFFCF3; --sunken:#F5F1E4; --card:#FFFFFF; --elevated:#FBF8EF;
     --ink:#2C2C2C; --soft:#3D3D3D; --muted:#726D5E; --micro:#635F51;
@@ -21,10 +17,10 @@
     --burgundy:#800020; --burgundy-bg:rgba(128,0,32,.06);
     --green:#2E7D46; --green-bg:rgba(46,125,70,.08);
     --slate:#394E6C; --slate-bg:rgba(57,78,108,.06);
-    --amber:#B07A16; --amber-bg:rgba(176,122,22,.10);
     --serif:"Libre Baskerville",Didot,"Bodoni MT",Baskerville,Georgia,serif;
     --sans:"Helvetica Neue",Helvetica,Arial,"Segoe UI",sans-serif;
-    --radius:25px; --shadow:0 2px 14px rgba(44,44,44,.06);
+    --arabic:"Cairo","Segoe UI Arabic",Tahoma,sans-serif;
+    --radius:22px; --shadow:0 2px 14px rgba(44,44,44,.06);
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -34,338 +30,275 @@
       --burgundy:#D06A80; --burgundy-bg:rgba(208,106,128,.10);
       --green:#4FB06E; --green-bg:rgba(79,176,110,.10);
       --slate:#8CA3C7; --slate-bg:rgba(140,163,199,.10);
-      --amber:#D9A514; --amber-bg:rgba(217,165,20,.12);
       --shadow:0 8px 24px rgba(0,0,0,.45);
     }
   }
   * { box-sizing:border-box; }
   html { scroll-behavior:smooth; }
-  body {
-    margin:0; background:var(--bg); color:var(--ink);
-    font-family:var(--sans); font-size:16px; line-height:1.65;
-    -webkit-font-smoothing:antialiased;
-  }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:16px; line-height:1.65; -webkit-font-smoothing:antialiased; }
   .wrap { max-width:840px; margin:0 auto; padding:0 24px 80px; }
 
-  /* ── header ── */
-  header.masthead {
-    text-align:center; padding:64px 24px 40px; border-bottom:1px solid var(--line);
-    background:
-      radial-gradient(120% 90% at 50% -20%, rgba(187,139,65,.10), transparent 60%),
-      var(--bg);
+  /* bilingual */
+  html:not([lang="ar"]) [data-lang="ar"] { display:none; }
+  html[lang="ar"] [data-lang="en"] { display:none; }
+  html[lang="ar"] body, html[lang="ar"] .brand, html[lang="ar"] .brand-sub, html[lang="ar"] h2, html[lang="ar"] h3,
+  html[lang="ar"] .slogan, html[lang="ar"] td, html[lang="ar"] .call, html[lang="ar"] .intro,
+  html[lang="ar"] nav.toc a, html[lang="ar"] footer .slogan-sm, html[lang="ar"] .doc-title { font-family:var(--arabic) !important; letter-spacing:normal; }
+  html[lang="ar"] .mark { font-family:var(--serif); }
+  html[lang="ar"] .call { padding:14px 44px 14px 18px; }
+  html[lang="ar"] .call::before { left:auto; right:14px; }
+  html[lang="ar"] th { text-align:right; }
+  html[lang="ar"] ul, html[lang="ar"] ol { padding-left:0; padding-right:22px; }
+
+  /* language toggle */
+  .lang-toggle {
+    position:fixed; top:14px; inset-inline-end:14px; z-index:50; font-family:var(--sans); font-weight:600; font-size:13px;
+    background:var(--card); color:var(--gold-deep); border:1px solid var(--gold); border-radius:999px; padding:8px 15px; cursor:pointer; box-shadow:var(--shadow);
   }
-  .mark {
-    width:76px; height:76px; margin:0 auto 18px; border-radius:50%;
-    border:2px solid var(--gold); display:grid; place-items:center;
-    font-family:var(--serif); font-size:40px; color:var(--gold); line-height:1;
-  }
-  .brand {
-    font-family:var(--serif); font-weight:700; letter-spacing:.22em;
-    text-transform:uppercase; font-size:clamp(22px,4vw,30px); color:var(--gold); margin:0;
-  }
-  .brand-sub {
-    font-family:var(--serif); letter-spacing:.16em; text-transform:uppercase;
-    font-size:13px; color:var(--muted); margin:8px 0 0;
-  }
+  .lang-toggle:hover { background:rgba(187,139,65,.09); }
+
+  header.masthead { text-align:center; padding:64px 24px 40px; border-bottom:1px solid var(--line); background:radial-gradient(120% 90% at 50% -20%, rgba(187,139,65,.10), transparent 60%), var(--bg); }
+  .mark { width:76px; height:76px; margin:0 auto 18px; border-radius:50%; border:2px solid var(--gold); display:grid; place-items:center; font-family:var(--serif); font-size:40px; color:var(--gold); line-height:1; }
+  .brand { font-family:var(--serif); font-weight:700; letter-spacing:.18em; text-transform:uppercase; font-size:clamp(22px,4vw,30px); color:var(--gold); margin:0; }
+  html[lang="ar"] .brand { letter-spacing:normal; }
+  .brand-sub { font-family:var(--serif); letter-spacing:.14em; text-transform:uppercase; font-size:13px; color:var(--muted); margin:8px 0 0; }
+  html[lang="ar"] .brand-sub { letter-spacing:normal; }
   .slogan { font-family:var(--serif); font-style:italic; color:var(--soft); font-size:18px; margin:16px 0 0; }
-  .doc-title { font-family:var(--sans); font-size:12px; letter-spacing:.28em; text-transform:uppercase; color:var(--gold-deep); margin:22px 0 0; }
+  .doc-title { font-size:12px; letter-spacing:.26em; text-transform:uppercase; color:var(--gold-deep); margin:22px 0 0; }
+  html[lang="ar"] .doc-title { letter-spacing:normal; }
 
-  /* ── typography ── */
-  h2 {
-    font-family:var(--serif); font-weight:700; font-size:clamp(24px,3.4vw,32px);
-    color:var(--ink); margin:56px 0 6px; padding-top:14px; scroll-margin-top:20px;
-  }
-  h2 .num { color:var(--gold); font-weight:400; margin-right:10px; }
+  h2 { font-family:var(--serif); font-weight:700; font-size:clamp(24px,3.4vw,32px); color:var(--ink); margin:56px 0 6px; scroll-margin-top:20px; }
+  h2 .num { color:var(--gold); font-weight:400; margin-inline-end:10px; }
   h3 { font-family:var(--serif); font-weight:700; font-size:19px; color:var(--ink); margin:30px 0 8px; }
-  h2 + p.lead { color:var(--muted); margin-top:2px; }
-  p { margin:12px 0; }
-  a { color:var(--gold-deep); }
-  strong { color:var(--ink); }
+  p { margin:12px 0; } a { color:var(--gold-deep); } strong { color:var(--ink); }
   hr { border:0; border-top:1px solid var(--line); margin:40px 0; }
-  ul, ol { padding-left:22px; }
-  li { margin:6px 0; }
-  code {
-    background:var(--sunken); border:1px solid var(--line); border-radius:6px;
-    padding:1px 6px; font-family:"Geist Mono","Courier New",monospace; font-size:.9em; color:var(--gold-deep);
-  }
+  ul, ol { padding-left:22px; } li { margin:6px 0; }
+  code { background:var(--sunken); border:1px solid var(--line); border-radius:6px; padding:1px 6px; font-family:"Courier New",monospace; font-size:.9em; color:var(--gold-deep); }
 
-  /* ── intro / TOC ── */
   .intro { font-size:18px; color:var(--soft); }
-  nav.toc {
-    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
-    box-shadow:var(--shadow); padding:22px 26px; margin:34px 0;
-  }
-  nav.toc h4 { font-family:var(--sans); font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--gold-deep); margin:0 0 12px; }
+  nav.toc { background:var(--card); border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); padding:22px 26px; margin:34px 0; }
+  nav.toc h4 { font-family:var(--sans); font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:var(--gold-deep); margin:0 0 12px; }
+  html[lang="ar"] nav.toc h4 { letter-spacing:normal; font-family:var(--arabic); }
   nav.toc ol { columns:2; column-gap:32px; margin:0; }
   @media (max-width:560px){ nav.toc ol { columns:1; } }
-  nav.toc a { color:var(--soft); text-decoration:none; }
-  nav.toc a:hover { color:var(--gold-deep); }
+  nav.toc a { color:var(--soft); text-decoration:none; } nav.toc a:hover { color:var(--gold-deep); }
 
-  /* ── callouts ── */
   .call { border-radius:14px; padding:14px 18px 14px 44px; margin:18px 0; position:relative; border:1px solid var(--line); }
   .call::before { position:absolute; left:14px; top:13px; font-size:16px; }
-  .call .k { font-weight:700; display:block; margin-bottom:2px; font-size:13px; letter-spacing:.04em; }
-  .tip     { background:rgba(187,139,65,.07); border-color:rgba(187,139,65,.35); }
-  .tip::before { content:"\1F4A1"; } .tip .k { color:var(--gold-deep); }
-  .warning { background:var(--burgundy-bg); border-color:rgba(128,0,32,.30); }
-  .warning::before { content:"\26A0\FE0F"; } .warning .k { color:var(--burgundy); }
-  .note    { background:var(--slate-bg); border-color:rgba(57,78,108,.28); }
-  .note::before { content:"\1F4DD"; } .note .k { color:var(--slate); }
-  .success { background:var(--green-bg); border-color:rgba(46,125,70,.30); }
-  .success::before { content:"\2705"; } .success .k { color:var(--green); }
+  .call .k { font-weight:700; }
+  .tip { background:rgba(187,139,65,.07); border-color:rgba(187,139,65,.35); } .tip::before { content:"\1F4A1"; } .tip .k { color:var(--gold-deep); }
+  .warning { background:var(--burgundy-bg); border-color:rgba(128,0,32,.30); } .warning::before { content:"\26A0\FE0F"; } .warning .k { color:var(--burgundy); }
+  .note { background:var(--slate-bg); border-color:rgba(57,78,108,.28); } .note::before { content:"\1F4DD"; } .note .k { color:var(--slate); }
+  .success { background:var(--green-bg); border-color:rgba(46,125,70,.30); } .success::before { content:"\2705"; } .success .k { color:var(--green); }
 
-  /* ── tables ── */
   .tbl-wrap { overflow-x:auto; margin:18px 0; }
   table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
   th, td { text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); font-size:14.5px; vertical-align:top; }
-  th { font-family:var(--sans); font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--gold-deep); background:var(--sunken); }
+  th { font-family:var(--sans); font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold-deep); background:var(--sunken); }
+  html[lang="ar"] th { letter-spacing:normal; font-family:var(--arabic); }
   tr:last-child td { border-bottom:0; }
 
   footer { text-align:center; color:var(--muted); font-size:13px; margin-top:60px; padding-top:24px; border-top:1px solid var(--line); }
   footer .slogan-sm { font-family:var(--serif); font-style:italic; color:var(--gold-deep); }
+
+  @media print { .lang-toggle { display:none; } body { font-size:11pt; background:#fff; color:#222; } table { box-shadow:none; break-inside:avoid; } }
 </style>
 </head>
 <body>
 
+<button class="lang-toggle" onclick="toggleLang()" aria-label="Switch language">
+  <span data-lang="en">العربية</span><span data-lang="ar">English</span>
+</button>
+
 <header class="masthead">
   <div class="mark">O</div>
   <p class="brand">Opal Hotel</p>
-  <p class="brand-sub">Social Media Growth Hub</p>
-  <p class="slogan">The True Meaning of Luxury</p>
-  <p class="doc-title">Complete Beginner's Guide</p>
+  <p class="brand-sub"><span data-lang="en">Social Media Growth Hub</span><span data-lang="ar">مركز النمو عبر وسائل التواصل</span></p>
+  <p class="slogan"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></p>
+  <p class="doc-title"><span data-lang="en">Complete Beginner's Guide</span><span data-lang="ar">دليل المبتدئين الكامل</span></p>
 </header>
 
 <div class="wrap">
 
-  <p class="intro">Welcome. This guide walks you through <strong>everything</strong> the Opal Hotel Social Media Growth Hub can do, one click at a time. If you can send a WhatsApp message on your phone, you can run this — no technical skills required. Take it section by section; nothing here can break anything.</p>
+  <p class="intro"><span data-lang="en">Welcome. This guide walks you through <strong>everything</strong> the Opal Hotel Social Media Growth Hub can do, one click at a time. If you can send a WhatsApp message on your phone, you can run this — no technical skills required.</span><span data-lang="ar">مرحبًا. يأخذك هذا الدليل عبر <strong>كل</strong> ما يستطيع مركز أوبال هوتل للنمو فعله، نقرةً بنقرة. إن كنت تستطيع إرسال رسالة واتساب من هاتفك، فبإمكانك تشغيل هذا — دون أي مهارات تقنية.</span></p>
 
   <nav class="toc">
-    <h4>What's inside</h4>
+    <h4><span data-lang="en">What's inside</span><span data-lang="ar">المحتويات</span></h4>
     <ol>
-      <li><a href="#s1">What this is</a></li>
-      <li><a href="#s2">Before you start</a></li>
-      <li><a href="#s3">Logging in</a></li>
-      <li><a href="#s4">The main menu</a></li>
-      <li><a href="#s5">Adding contacts</a></li>
-      <li><a href="#s6">Lists</a></li>
-      <li><a href="#s7">Message templates</a></li>
-      <li><a href="#s8">Sending a broadcast</a></li>
-      <li><a href="#s9">The inbox</a></li>
-      <li><a href="#s10">Building a chatbot</a></li>
-      <li><a href="#s11">Automation</a></li>
-      <li><a href="#s12">Orders &amp; selling</a></li>
-      <li><a href="#s13">Settings</a></li>
-      <li><a href="#s14">Troubleshooting</a></li>
-      <li><a href="#s15">Glossary</a></li>
+      <li><a href="#s1"><span data-lang="en">What this is</span><span data-lang="ar">ما هذا النظام</span></a></li>
+      <li><a href="#s2"><span data-lang="en">Before you start</span><span data-lang="ar">قبل أن تبدأ</span></a></li>
+      <li><a href="#s3"><span data-lang="en">Logging in</span><span data-lang="ar">تسجيل الدخول</span></a></li>
+      <li><a href="#s4"><span data-lang="en">The main menu</span><span data-lang="ar">القائمة الرئيسية</span></a></li>
+      <li><a href="#s5"><span data-lang="en">Adding contacts</span><span data-lang="ar">إضافة جهات الاتصال</span></a></li>
+      <li><a href="#s6"><span data-lang="en">Lists</span><span data-lang="ar">القوائم</span></a></li>
+      <li><a href="#s7"><span data-lang="en">Message templates</span><span data-lang="ar">قوالب الرسائل</span></a></li>
+      <li><a href="#s8"><span data-lang="en">Sending a broadcast</span><span data-lang="ar">إرسال حملة</span></a></li>
+      <li><a href="#s9"><span data-lang="en">The inbox</span><span data-lang="ar">صندوق الوارد</span></a></li>
+      <li><a href="#s10"><span data-lang="en">Building a chatbot</span><span data-lang="ar">بناء بوت</span></a></li>
+      <li><a href="#s11"><span data-lang="en">Automation</span><span data-lang="ar">الأتمتة</span></a></li>
+      <li><a href="#s12"><span data-lang="en">Orders &amp; selling</span><span data-lang="ar">الطلبات والبيع</span></a></li>
+      <li><a href="#s13"><span data-lang="en">Settings</span><span data-lang="ar">الإعدادات</span></a></li>
+      <li><a href="#s14"><span data-lang="en">Troubleshooting</span><span data-lang="ar">حلّ المشكلات</span></a></li>
+      <li><a href="#s15"><span data-lang="en">Glossary</span><span data-lang="ar">المصطلحات</span></a></li>
     </ol>
   </nav>
 
-  <h2 id="s1"><span class="num">1</span>What This Is</h2>
-  <p>The Opal Hotel Social Media Growth Hub is a <strong>website your team logs into</strong> to talk to guests and customers on WhatsApp — far more powerfully than from a phone. With it you can:</p>
+  <h2 id="s1"><span class="num">1</span><span data-lang="en">What This Is</span><span data-lang="ar">ما هذا النظام</span></h2>
+  <p><span data-lang="en">The Opal Hotel Social Media Growth Hub is a <strong>website your team logs into</strong> to talk to guests on WhatsApp — far more powerfully than from a phone. With it you can:</span><span data-lang="ar">مركز أوبال هوتل للنمو هو <strong>موقع يسجّل فريقك الدخول إليه</strong> للتحدّث إلى الضيوف على واتساب — بقدرات تفوق الهاتف بكثير. يمكنك من خلاله:</span></p>
   <ul>
-    <li>📇 Keep an organized <strong>address book</strong> of your customers</li>
-    <li>📣 Send <strong>one message to many people at once</strong> (a “broadcast”)</li>
-    <li>💬 <strong>Chat back and forth</strong> with guests in a shared inbox</li>
-    <li>🤖 Build a <strong>chatbot</strong> that answers automatically, 24/7</li>
-    <li>🛍️ Take <strong>orders</strong> from a product catalog (optional)</li>
+    <li><span data-lang="en">📇 Keep an organized <strong>address book</strong> of your customers</span><span data-lang="ar">📇 الاحتفاظ بـ<strong>دفتر عناوين</strong> منظّم لعملائك</span></li>
+    <li><span data-lang="en">📣 Send <strong>one message to many people at once</strong> (a "broadcast")</span><span data-lang="ar">📣 إرسال <strong>رسالة واحدة لكثيرين دفعة واحدة</strong> ("حملة")</span></li>
+    <li><span data-lang="en">💬 <strong>Chat back and forth</strong> with guests in a shared inbox</span><span data-lang="ar">💬 <strong>التحاور</strong> مع الضيوف في صندوق وارد مشترك</span></li>
+    <li><span data-lang="en">🤖 Build a <strong>chatbot</strong> that answers automatically, 24/7</span><span data-lang="ar">🤖 بناء <strong>بوت</strong> يردّ تلقائيًا على مدار الساعة</span></li>
+    <li><span data-lang="en">🛍️ Take <strong>orders</strong> from a product catalog (optional)</span><span data-lang="ar">🛍️ استقبال <strong>الطلبات</strong> من كتالوج المنتجات (اختياري)</span></li>
   </ul>
-  <div class="call note"><span class="k">Note</span>Everything happens in your <strong>web browser</strong> (Chrome, Safari, Edge…). There's nothing to download or install.</div>
+  <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">Everything happens in your <strong>web browser</strong>. There's nothing to download or install.</span><span data-lang="ar">كل شيء يجري في <strong>متصفّح الويب</strong>. لا شيء تحمّله أو تثبّته.</span></div>
 
-  <h2 id="s2"><span class="num">2</span>What You'll Need Before You Start</h2>
+  <h2 id="s2"><span class="num">2</span><span data-lang="en">What You'll Need Before You Start</span><span data-lang="ar">ما تحتاجه قبل أن تبدأ</span></h2>
   <ol>
-    <li><strong>The web address (link)</strong> for your Hub — bookmark it.</li>
-    <li><strong>Your login email and password</strong> — your administrator creates these.</li>
-    <li><strong>A connected WhatsApp Business number</strong> — set up once by an admin (Section 13). You don't need it to start learning.</li>
-    <li><strong>A modern browser</strong> on a computer (best) or phone.</li>
+    <li><span data-lang="en"><strong>The web address (link)</strong> for your Hub — bookmark it.</span><span data-lang="ar"><strong>رابط</strong> مركزك — أضِفه إلى المفضّلة.</span></li>
+    <li><span data-lang="en"><strong>Your login email and password</strong> — your administrator creates these.</span><span data-lang="ar"><strong>بريدك وكلمة مرورك</strong> — يُنشئهما المسؤول لك.</span></li>
+    <li><span data-lang="en"><strong>A connected WhatsApp Business number</strong> — set up once by an admin (Section 13).</span><span data-lang="ar"><strong>رقم واتساب للأعمال مربوط</strong> — يُعدّه المسؤول مرّة (القسم 13).</span></li>
+    <li><span data-lang="en">A <strong>modern web browser</strong> on a computer (best) or phone.</span><span data-lang="ar"><strong>متصفّح حديث</strong> على حاسوب (الأفضل) أو هاتف.</span></li>
   </ol>
-  <div class="call tip"><span class="k">Tip</span>Use a laptop or desktop for setup tasks like broadcasts and chatbots — there's more room to work. The inbox is comfortable on a phone too.</div>
-  <div class="call warning"><span class="k">Warning — keep your password private</span>Anyone with your login can message customers as your business. Don't share it, and don't reuse a password from another site.</div>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">Keep your password private — anyone with your login can message customers as your business.</span><span data-lang="ar">احتفظ بكلمة مرورك سرّية — فمن يملك دخولك يمكنه مراسلة العملاء باسم نشاطك.</span></div>
 
-  <h2 id="s3"><span class="num">3</span>Logging In</h2>
+  <h2 id="s3"><span class="num">3</span><span data-lang="en">Logging In</span><span data-lang="ar">تسجيل الدخول</span></h2>
   <ol>
-    <li>Open your browser and go to <strong>your Hub link</strong>.</li>
-    <li>You'll see a <strong>“Sign in”</strong> screen.</li>
-    <li>Type your login <strong>Email</strong>, then your <strong>Password</strong>.</li>
-    <li>Click the <strong>Sign in</strong> button.</li>
+    <li><span data-lang="en">Go to <strong>your Hub link</strong>.</span><span data-lang="ar">اذهب إلى <strong>رابط مركزك</strong>.</span></li>
+    <li><span data-lang="en">On the <strong>"Sign in"</strong> screen, type your <strong>Email</strong>, then your <strong>Password</strong>.</span><span data-lang="ar">في شاشة <strong>"تسجيل الدخول"</strong>، اكتب <strong>بريدك</strong> ثم <strong>كلمة مرورك</strong>.</span></li>
+    <li><span data-lang="en">Click <strong>Sign in</strong>.</span><span data-lang="ar">انقر <strong>تسجيل الدخول</strong>.</span></li>
   </ol>
-  <div class="call success"><span class="k">Success looks like</span>The page changes to a <strong>Dashboard</strong> with a menu across the top. You're in!</div>
-  <div class="call warning"><span class="k">Common mistake — extra spaces</span>If sign-in fails, check for an accidental space before your email or password (common when copy-pasting).</div>
-  <div class="call tip"><span class="k">Tip — light or dark</span>Use the <strong>☀ / ☾ toggle</strong> (top-right) to switch between the light cream theme and the dark black-and-gold theme. Your choice is remembered.</div>
+  <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">the page changes to a <strong>Dashboard</strong> with a menu across the top.</span><span data-lang="ar">تتحوّل الصفحة إلى <strong>لوحة تحكّم</strong> مع قائمة في الأعلى.</span></div>
+  <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">use the <strong>☀ / ☾ toggle</strong> (top-right) to switch between the light cream theme and the dark black-and-gold theme. Your choice is remembered.</span><span data-lang="ar">استخدم زرّ <strong>☀ / ☾</strong> (أعلى الزاوية) للتبديل بين المظهر الكريمي الفاتح والمظهر الأسود الذهبي الداكن. ويُحفَظ اختيارك.</span></div>
 
-  <h2 id="s4"><span class="num">4</span>Getting Your Bearings — The Main Menu</h2>
-  <p class="lead">Across the top of every screen is your main menu.</p>
+  <h2 id="s4"><span class="num">4</span><span data-lang="en">The Main Menu</span><span data-lang="ar">القائمة الرئيسية</span></h2>
   <div class="tbl-wrap"><table>
-    <tr><th>Menu item</th><th>What it's for</th></tr>
-    <tr><td><strong>Dashboard</strong></td><td>Your home screen — a quick overview</td></tr>
-    <tr><td><strong>Inbox</strong></td><td>Live back-and-forth chats with customers</td></tr>
-    <tr><td><strong>Orders</strong></td><td>Customer orders (if you sell products)</td></tr>
-    <tr><td><strong>Contacts</strong></td><td>Your customer address book</td></tr>
-    <tr><td><strong>Lists</strong></td><td>Groups of contacts (e.g. “VIPs”)</td></tr>
-    <tr><td><strong>Templates</strong></td><td>Pre-approved message designs for broadcasts</td></tr>
-    <tr><td><strong>Campaigns</strong></td><td>Send a message to many people at once</td></tr>
-    <tr><td><strong>Chatbot</strong></td><td>Build automatic-reply bots</td></tr>
-    <tr><td><strong>Settings</strong></td><td>Setup: your number, team, AI, automation…</td></tr>
+    <tr><th><span data-lang="en">Menu item</span><span data-lang="ar">عنصر القائمة</span></th><th><span data-lang="en">What it's for</span><span data-lang="ar">وظيفته</span></th></tr>
+    <tr><td><strong>Dashboard</strong></td><td><span data-lang="en">Home screen — quick overview</span><span data-lang="ar">الشاشة الرئيسية — نظرة سريعة</span></td></tr>
+    <tr><td><strong>Inbox</strong></td><td><span data-lang="en">Live back-and-forth chats</span><span data-lang="ar">محادثات حيّة ثنائية الاتجاه</span></td></tr>
+    <tr><td><strong>Orders</strong></td><td><span data-lang="en">Customer orders (if you sell products)</span><span data-lang="ar">طلبات العملاء (إن كنت تبيع منتجات)</span></td></tr>
+    <tr><td><strong>Contacts</strong></td><td><span data-lang="en">Your customer address book</span><span data-lang="ar">دفتر عناوين عملائك</span></td></tr>
+    <tr><td><strong>Lists</strong></td><td><span data-lang="en">Groups of contacts</span><span data-lang="ar">مجموعات من جهات الاتصال</span></td></tr>
+    <tr><td><strong>Templates</strong></td><td><span data-lang="en">Pre-approved message designs</span><span data-lang="ar">تصاميم رسائل معتمَدة مسبقًا</span></td></tr>
+    <tr><td><strong>Campaigns</strong></td><td><span data-lang="en">Send a message to many at once</span><span data-lang="ar">إرسال رسالة لكثيرين دفعة واحدة</span></td></tr>
+    <tr><td><strong>Chatbot</strong></td><td><span data-lang="en">Build automatic-reply bots</span><span data-lang="ar">بناء بوتات ردّ تلقائي</span></td></tr>
+    <tr><td><strong>Settings</strong></td><td><span data-lang="en">Setup: number, team, AI, automation…</span><span data-lang="ar">الإعداد: الرقم، الفريق، الذكاء، الأتمتة…</span></td></tr>
   </table></div>
-  <p>At the far right you'll also find a <strong>Logout</strong> button and the theme toggle. The gold logo in the top-left always returns you to the Dashboard.</p>
+  <p><span data-lang="en">The gold logo in the top-left always returns you to the Dashboard.</span><span data-lang="ar">الشعار الذهبي في الزاوية يعيدك دائمًا إلى لوحة التحكّم.</span></p>
 
-  <h2 id="s5"><span class="num">5</span>Your Address Book — Adding Contacts</h2>
-  <h3>Add one person</h3>
-  <ol>
-    <li>Click <strong>Contacts</strong>.</li>
-    <li>In the <strong>“Add contact”</strong> form, enter a <strong>First name</strong> and a <strong>Phone</strong> with country code, e.g. <code>+966 50 000 0000</code>.</li>
-    <li>Click <strong>Add</strong>.</li>
-  </ol>
-  <div class="call success"><span class="k">Success looks like</span>The new person appears in the contacts table below the form.</div>
-  <div class="call warning"><span class="k">Common mistake — phone format</span>Always include the country code. <code>501234567</code> won't work; <code>+966501234567</code> will.</div>
-  <h3>Add many at once (import a spreadsheet)</h3>
-  <ol>
-    <li>On the Contacts page, find the <strong>Upload CSV</strong> option.</li>
-    <li>Download the <strong>example file</strong> if offered — it shows the exact columns (a phone column and a name column).</li>
-    <li>Put your customers into that format and <strong>Save as CSV</strong> (in Excel: <em>File → Save As → CSV</em>).</li>
-    <li>Click <strong>Choose file</strong>, pick your CSV, and click <strong>Upload</strong>.</li>
-  </ol>
-  <div class="call warning"><span class="k">Warning — consent matters</span>Only upload people who have <strong>agreed</strong> to hear from you on WhatsApp. Messaging people who didn't opt in can get your number blocked by Meta.</div>
-  <div class="call note"><span class="k">Note</span>Customers who reply <strong>STOP</strong> are automatically removed from all future broadcasts.</div>
+  <h2 id="s5"><span class="num">5</span><span data-lang="en">Adding Contacts</span><span data-lang="ar">إضافة جهات الاتصال</span></h2>
+  <p><span data-lang="en"><strong>Add one person:</strong> Click <strong>Contacts</strong> → in the <strong>"Add contact"</strong> form enter a <strong>First name</strong> and a <strong>Phone with country code</strong> (e.g. <code>+966 50 000 0000</code>) → <strong>Add</strong>.</span><span data-lang="ar"><strong>إضافة شخص:</strong> انقر <strong>جهات الاتصال</strong> ← في نموذج <strong>"إضافة جهة"</strong> أدخِل <strong>الاسم الأول</strong> و<strong>الهاتف مع رمز الدولة</strong> (مثل <code>+966 50 000 0000</code>) ← <strong>إضافة</strong>.</span></p>
+  <p><span data-lang="en"><strong>Add many:</strong> find <strong>Upload CSV</strong>, download the example file, put your customers in that format, <strong>Save as CSV</strong>, then <strong>Choose file</strong> → <strong>Upload</strong>.</span><span data-lang="ar"><strong>إضافة كثيرين:</strong> ابحث عن <strong>رفع CSV</strong>، ونزّل الملف المثال، وضع عملاءك بهذا التنسيق، و<strong>احفظ بصيغة CSV</strong>، ثم <strong>اختر الملف</strong> ← <strong>رفع</strong>.</span></p>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">always include the country code, and only upload people who <strong>agreed</strong> to hear from you — messaging non-opted-in people can get your number blocked by Meta.</span><span data-lang="ar">أدرِج دائمًا رمز الدولة، وارفع فقط من <strong>وافقوا</strong> على التواصل معك — فمراسلة غير الموافقين قد تحجب رقمك من ميتا.</span></div>
+  <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">customers who reply <strong>STOP</strong> are auto-removed from all future broadcasts.</span><span data-lang="ar">من يردّ بكلمة <strong>إيقاف</strong> يُستبعَد تلقائيًا من كل الحملات المستقبلية.</span></div>
 
-  <h2 id="s6"><span class="num">6</span>Grouping Customers — Lists</h2>
-  <p>A <strong>List</strong> is a named group of contacts, like a folder (e.g. “VIP guests”, “Newsletter”).</p>
-  <ol>
-    <li>Click <strong>Lists</strong>.</li>
-    <li>In the <strong>“New list”</strong> form, type a name and click <strong>Create</strong>.</li>
-    <li>Add contacts to a list from the Contacts area.</li>
-  </ol>
-  <div class="call tip"><span class="k">Tip</span>Lists are how you choose <strong>who</strong> receives a broadcast. Make a few sensible lists early — it pays off later.</div>
-  <div class="call note"><span class="k">Note — Lists vs Segments</span>A <strong>List</strong> is a group you build by hand. A <strong>Segment</strong> fills itself automatically from rules. Beginners can happily stick to Lists.</div>
+  <h2 id="s6"><span class="num">6</span><span data-lang="en">Lists</span><span data-lang="ar">القوائم</span></h2>
+  <p><span data-lang="en">A <strong>List</strong> is a named group of contacts (e.g. "VIP guests"). Click <strong>Lists</strong> → <strong>"New list"</strong> → type a name → <strong>Create</strong>. Lists are how you choose <strong>who</strong> receives a broadcast.</span><span data-lang="ar"><strong>القائمة</strong> مجموعة مُسمّاة من جهات الاتصال (مثل "كبار الضيوف"). انقر <strong>القوائم</strong> ← <strong>"قائمة جديدة"</strong> ← اكتب اسمًا ← <strong>إنشاء</strong>. بالقوائم تختار <strong>مَن</strong> يستقبل الحملة.</span></p>
+  <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">a <strong>List</strong> is built by hand; a <strong>Segment</strong> fills itself from rules. Beginners can stick to Lists.</span><span data-lang="ar"><strong>القائمة</strong> تُبنى يدويًا؛ و<strong>الشريحة</strong> تملأ نفسها بقواعد. يكفي المبتدئين استخدام القوائم.</span></div>
 
-  <h2 id="s7"><span class="num">7</span>Message Templates (and why WhatsApp requires them)</h2>
-  <div class="call note"><span class="k">Note — the “24-hour window”</span>WhatsApp only lets you send a <strong>free-typed</strong> message within <strong>24 hours</strong> of the customer's last message. Outside that (e.g. a first promotional blast), WhatsApp requires a <strong>pre-approved template</strong>. This protects people from spam.</div>
-  <p>A <strong>template</strong> is a message design that <strong>Meta reviews and approves</strong> before you can broadcast it. It can include blanks like <code>{{1}}</code> that fill with each person's name.</p>
-  <ol>
-    <li>Click <strong>Templates</strong> → <strong>New template</strong>.</li>
-    <li>Give it a <strong>name</strong>, choose a <strong>language</strong>, and write the <strong>body</strong>. Use <code>{{1}}</code>, <code>{{2}}</code> as personalization blanks.</li>
-    <li><strong>Submit</strong> — it goes to Meta for review.</li>
-  </ol>
-  <div class="call success"><span class="k">Success looks like</span>Your template appears as <strong>PENDING</strong>, then becomes <strong>APPROVED</strong> (minutes to a few hours).</div>
-  <div class="call warning"><span class="k">Common mistake</span>You can only broadcast with <strong>APPROVED</strong> templates. Be patient; don't re-submit repeatedly.</div>
+  <h2 id="s7"><span class="num">7</span><span data-lang="en">Message Templates</span><span data-lang="ar">قوالب الرسائل</span></h2>
+  <div class="call note"><span class="k"><span data-lang="en">📝 The "24-hour window":</span><span data-lang="ar">📝 "نافذة الـ 24 ساعة":</span></span> <span data-lang="en">WhatsApp only lets you free-type within <strong>24 hours</strong> of the customer's last message. Outside that, you must use a <strong>pre-approved template</strong>.</span><span data-lang="ar">يسمح واتساب بالكتابة الحرّة خلال <strong>24 ساعة</strong> فقط من آخر رسالة للعميل. وخارجها يجب استخدام <strong>قالب معتمَد مسبقًا</strong>.</span></div>
+  <p><span data-lang="en">A <strong>template</strong> is a message design that <strong>Meta reviews and approves</strong>. Click <strong>Templates → New template</strong>, give it a name/language/body (use <code>{{1}}</code> as a personalization blank), and <strong>Submit</strong>.</span><span data-lang="ar"><strong>القالب</strong> تصميم رسالة <strong>تراجعه ميتا وتعتمده</strong>. انقر <strong>القوالب ← قالب جديد</strong>، وامنحه اسمًا/لغة/نصًّا (استخدم <code>{{1}}</code> كحقل تخصيص)، ثم <strong>أرسِل</strong>.</span></p>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Common mistake:</span><span data-lang="ar">⚠️ خطأ شائع:</span></span> <span data-lang="en">you can only broadcast with <strong>APPROVED</strong> templates.</span><span data-lang="ar">لا يمكن البثّ إلا بالقوالب <strong>المعتمَدة</strong>.</span></div>
 
-  <h2 id="s8"><span class="num">8</span>Sending a Broadcast</h2>
-  <p>A <strong>broadcast</strong> (or campaign) sends one template to a whole List at once.</p>
-  <ol>
-    <li>Click <strong>Campaigns</strong> → start a new broadcast.</li>
-    <li><strong>Choose a template</strong> (an APPROVED one).</li>
-    <li><strong>Choose your audience</strong> — a List or Segment.</li>
-    <li><strong>Fill the blanks</strong> — map <code>{{1}}</code> to each contact's name.</li>
-    <li>Choose <strong>Send now</strong> or <strong>Schedule</strong> for later.</li>
-    <li>Click <strong>Send</strong>.</li>
-  </ol>
-  <div class="call success"><span class="k">Success looks like</span>A live progress bar showing <strong>Queued → Sending → Sent</strong>, with a count that climbs as it delivers.</div>
-  <div class="call tip"><span class="k">Tip — start small</span>For your first broadcast, make a tiny test List with just your own number and send to that first. Seeing it arrive builds confidence fast.</div>
-  <div class="call warning"><span class="k">Common mistake</span>Double-check the audience before you hit send — a broadcast can't be “unsent”.</div>
+  <h2 id="s8"><span class="num">8</span><span data-lang="en">Sending a Broadcast</span><span data-lang="ar">إرسال حملة</span></h2>
+  <p><span data-lang="en">Click <strong>Campaigns</strong> → new broadcast → <strong>choose an APPROVED template</strong> → <strong>choose an audience</strong> (List/Segment) → <strong>fill the blanks</strong> → <strong>Send now</strong> or <strong>Schedule</strong> → <strong>Send</strong>.</span><span data-lang="ar">انقر <strong>الحملات</strong> ← حملة جديدة ← <strong>اختر قالبًا معتمَدًا</strong> ← <strong>اختر جمهورًا</strong> (قائمة/شريحة) ← <strong>املأ الحقول</strong> ← <strong>إرسال الآن</strong> أو <strong>جدولة</strong> ← <strong>إرسال</strong>.</span></p>
+  <div class="call success"><span class="k"><span data-lang="en">✅ Success:</span><span data-lang="ar">✅ نتيجة:</span></span> <span data-lang="en">a live bar showing <strong>Queued → Sending → Sent</strong>.</span><span data-lang="ar">شريط حيّ يُظهر <strong>قائمة الانتظار ← إرسال ← أُرسِلت</strong>.</span></div>
+  <div class="call tip"><span class="k"><span data-lang="en">💡 Tip:</span><span data-lang="ar">💡 نصيحة:</span></span> <span data-lang="en">for your first broadcast, make a tiny test List with just your own number.</span><span data-lang="ar">في أول حملة، أنشئ قائمة تجريبية صغيرة برقمك فقط.</span></div>
 
-  <h2 id="s9"><span class="num">9</span>The Inbox — Chatting With Customers</h2>
-  <ol>
-    <li>Click <strong>Inbox</strong>. Conversations are on the left; click one to open it.</li>
-    <li>Type your reply in the box at the bottom and press <strong>Send</strong>.</li>
-  </ol>
-  <p><strong>Organizing (great for teams):</strong> mark a chat <strong>Open / Pending / Closed</strong>, <strong>assign</strong> it to a teammate, leave a private <strong>internal note</strong> the customer never sees, or drop in a saved <strong>canned reply</strong>.</p>
-  <p><strong>AI helpers (if switched on):</strong> <strong>Suggest reply</strong>, <strong>Summarize</strong>, and <strong>Translate</strong> (Arabic ↔ English).</p>
-  <div class="call note"><span class="k">Note — you're always in control</span>AI <strong>suggests</strong>; nothing reaches the customer until <strong>you</strong> click Send.</div>
-  <div class="call warning"><span class="k">Warning — the 24-hour window again</span>If a customer hasn't messaged in over 24 hours, WhatsApp blocks free-typed replies — reach them with an approved <strong>template</strong> instead.</div>
+  <h2 id="s9"><span class="num">9</span><span data-lang="en">The Inbox</span><span data-lang="ar">صندوق الوارد</span></h2>
+  <p><span data-lang="en">Click <strong>Inbox</strong> → click a conversation → type your reply → <strong>Send</strong>. You can mark chats <strong>Open / Pending / Closed</strong>, <strong>assign</strong> them, leave private <strong>internal notes</strong>, insert <strong>canned replies</strong>, and (if AI is on) use <strong>Suggest reply / Summarize / Translate</strong>.</span><span data-lang="ar">انقر <strong>صندوق الوارد</strong> ← اختر محادثة ← اكتب ردّك ← <strong>إرسال</strong>. يمكنك تصنيف المحادثات <strong>مفتوحة / معلّقة / مغلقة</strong>، و<strong>إسنادها</strong>، وترك <strong>ملاحظات داخلية</strong> خاصّة، وإدراج <strong>ردود جاهزة</strong>، و(إن كان الذكاء مفعّلًا) استخدام <strong>اقتراح ردّ / تلخيص / ترجمة</strong>.</span></p>
+  <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">AI <strong>suggests</strong>; nothing reaches the customer until <strong>you</strong> click Send.</span><span data-lang="ar">الذكاء الاصطناعي <strong>يقترح</strong>؛ ولا يصل شيء للعميل حتى تنقر <strong>أنت</strong> "إرسال".</span></div>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">if a customer hasn't messaged in 24 hours, use an approved <strong>template</strong> to re-open the chat.</span><span data-lang="ar">إن لم يراسلك العميل منذ 24 ساعة، استخدم <strong>قالبًا</strong> معتمَدًا لإعادة فتح المحادثة.</span></div>
 
-  <h2 id="s10"><span class="num">10</span>Building a Chatbot</h2>
-  <p>A <strong>chatbot</strong> replies to customers automatically — perfect for FAQs, collecting info, or guiding a booking while your team sleeps.</p>
-  <ol>
-    <li>Click <strong>Chatbot</strong> → <strong>+ New chatbot</strong> and give it a <strong>name</strong>.</li>
-    <li>Add <strong>steps</strong> (building blocks). Hover any step button for a tooltip.</li>
-  </ol>
+  <h2 id="s10"><span class="num">10</span><span data-lang="en">Building a Chatbot</span><span data-lang="ar">بناء بوت</span></h2>
+  <p><span data-lang="en">Click <strong>Chatbot → + New chatbot</strong>, name it, and add <strong>steps</strong> (hover any step for a tooltip):</span><span data-lang="ar">انقر <strong>البوت ← + بوت جديد</strong>، وسمِّه، وأضِف <strong>خطوات</strong> (مرّر فوق أي خطوة لرؤية تلميح):</span></p>
   <div class="tbl-wrap"><table>
-    <tr><th>Step</th><th>What it does</th></tr>
-    <tr><td><strong>Send message</strong></td><td>Sends a line of text, then continues</td></tr>
-    <tr><td><strong>Ask &amp; wait</strong></td><td>Asks a question, saves the reply</td></tr>
-    <tr><td><strong>Buttons / menu</strong></td><td>Offers up to 10 choices; branches on the pick</td></tr>
-    <tr><td><strong>Branch on reply</strong></td><td>Routes by keywords the customer types</td></tr>
-    <tr><td><strong>Delay</strong></td><td>Waits a set time before the next step</td></tr>
-    <tr><td><strong>AI answer</strong></td><td>Answers from your uploaded knowledge documents</td></tr>
-    <tr><td><strong>AI Agent</strong></td><td>Hands off to a smart AI that chats until done</td></tr>
-    <tr><td><strong>End</strong></td><td>Ends the conversation</td></tr>
+    <tr><th><span data-lang="en">Step</span><span data-lang="ar">الخطوة</span></th><th><span data-lang="en">What it does</span><span data-lang="ar">وظيفتها</span></th></tr>
+    <tr><td><strong><span data-lang="en">Send message</span><span data-lang="ar">إرسال رسالة</span></strong></td><td><span data-lang="en">Sends text, then continues</span><span data-lang="ar">يرسل نصًّا ثم يكمل</span></td></tr>
+    <tr><td><strong><span data-lang="en">Ask &amp; wait</span><span data-lang="ar">اسأل وانتظر</span></strong></td><td><span data-lang="en">Asks a question, saves the reply</span><span data-lang="ar">يطرح سؤالًا ويحفظ الردّ</span></td></tr>
+    <tr><td><strong><span data-lang="en">Buttons / menu</span><span data-lang="ar">أزرار / قائمة</span></strong></td><td><span data-lang="en">Up to 10 choices; branches on the pick</span><span data-lang="ar">حتى 10 خيارات؛ ويتفرّع حسب الاختيار</span></td></tr>
+    <tr><td><strong><span data-lang="en">Branch on reply</span><span data-lang="ar">تفرّع حسب الردّ</span></strong></td><td><span data-lang="en">Routes by keywords</span><span data-lang="ar">يوجّه حسب الكلمات المفتاحية</span></td></tr>
+    <tr><td><strong><span data-lang="en">Delay</span><span data-lang="ar">مهلة</span></strong></td><td><span data-lang="en">Waits a set time before the next step</span><span data-lang="ar">ينتظر وقتًا محدّدًا قبل الخطوة التالية</span></td></tr>
+    <tr><td><strong><span data-lang="en">AI answer</span><span data-lang="ar">إجابة ذكاء اصطناعي</span></strong></td><td><span data-lang="en">Answers from your uploaded knowledge</span><span data-lang="ar">يجيب من معرفتك المرفوعة</span></td></tr>
+    <tr><td><strong><span data-lang="en">AI Agent</span><span data-lang="ar">وكيل ذكاء</span></strong></td><td><span data-lang="en">Smart AI that chats until done</span><span data-lang="ar">ذكاء يحاور حتى ينتهي</span></td></tr>
+    <tr><td><strong><span data-lang="en">End</span><span data-lang="ar">إنهاء</span></strong></td><td><span data-lang="en">Ends the conversation</span><span data-lang="ar">ينهي المحادثة</span></td></tr>
   </table></div>
-  <p><strong>Drag</strong> steps to reorder. In <strong>Buttons</strong>/<strong>Branch</strong> steps, each choice's <strong>“→ go to…”</strong> dropdown picks the next step. Use <code>{{name}}</code> to insert the customer's name. Then set <strong>Status → Published</strong> and click <strong>Save</strong>.</p>
-  <div class="call success"><span class="k">Success looks like</span>Your bot appears in the list with a green <strong>PUBLISHED</strong> badge.</div>
-  <div class="call warning"><span class="k">Warning — AI steps need setup</span>“AI answer” and “AI Agent” only give real answers if your admin turned on AI and uploaded knowledge documents. The other 6 step types work regardless.</div>
-  <div class="call note"><span class="k">Note</span>A saved bot doesn't run by itself — connect it to a <strong>trigger</strong> next.</div>
+  <p><span data-lang="en"><strong>Drag</strong> steps to reorder; each <strong>Buttons/Branch</strong> choice picks its next step via <strong>"→ go to…"</strong>. Set <strong>Status → Published</strong> and <strong>Save</strong>.</span><span data-lang="ar"><strong>اسحب</strong> الخطوات لإعادة ترتيبها؛ ويختار كل خيار في <strong>الأزرار/التفرّع</strong> خطوته التالية عبر <strong>"← اذهب إلى…"</strong>. اضبط <strong>الحالة ← منشور</strong> و<strong>احفظ</strong>.</span></p>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">AI steps only give real answers if your admin turned on AI + uploaded knowledge. The other 6 steps always work.</span><span data-lang="ar">خطوات الذكاء لا تُعطي إجابات حقيقية إلا إذا فعّل المسؤول الذكاء ورفع المعرفة. أمّا الخطوات الستّ الأخرى فتعمل دائمًا.</span></div>
 
-  <h2 id="s11"><span class="num">11</span>Automation — Making the Bot Start</h2>
-  <p><strong>Automation rules</strong> decide <em>when</em> something automatic happens.</p>
-  <ol>
-    <li>Go to <strong>Settings → Automation</strong> → new rule; give it a name.</li>
-    <li>Choose a <strong>Trigger</strong>: <strong>Keyword match</strong> (words in the message) or <strong>Outside business hours</strong>.</li>
-    <li>Choose an <strong>Action</strong>: <strong>Send auto-reply text</strong>, or <strong>Start a chatbot</strong> (pick a Published bot).</li>
-    <li><strong>Save</strong>.</li>
-  </ol>
-  <div class="call warning"><span class="k">Common mistake — bot missing from the dropdown</span>Only <strong>Published</strong> chatbots appear under “Start a chatbot.” Publish it in the builder first.</div>
-  <div class="call tip"><span class="k">Tip</span>A human can take over anytime — if you reply manually to a chat the bot is handling, the bot steps aside.</div>
+  <h2 id="s11"><span class="num">11</span><span data-lang="en">Automation — Making the Bot Start</span><span data-lang="ar">الأتمتة — تشغيل البوت</span></h2>
+  <p><span data-lang="en">Go to <strong>Settings → Automation</strong> → new rule → choose a <strong>Trigger</strong> (<strong>Keyword match</strong> or <strong>Outside business hours</strong>) → choose an <strong>Action</strong> (<strong>Send auto-reply text</strong> or <strong>Start a chatbot</strong>) → <strong>Save</strong>.</span><span data-lang="ar">اذهب إلى <strong>الإعدادات ← الأتمتة</strong> ← قاعدة جديدة ← اختر <strong>مُحفِّزًا</strong> (<strong>مطابقة كلمة مفتاحية</strong> أو <strong>خارج ساعات العمل</strong>) ← اختر <strong>إجراءً</strong> (<strong>إرسال ردّ تلقائي</strong> أو <strong>تشغيل بوت</strong>) ← <strong>احفظ</strong>.</span></p>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Common mistake:</span><span data-lang="ar">⚠️ خطأ شائع:</span></span> <span data-lang="en">only <strong>Published</strong> chatbots appear under "Start a chatbot."</span><span data-lang="ar">تظهر البوتات <strong>المنشورة</strong> فقط في "تشغيل بوت".</span></div>
 
-  <h2 id="s12"><span class="num">12</span>Orders &amp; Selling Products (optional)</h2>
-  <p>If your business sells from a product catalog, the Hub can receive orders.</p>
+  <h2 id="s12"><span class="num">12</span><span data-lang="en">Orders &amp; Selling (optional)</span><span data-lang="ar">الطلبات والبيع (اختياري)</span></h2>
+  <p><span data-lang="en">Customers send a <strong>cart</strong> from WhatsApp → it appears under <strong>Orders</strong> → moves <strong>NEW → CONFIRMED → SHIPPED → DELIVERED</strong>, messaging the customer automatically at each step.</span><span data-lang="ar">يرسل العملاء <strong>سلّة</strong> من واتساب ← تظهر في <strong>الطلبات</strong> ← تنتقل <strong>جديد ← مؤكَّد ← شُحِن ← سُلِّم</strong>، مع مراسلة العميل تلقائيًا عند كل خطوة.</span></p>
+  <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">an admin must connect your catalog in <strong>Settings → Commerce</strong> first.</span><span data-lang="ar">يجب أن يربط المسؤول كتالوجك من <strong>الإعدادات ← التجارة</strong> أولًا.</span></div>
+
+  <h2 id="s13"><span class="num">13</span><span data-lang="en">Settings — One-Time Setup</span><span data-lang="ar">الإعدادات — إعداد لمرّة واحدة</span></h2>
+  <div class="tbl-wrap"><table>
+    <tr><th><span data-lang="en">Tab</span><span data-lang="ar">التبويب</span></th><th><span data-lang="en">What it's for</span><span data-lang="ar">وظيفته</span></th></tr>
+    <tr><td><strong><span data-lang="en">WhatsApp connection</span><span data-lang="ar">ربط واتساب</span></strong></td><td><span data-lang="en">Connect your number (<strong>required</strong> before sending)</span><span data-lang="ar">اربط رقمك (<strong>لازم</strong> قبل الإرسال)</span></td></tr>
+    <tr><td><strong><span data-lang="en">Team</span><span data-lang="ar">الفريق</span></strong></td><td><span data-lang="en">Add teammates + permission levels</span><span data-lang="ar">أضِف الزملاء ومستويات الصلاحيات</span></td></tr>
+    <tr><td><strong><span data-lang="en">Canned replies</span><span data-lang="ar">ردود جاهزة</span></strong></td><td><span data-lang="en">Reusable inbox snippets</span><span data-lang="ar">مقتطفات قابلة لإعادة الاستخدام</span></td></tr>
+    <tr><td><strong><span data-lang="en">AI knowledge</span><span data-lang="ar">معرفة الذكاء</span></strong></td><td><span data-lang="en">Upload documents AI steps answer from</span><span data-lang="ar">ارفع مستندات تُجيب منها خطوات الذكاء</span></td></tr>
+    <tr><td><strong><span data-lang="en">Automation</span><span data-lang="ar">الأتمتة</span></strong></td><td><span data-lang="en">The rules from Section 11</span><span data-lang="ar">القواعد من القسم 11</span></td></tr>
+    <tr><td><strong><span data-lang="en">WhatsApp Flows</span><span data-lang="ar">تدفّقات واتساب</span></strong></td><td><span data-lang="en">Advanced forms (until Meta approves)</span><span data-lang="ar">نماذج متقدّمة (حتى اعتماد ميتا)</span></td></tr>
+    <tr><td><strong><span data-lang="en">Commerce</span><span data-lang="ar">التجارة</span></strong></td><td><span data-lang="en">Connect your product catalog for Orders</span><span data-lang="ar">اربط كتالوج منتجاتك للطلبات</span></td></tr>
+  </table></div>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Warning:</span><span data-lang="ar">⚠️ تنبيه:</span></span> <span data-lang="en">turning on AI requires your administrator to add a secret API key on the server. If AI says <em>"not configured,"</em> that key isn't set yet.</span><span data-lang="ar">تفعيل الذكاء يتطلّب أن يضيف المسؤول مفتاح API سرّيًا على الخادم. إن ظهر <em>"غير مُهيّأ"</em>، فالمفتاح لم يُضبط بعد.</span></div>
+
+  <h2 id="s14"><span class="num">14</span><span data-lang="en">Troubleshooting</span><span data-lang="ar">حلّ المشكلات</span></h2>
   <ul>
-    <li>Customers send a <strong>cart</strong> from WhatsApp; it appears under <strong>Orders</strong>.</li>
-    <li>Each order moves <strong>NEW → CONFIRMED → SHIPPED → DELIVERED</strong> (or CANCELLED).</li>
-    <li>Moving an order forward <strong>messages the customer automatically</strong> (when the 24-hour window allows).</li>
+    <li><span data-lang="en"><strong>Can't sign in?</strong> Check for extra spaces; confirm the link; ask an admin to reset your password.</span><span data-lang="ar"><strong>تعذّر الدخول؟</strong> تحقّق من مسافات زائدة؛ وأكّد الرابط؛ واطلب من المسؤول إعادة ضبط كلمة مرورك.</span></li>
+    <li><span data-lang="en"><strong>Broadcast won't send?</strong> Template must be <strong>APPROVED</strong>; pick an audience.</span><span data-lang="ar"><strong>الحملة لا تُرسَل؟</strong> يجب أن يكون القالب <strong>معتمَدًا</strong>؛ واختر جمهورًا.</span></li>
+    <li><span data-lang="en"><strong>Can't reply — box blocked?</strong> The <strong>24-hour window</strong>; use a template.</span><span data-lang="ar"><strong>لا يمكن الردّ — الصندوق مقفل؟</strong> إنها <strong>نافذة الـ 24 ساعة</strong>؛ استخدم قالبًا.</span></li>
+    <li><span data-lang="en"><strong>Chatbot won't start?</strong> Is it <strong>Published</strong>? Did you add an <strong>Automation rule</strong> pointing at it?</span><span data-lang="ar"><strong>البوت لا يبدأ؟</strong> هل هو <strong>منشور</strong>؟ وهل أضفت <strong>قاعدة أتمتة</strong> تشير إليه؟</span></li>
+    <li><span data-lang="en"><strong>AI says "a team member will follow up"?</strong> AI isn't switched on yet.</span><span data-lang="ar"><strong>الذكاء يقول "سيتابع أحد أعضاء الفريق"؟</strong> الذكاء غير مُفعَّل بعد.</span></li>
+    <li><span data-lang="en"><strong>Scheduled/Delay action never ran?</strong> The background <strong>worker</strong> may be down — ask your admin.</span><span data-lang="ar"><strong>إجراء مجدول/مهلة لم يعمل؟</strong> قد يكون <strong>العامل الخلفي</strong> متوقّفًا — اسأل المسؤول.</span></li>
+    <li><span data-lang="en"><strong>Orders empty?</strong> Connect a catalog in <strong>Settings → Commerce</strong>.</span><span data-lang="ar"><strong>الطلبات فارغة؟</strong> اربط كتالوجًا من <strong>الإعدادات ← التجارة</strong>.</span></li>
   </ul>
-  <div class="call note"><span class="k">Note</span>An admin must connect your catalog in <strong>Settings → Commerce</strong> first; until then the Orders screen stays empty. You can cancel an order any time before it's shipped.</div>
 
-  <h2 id="s13"><span class="num">13</span>The Settings Menu — One-Time Setup</h2>
+  <h2 id="s15"><span class="num">15</span><span data-lang="en">Glossary</span><span data-lang="ar">المصطلحات</span></h2>
   <div class="tbl-wrap"><table>
-    <tr><th>Tab</th><th>What it's for</th></tr>
-    <tr><td><strong>WhatsApp connection</strong></td><td>Connect your WhatsApp Business number. <em>Required before you can send anything.</em></td></tr>
-    <tr><td><strong>Team</strong></td><td>Add teammates and set their permission level</td></tr>
-    <tr><td><strong>Canned replies</strong></td><td>Save reusable message snippets for the inbox</td></tr>
-    <tr><td><strong>AI knowledge</strong></td><td>Upload documents your AI steps answer from</td></tr>
-    <tr><td><strong>Automation</strong></td><td>The rules from Section 11</td></tr>
-    <tr><td><strong>WhatsApp Flows</strong></td><td>Advanced interactive forms (until Meta approves)</td></tr>
-    <tr><td><strong>Commerce</strong></td><td>Connect your product catalog to enable Orders</td></tr>
-  </table></div>
-  <div class="call tip"><span class="k">Tip — admin start order</span><strong>WhatsApp connection</strong> first (nothing works without a number), then <strong>Team</strong>, then optionally <strong>AI knowledge</strong> and <strong>Commerce</strong>.</div>
-  <div class="call warning"><span class="k">Warning — turning on AI is a technical step</span>Activating AI requires your administrator to add a secret “API key” on the server. If AI buttons say <em>“AI not configured,”</em> that key hasn't been added yet.</div>
-
-  <h2 id="s14"><span class="num">14</span>Troubleshooting</h2>
-  <p><strong>I can't sign in.</strong> Check for extra spaces; confirm the correct link; ask an admin to reset your password.</p>
-  <p><strong>My broadcast won't send / the template isn't selectable.</strong> It must be <strong>APPROVED</strong> (not PENDING), and you must pick an audience.</p>
-  <p><strong>I can't reply — the box is blocked.</strong> It's the <strong>24-hour window</strong>; use an approved template to re-open the chat.</p>
-  <p><strong>My chatbot doesn't start.</strong> Is it <strong>Published</strong>? Did you add an <strong>Automation rule</strong> with a “Start a chatbot” action pointing at it?</p>
-  <p><strong>AI reply just says “a team member will follow up.”</strong> AI isn't switched on — the admin must add the AI key and upload knowledge documents.</p>
-  <p><strong>A scheduled broadcast or a chatbot “Delay” never continued.</strong> These rely on the system's background <strong>worker</strong>; if it's down, timed actions stall. Ask your admin to check it.</p>
-  <p><strong>Orders screen is empty.</strong> A product catalog must be connected in <strong>Settings → Commerce</strong>.</p>
-
-  <h2 id="s15"><span class="num">15</span>Glossary</h2>
-  <div class="tbl-wrap"><table>
-    <tr><th>Term</th><th>Plain-English meaning</th></tr>
-    <tr><td><strong>Broadcast / Campaign</strong></td><td>One message sent to many contacts at once</td></tr>
-    <tr><td><strong>Template</strong></td><td>A pre-written message design Meta must approve before broadcasting</td></tr>
-    <tr><td><strong>Approved / Pending</strong></td><td>A template's review status — Approved = ready, Pending = under review</td></tr>
-    <tr><td><strong>Contact</strong></td><td>One customer in your address book</td></tr>
-    <tr><td><strong>List</strong></td><td>A group of contacts you build by hand</td></tr>
-    <tr><td><strong>Segment</strong></td><td>A smart group that fills automatically from rules</td></tr>
-    <tr><td><strong>Inbox</strong></td><td>The shared space where customer chats live</td></tr>
-    <tr><td><strong>Canned reply</strong></td><td>A saved snippet you drop into the inbox</td></tr>
-    <tr><td><strong>Chatbot</strong></td><td>An automatic step-by-step responder you build</td></tr>
-    <tr><td><strong>Step / Node</strong></td><td>One building block in a chatbot</td></tr>
-    <tr><td><strong>Trigger</strong></td><td>The condition that starts an automation</td></tr>
-    <tr><td><strong>24-hour window</strong></td><td>WhatsApp's rule: free-type only within 24h of the customer's last message; otherwise use a template</td></tr>
-    <tr><td><strong>Opt-out / STOP</strong></td><td>Reply STOP → auto-removed from broadcasts</td></tr>
-    <tr><td><strong>Catalog</strong></td><td>Your list of products (in Meta) that enables Orders</td></tr>
-    <tr><td><strong>AI knowledge</strong></td><td>Documents you upload so AI steps answer from your real info</td></tr>
-    <tr><td><strong>Worker</strong></td><td>A behind-the-scenes helper that sends broadcasts and runs timed/delayed actions</td></tr>
-    <tr><td><strong>CSV</strong></td><td>A simple spreadsheet format (“Save as CSV”) for importing contacts</td></tr>
+    <tr><th><span data-lang="en">Term</span><span data-lang="ar">المصطلح</span></th><th><span data-lang="en">Meaning</span><span data-lang="ar">المعنى</span></th></tr>
+    <tr><td><strong><span data-lang="en">Broadcast / Campaign</span><span data-lang="ar">حملة / بثّ</span></strong></td><td><span data-lang="en">One message sent to many contacts at once</span><span data-lang="ar">رسالة واحدة تُرسَل لكثيرين دفعة واحدة</span></td></tr>
+    <tr><td><strong><span data-lang="en">Template</span><span data-lang="ar">قالب</span></strong></td><td><span data-lang="en">A message design Meta must approve before broadcasting</span><span data-lang="ar">تصميم رسالة يجب أن تعتمده ميتا قبل البثّ</span></td></tr>
+    <tr><td><strong><span data-lang="en">Approved / Pending</span><span data-lang="ar">معتمَد / قيد المراجعة</span></strong></td><td><span data-lang="en">A template's review status</span><span data-lang="ar">حالة مراجعة القالب</span></td></tr>
+    <tr><td><strong><span data-lang="en">Contact</span><span data-lang="ar">جهة اتصال</span></strong></td><td><span data-lang="en">One customer in your address book</span><span data-lang="ar">عميل واحد في دفتر عناوينك</span></td></tr>
+    <tr><td><strong><span data-lang="en">List</span><span data-lang="ar">قائمة</span></strong></td><td><span data-lang="en">A group of contacts you build by hand</span><span data-lang="ar">مجموعة جهات اتصال تبنيها يدويًا</span></td></tr>
+    <tr><td><strong><span data-lang="en">Segment</span><span data-lang="ar">شريحة</span></strong></td><td><span data-lang="en">A smart group that fills automatically from rules</span><span data-lang="ar">مجموعة ذكية تملأ نفسها بقواعد</span></td></tr>
+    <tr><td><strong><span data-lang="en">Inbox</span><span data-lang="ar">صندوق الوارد</span></strong></td><td><span data-lang="en">The shared space where customer chats live</span><span data-lang="ar">المساحة المشتركة لمحادثات العملاء</span></td></tr>
+    <tr><td><strong><span data-lang="en">Canned reply</span><span data-lang="ar">ردّ جاهز</span></strong></td><td><span data-lang="en">A saved snippet for the inbox</span><span data-lang="ar">مقتطف محفوظ للصندوق</span></td></tr>
+    <tr><td><strong><span data-lang="en">Chatbot</span><span data-lang="ar">بوت محادثة</span></strong></td><td><span data-lang="en">An automatic step-by-step responder</span><span data-lang="ar">مُجيب تلقائي خطوة بخطوة</span></td></tr>
+    <tr><td><strong><span data-lang="en">Trigger</span><span data-lang="ar">مُحفِّز</span></strong></td><td><span data-lang="en">The condition that starts an automation</span><span data-lang="ar">الشرط الذي يبدأ الأتمتة</span></td></tr>
+    <tr><td><strong><span data-lang="en">24-hour window</span><span data-lang="ar">نافذة الـ 24 ساعة</span></strong></td><td><span data-lang="en">Free-type only within 24h of the customer's last message</span><span data-lang="ar">الكتابة الحرّة فقط خلال 24 ساعة من آخر رسالة للعميل</span></td></tr>
+    <tr><td><strong><span data-lang="en">Opt-out / STOP</span><span data-lang="ar">إلغاء الاشتراك / إيقاف</span></strong></td><td><span data-lang="en">Reply STOP → auto-removed from broadcasts</span><span data-lang="ar">الردّ بـ"إيقاف" ← استبعاد تلقائي من الحملات</span></td></tr>
+    <tr><td><strong><span data-lang="en">Catalog</span><span data-lang="ar">كتالوج</span></strong></td><td><span data-lang="en">Your products (in Meta) that enable Orders</span><span data-lang="ar">منتجاتك (في ميتا) التي تُفعّل الطلبات</span></td></tr>
+    <tr><td><strong><span data-lang="en">AI knowledge</span><span data-lang="ar">معرفة الذكاء</span></strong></td><td><span data-lang="en">Documents you upload so AI answers from your real info</span><span data-lang="ar">مستندات ترفعها ليُجيب الذكاء من معلوماتك الحقيقية</span></td></tr>
+    <tr><td><strong><span data-lang="en">Worker</span><span data-lang="ar">العامل الخلفي</span></strong></td><td><span data-lang="en">Behind-the-scenes helper that sends broadcasts + runs timed actions</span><span data-lang="ar">مساعد خلف الكواليس يرسل الحملات ويشغّل الإجراءات المؤقّتة</span></td></tr>
+    <tr><td><strong><span data-lang="en">CSV</span><span data-lang="ar">CSV</span></strong></td><td><span data-lang="en">A simple spreadsheet format for importing contacts</span><span data-lang="ar">صيغة جدول بسيطة لاستيراد جهات الاتصال</span></td></tr>
   </table></div>
 
   <hr />
-  <p>You now have everything to run the Opal Hotel Social Media Growth Hub confidently — from your first contact to a live, AI-assisted chatbot. Start small, send yourself a test broadcast, and build from there. 🎉</p>
+  <p><span data-lang="en">You now have everything to run the Opal Hotel Social Media Growth Hub confidently — from your first contact to a live, AI-assisted chatbot. Start small, send yourself a test broadcast, and build from there. 🎉</span><span data-lang="ar">لديك الآن كل ما يلزم لتشغيل مركز أوبال هوتل للنمو بثقة — من أول جهة اتصال إلى بوت حيّ مدعوم بالذكاء. ابدأ صغيرًا، وأرسِل لنفسك حملة تجريبية، ثم ابنِ من هناك. 🎉</span></p>
 
   <footer>
-    Opal Hotel Social Media Growth Hub · <span class="slogan-sm">The True Meaning of Luxury</span>
+    <span data-lang="en">Opal Hotel Social Media Growth Hub</span><span data-lang="ar">مركز أوبال هوتل للنمو عبر وسائل التواصل</span> · <span class="slogan-sm"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></span>
   </footer>
 
 </div>
+
+<script>
+  function toggleLang() {
+    var html = document.documentElement;
+    var ar = html.lang !== 'ar';
+    html.lang = ar ? 'ar' : 'en';
+    html.dir = ar ? 'rtl' : 'ltr';
+    try { localStorage.setItem('opal-guide-lang', html.lang); } catch (e) {}
+  }
+  try { if (localStorage.getItem('opal-guide-lang') === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; } } catch (e) {}
+</script>
 </body>
 </html>
