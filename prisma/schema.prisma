@@ -455,6 +455,22 @@ model KnowledgeDoc {
   @@index([clientId])
 }
 
+// No-code chatbot definition (V2 M3). `flow` is a ChatbotFlow state machine
+// (see ChatbotFlowSchema). Assigned to an automation trigger and run at
+// inbound time (later phases).
+model Chatbot {
+  id        String   @id @default(cuid())
+  clientId  String   @default("default")
+  name      String
+  flow      Json
+  status    String   @default("DRAFT") // DRAFT | PUBLISHED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([clientId, name])
+  @@index([clientId])
+}
+
 // Reusable per-client reply snippet (V2 §2.3). Body may contain {{name}}/{{phone}}
 // placeholders substituted from the conversation's contact when inserted.
 model CannedReply {
