@@ -1,0 +1,108 @@
+import { describe, it, expect } from "vitest";
+import { startRun, advance, substitute, type NodeResponder } from "./chatbot";
+import type { ChatbotFlow } from "./validation";
+
+// respond stub: ai → canned answer; aiAgent → "done" once inbound says "bye"
+const respond: NodeResponder = async ({ node, inboundText }) => {
+  if (node.type === "aiAgent") return { text: `agent:${inboundText}`, agentDone: inboundText.includes("bye") };
+  return { text: "ai-answer" };
+};
+
+const flow = (startId: string, nodes: ChatbotFlow["nodes"]): ChatbotFlow => ({ startId, nodes });
+
+describe("substitute", () => {
+  it("fills {{name}} and saved vars, leaves unknowns", () => {
+    expect(substitute("Hi {{name}}, size {{size}}? {{x}}", { name: "Sara", size: "L" })).toBe("Hi Sara, size L? {{x}}");
+  });
+});
+
+describe("startRun", () => {
+  it("emits leading messages and parks on the first question", async () => {
+    const f = flow("m", {
+      m: { id: "m", type: "message", text: "Hi {{name}}", nextId: "q" },
+      q: { id: "q", type: "question", text: "Size?", saveAs: "size", nextId: "e" },
+      e: { id: "e", type: "end" },
+    });
+    const r = await startRun(f, respond, { name: "Sara" });
+    expect(r.outbound).toEqual(["Hi Sara", "Size?"]);
+    expect(r.waiting).toBe(true);
+    expect(r.session.currentNodeId).toBe("q");
+    expect(r.done).toBe(false);
+  });
+  it("runs straight to end when there is no wait-node", async () => {
+    const f = flow("m", { m: { id: "m", type: "message", text: "Bye", nextId: "e" }, e: { id: "e", type: "end" } });
+    const r = await startRun(f, respond);
+    expect(r.outbound).toEqual(["Bye"]);
+    expect(r.done).toBe(true);
+    expect(r.session.status).toBe("DONE");
+  });
+});
+
+describe("advance — question", () => {
+  it("captures the answer into variables and walks on", async () => {
+    const f = flow("q", {
+      q: { id: "q", type: "question", text: "Size?", saveAs: "size", nextId: "m" },
+      m: { id: "m", type: "message", text: "Got {{size}}", nextId: "e" },
+      e: { id: "e", type: "end" },
+    });
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "Large", respond);
+    expect(r.session.variables.size).toBe("Large");
+    expect(r.outbound).toEqual(["Got Large"]);
+    expect(r.done).toBe(true);
+  });
+});
+
+describe("advance — branch", () => {
+  const f = flow("b", {
+    b: { id: "b", type: "branch", cases: [{ keywords: ["yes"], nextId: "y" }], defaultNextId: "n" },
+    y: { id: "y", type: "message", text: "yes!", nextId: "e" },
+    n: { id: "n", type: "message", text: "no.", nextId: "e" },
+    e: { id: "e", type: "end" },
+  });
+  it("routes on a keyword match", async () => {
+    const start = await startRun(f, respond); // parks on branch (no emit)
+    expect(start.session.currentNodeId).toBe("b");
+    const r = await advance(f, start.session, "YES please", respond);
+    expect(r.outbound).toEqual(["yes!"]);
+  });
+  it("falls back to defaultNextId with no match", async () => {
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "maybe", respond);
+    expect(r.outbound).toEqual(["no."]);
+  });
+});
+
+describe("advance — ai / aiAgent", () => {
+  it("ai emits a one-shot answer then continues", async () => {
+    const f = flow("q", {
+      q: { id: "q", type: "question", text: "Ask?", saveAs: "x", nextId: "a" },
+      a: { id: "a", type: "ai", nextId: "e" },
+      e: { id: "e", type: "end" },
+    });
+    const start = await startRun(f, respond);
+    const r = await advance(f, start.session, "how much?", respond);
+    expect(r.outbound).toEqual(["ai-answer"]);
+    expect(r.done).toBe(true);
+  });
+  it("aiAgent stays on turns until it signals done", async () => {
+    const f = flow("g", {
+      g: { id: "g", type: "aiAgent", maxTurns: 5, nextId: "e" },
+      e: { id: "e", type: "end" },
+    });
+    const start = await startRun(f, respond); // parks on agent
+    const t1 = await advance(f, start.session, "hello", respond);
+    expect(t1.outbound).toEqual(["agent:hello"]);
+    expect(t1.waiting).toBe(true);
+    expect(t1.done).toBe(false);
+    const t2 = await advance(f, t1.session, "ok bye", respond);
+    expect(t2.outbound).toEqual(["agent:ok bye"]);
+    expect(t2.done).toBe(true);
+  });
+  it("aiAgent ends when maxTurns is reached", async () => {
+    const f = flow("g", { g: { id: "g", type: "aiAgent", maxTurns: 1, nextId: "e" }, e: { id: "e", type: "end" } });
+    const start = await startRun(f, respond);
+    const t1 = await advance(f, start.session, "hi", respond);
+    expect(t1.done).toBe(true);
+  });
+});

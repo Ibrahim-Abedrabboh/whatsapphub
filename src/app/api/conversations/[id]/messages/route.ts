@@ -49,6 +49,11 @@ export async function POST(req: NextRequest, ctx: { params: Promise<{ id: string
     },
   });
 
+  // A human agent took over — yield any running chatbot on this conversation.
+  await prisma.chatbotSession
+    .updateMany({ where: { clientId, conversationId: id, status: "ACTIVE" }, data: { status: "ABANDONED" } })
+    .catch(() => {});
+
   return NextResponse.json({
     message: { id: created.id, direction: "OUT", type: "text", text: created.text, status: "SENT", createdAt: created.createdAt },
   }, { status: 201 });

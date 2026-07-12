@@ -132,6 +132,20 @@ export async function faqAnswer(question: string, docs: KbDoc[]): Promise<string
   return complete({ system, user: question, maxTokens: 600 });
 }
 
+/** One autonomous agent turn (V2 M3 Phase 4). Answers from the KB toward `goal`
+ *  and signals completion by ending its reply with [[DONE]] (stripped out). */
+export async function agentReply(goal: string, transcript: string, docs: KbDoc[]): Promise<{ text: string; done: boolean }> {
+  const kb = docs.map((d, i) => `[Doc ${i + 1}: ${d.title}]\n${d.content}`).join("\n\n") || "(empty)";
+  const system =
+    `You are an autonomous WhatsApp sales/support agent. Your goal: ${goal || "help the customer"}. ` +
+    "Reply with a single concise customer-facing message. Use ONLY the knowledge base for facts. " +
+    "When the goal is met or the customer is done, end your message with the token [[DONE]].\n\n" +
+    "=== Knowledge base ===\n" + kb;
+  const raw = await complete({ system, user: transcript, maxTokens: 600 });
+  const done = raw.includes("[[DONE]]");
+  return { text: raw.replace(/\[\[DONE\]\]/g, "").trim(), done };
+}
+
 export interface AiTags { intent: string; sentiment: string }
 
 const TAG_SYSTEM =

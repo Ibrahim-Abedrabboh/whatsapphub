@@ -7,10 +7,14 @@ import { prisma } from "./db";
 import { connection } from "./queue";
 import { getChannel } from "./channels";
 import { evaluateRules, type AutomationRuleDef, type Action } from "./automation";
+import { interceptActiveSession, startChatbotSession } from "./chatbotRun";
 
 const COOLDOWN_SECONDS = 300; // one auto-reply per peer per 5 minutes
 
 export async function runAutomation(clientId: string, channel: string, peer: string, text: string): Promise<void> {
+  // An ACTIVE chatbot session owns the conversation — it intercepts ahead of rules.
+  if (await interceptActiveSession(clientId, channel, peer, text)) return;
+
   const rows = await prisma.automationRule.findMany({
     where: { clientId, enabled: true },
     select: { trigger: true, action: true },
@@ -22,21 +26,26 @@ export async function runAutomation(clientId: string, channel: string, peer: str
     trigger: r.trigger as unknown as AutomationRuleDef["trigger"],
     action: r.action as unknown as AutomationRuleDef["action"],
   }));
-  // Phase 3: only sendText is executed here. startChatbot is authored/persisted
-  // now; creating a ChatbotSession from it is Phase 4.
-  const send = evaluateRules(rules, { text, now: new Date() })
-    .find((a): a is Extract<Action, { type: "sendText" }> => a.type === "sendText");
-  if (!send) return;
+  // First matching rule wins (sendText or startChatbot).
+  const first = evaluateRules(rules, { text, now: new Date() })[0];
+  if (!first) return;
 
-  // Never auto-reply to an opted-out contact.
+  // Never auto-act on an opted-out contact.
   const opted = await prisma.optOut
     .findUnique({ where: { clientId_phone: { clientId, phone: peer } }, select: { id: true } })
     .catch(() => null);
   if (opted) return;
 
-  // Loop + spam guard: claim a short cooldown before sending.
+  // Loop + spam guard: claim a short cooldown before acting.
   const claimed = await connection.set(`auto:${channel}:${clientId}:${peer}`, "1", "EX", COOLDOWN_SECONDS, "NX");
   if (claimed !== "OK") return;
+
+  // A matched startChatbot launches a session (Phase 4); otherwise auto-reply.
+  if (first.type === "startChatbot") {
+    await startChatbotSession(clientId, channel, peer, first.chatbotId);
+    return;
+  }
+  const send: Extract<Action, { type: "sendText" }> = first;
 
   const wamid = await getChannel(channel).sendText({ to: peer, body: send.body, clientId });
 
