@@ -1,48 +1,50 @@
 /* ============================================================
-   WhatsApp Hub — Stratum AI Design System (v1.2.0)
-   Dark-first · ember accent · bilingual EN/AR. Single source of truth.
+   Opal Hotel Social Media Growth Hub — "The True Meaning of Luxury"
+   Opal Hotel Design System (v3.0) · light-first cream & gold · bilingual EN/AR.
 
-   Tokens applied from /design-system/stratum-ai.xml. The whole UI reads
-   the semantic aliases below (--bg, --card, --teal→ember, --r, etc.), so a
-   brand change is a token change — components reference --brand-accent,
-   never --ember directly (Stratum rule).
+   Tokens applied from opal-hotel-theme.xml (v3.0, pixel-verified palette).
+   The whole UI reads the semantic aliases below (--bg, --card, --brand-accent,
+   --r, etc.), so a brand change is a token change — components reference
+   --brand-accent, never --ember directly. Opal light is the default (:root);
+   the reversed black+gold Opal DARK is opt-in via [data-theme="dark"].
+   NOTE: the legacy variable names --ember* are retained as the gold family to
+   avoid churning every component rule (see changelog).
    ============================================================ */
 :root {
-  /* ── Stratum canonical: surfaces ── */
-  --ink:#FFFFFF;                 /* NOTE: in this codebase --ink = primary text */
-  --surface-page:#0B0B0B;        /* Stratum "ink": page background */
-  --surface-sunken:#0F0F0F;
-  --surface:#141414;             /* card background */
-  --surface-elevated:#1A1A1A;
-  --line:#1F1F1F; --line2:#262626; --line-hover:#333333;
+  /* ── Opal canonical: surfaces (light · cream) ── */
+  --ink:#2C2C2C;                 /* NOTE: in this codebase --ink = primary text (charcoal) */
+  --surface-page:#FFFCF3;        /* Opal cream: page background (logo card bg, pixel-sampled) */
+  --surface-sunken:#F5F1E4;
+  --surface:#FFFFFF;             /* card background */
+  --surface-elevated:#FBF8EF;
+  --line:#E7E0CE; --line2:#DCD3BC; --line-hover:#C9BE9F;
 
-  /* ── Stratum canonical: text ── */
-  /* --micro lifted #6B6B6B→#8A8A8A so 11px table headers / eyebrows clear WCAG AA (4.5:1) on page + card. */
-  --text-primary:#FFFFFF; --text-soft:#ECECEC; --muted:#9A9A9A; --micro:#8A8A8A;
+  /* ── Opal canonical: text (charcoal on cream · WCAG AA) ── */
+  --text-primary:#2C2C2C; --text-soft:#3D3D3D; --muted:#726D5E; --micro:#635F51;
 
-  /* ── Stratum canonical: ember (brand accent) ── */
-  --ember:#FF5A1F; --ember-2:#FF8A4A; --ember-hover:#FF6E3A;
-  --ember-deep:#FF3D00; --ember-warm:#FF7A3A; --ember-shadow:#B33A0F;
+  /* ── Opal canonical: gold (brand accent) — logo/live-site gold #BB8B41 ── */
+  --ember:#BB8B41; --ember-2:#C2A670; --ember-hover:#A5772F;
+  --ember-deep:#8F6B2E; --ember-warm:#C2A670; --ember-shadow:#8A6B2E;
   /* Only --brand-accent / --brand-accent-hover are brand-overrideable. */
   --brand-accent:var(--ember); --brand-accent-hover:var(--ember-hover);
 
-  /* ── Stratum canonical: semantic states ── */
-  --state-error:#FF3D00;   --state-error-bg:rgba(255,61,0,.08);
-  --state-success:#22C55E; --state-success-bg:rgba(34,197,94,.08);
-  --state-warning:#D9A514; --state-warning-bg:rgba(217,165,20,.08);
+  /* ── Opal canonical: semantic states (burgundy error · muted green · amber) ── */
+  --state-error:#800020;   --state-error-bg:rgba(128,0,32,.07);
+  --state-success:#2E7D46; --state-success-bg:rgba(46,125,70,.10);
+  --state-warning:#B07A16; --state-warning-bg:rgba(176,122,22,.12);
 
-  /* ── Stratum canonical: radii ── */
-  --radius-sm:6px; --radius-md:8px; --radius-lg:12px; --radius-xl:18px; --radius-2xl:28px;
+  /* ── Opal canonical: radii (card 25px · pill 999px, per brand components) ── */
+  --radius-sm:6px; --radius-md:8px; --radius-lg:12px; --radius-xl:18px; --radius-2xl:25px;
 
-  /* ── Stratum canonical: focus ring (WCAG 2.4.7) ── */
+  /* ── Opal canonical: focus ring (WCAG 2.4.7) ── */
   --focus-ring:0 0 0 2px var(--brand-accent);
-  --focus-ring-strong:0 0 0 2px var(--brand-accent), 0 0 0 4px rgba(255,90,31,.20);
+  --focus-ring-strong:0 0 0 2px var(--brand-accent), 0 0 0 4px rgba(187,139,65,.22);
 
-  /* ── Stratum canonical: ember elevation (glows on dark) ── */
-  --shadow-ember:0 4px 14px rgba(255,90,31,.30);
-  --shadow-ember-hover:0 8px 22px rgba(255,90,31,.42);
-  --shadow-toast:0 8px 32px rgba(0,0,0,.50);
-  --shadow-modal:0 24px 48px rgba(0,0,0,.60), 0 0 0 1px rgba(255,255,255,.04);
+  /* ── Opal canonical: soft gold elevation on cream ── */
+  --shadow-ember:0 4px 14px rgba(187,139,65,.28);
+  --shadow-ember-hover:0 8px 22px rgba(187,139,65,.38);
+  --shadow-toast:0 8px 32px rgba(44,44,44,.18);
+  --shadow-modal:0 24px 48px rgba(44,44,44,.22), 0 0 0 1px rgba(44,44,44,.06);
 
   /* ============================================================
      Semantic aliases consumed by existing components.
@@ -51,19 +53,19 @@
   /* surfaces */
   --bg:var(--surface-page); --bg2:var(--surface-sunken);
   --card:var(--surface); --card2:var(--surface-elevated);
-  /* brand accents → ember */
-  --teal:var(--ember); --teal-soft:rgba(255,90,31,.08); --accent-hover:var(--ember-hover);
+  /* brand accents → gold */
+  --teal:var(--ember); --teal-soft:rgba(187,139,65,.10); --accent-hover:var(--ember-hover);
   --green:var(--state-success); --orange:var(--ember-warm); --accent:var(--brand-accent);
-  --danger:var(--state-error); --btn-text:#0B0B0B;
-  /* delivery status colors — locked to ember tints + success + error (Stratum: ember & green are the ONLY chromatics) */
+  --danger:var(--state-error); --btn-text:#2C2C2C;
+  /* delivery status colors — gold tints + success green + burgundy error */
   --st-pending:var(--muted); --st-sent:var(--ember-2); --st-delivered:var(--ember);
   --st-read:var(--state-success); --st-failed:var(--state-error);
   --st-scheduled:var(--ember-shadow); --st-sending:var(--ember); --st-completed:var(--state-success);
-  /* shape & layout */
-  --r:var(--radius-xl); --r-sm:var(--radius-lg); --r-pill:999px; --max:1200px; --nav-h:62px;
-  --shadow:none;  /* Stratum: cards are flat hairline surfaces, no drop shadow */
-  /* type — Geist (Latin) · Geist Mono (technical) · Cairo (Arabic) */
-  --font-en:"Geist",system-ui,-apple-system,"Segoe UI",sans-serif;
+  /* shape & layout — Opal card radius 25px · content width 1224px */
+  --r:var(--radius-2xl); --r-sm:var(--radius-lg); --r-pill:999px; --max:1224px; --nav-h:62px;
+  --shadow:0 2px 12px rgba(44,44,44,.06);  /* Opal: soft luxury card lift */
+  /* type — Helvetica Neue (Latin body) · serif display (headings) · Cairo (Arabic) */
+  --font-en:"Helvetica Neue",Helvetica,Arial,"Segoe UI",sans-serif;
   --font-ar:"Cairo","Segoe UI Arabic","Tahoma",sans-serif;
   --font-mono:"Geist Mono","JetBrains Mono","Courier New",monospace;
   --font:var(--font-en);
@@ -86,6 +88,8 @@ a:hover { color:var(--accent-hover); }
 h1 { font-size:clamp(26px,4vw,40px); font-weight:600; letter-spacing:-.025em; margin:.2em 0 .4em; }
 h2 { font-size:clamp(20px,3vw,28px); font-weight:600; letter-spacing:-.02em; margin:1.2em 0 .5em; }
 h3 { font-size:17px; font-weight:600; margin:0 0 12px; }
+/* Opal brand-guide typography: elegant serif headings (Didot/Baskerville). */
+h1, h2, h3, h4, h5, h6 { font-family:var(--font-display); letter-spacing:normal; }
 html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3 { letter-spacing:normal; font-weight:700; }
 
 /* layout */
@@ -93,7 +97,7 @@ html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3 { letter-spacing:norm
 .nav {
   position:sticky; top:0; z-index:20; display:flex; align-items:center;
   justify-content:space-between; gap:16px; min-height:var(--nav-h);
-  padding:0 20px; background:rgba(11,11,11,.82); backdrop-filter:blur(10px);
+  padding:0 20px; background:rgba(255,252,243,.85); backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
 }
 .nav__links { display:flex; gap:18px; align-items:center; }
@@ -172,7 +176,7 @@ html[lang="ar"] .eyebrow { letter-spacing:normal; text-transform:none; font-fami
   padding:10px 8px; border-bottom:1px solid var(--line2); }
 html[lang="ar"] .table th { letter-spacing:normal; text-transform:none; font-family:var(--font-ar); }
 .table td { padding:10px 8px; border-bottom:1px solid var(--line); }
-.table tr:hover td { background:rgba(255,255,255,.02); }
+.table tr:hover td { background:rgba(44,44,44,.035); }
 .muted { color:var(--muted); }
 
 /* status badges */
@@ -252,7 +256,7 @@ html[lang="ar"] .table th { letter-spacing:normal; text-transform:none; font-fam
    Dark by default; [data-theme="light"] is an interim light palette
    (Stratum defers true light mode to v1.3.0).
    ============================================================ */
-:root { --font-display:"Geist", var(--font-en); }
+:root { --font-display:Didot,"Bodoni MT",Baskerville,"Libre Baskerville",Georgia,serif; }
 
 /* Bilingual: render both languages, show the one matching <html lang>.
    (Set pre-paint by the layout script + the LangToggle — no flash.) */
@@ -264,16 +268,20 @@ html[lang="ar"] { --font-display: var(--font-ar); }
 html[lang="ar"] .lp-h1, html[lang="ar"] h1, html[lang="ar"] h2,
 html[lang="ar"] .lp-kicker, html[lang="ar"] .auth__pitch { letter-spacing:normal; }
 
-/* Interim light palette — neutral grays with the ember accent retained.
-   Stratum 1.2.0 has no light tokens; this is an extension, not strict spec. */
-:root[data-theme="light"] {
-  --surface-page:#FAFAFA; --surface-sunken:#F2F2F2; --surface:#FFFFFF; --surface-elevated:#F7F7F7;
+/* Opal DARK — reversed palette (cream text on black + gold), per the reversed
+   logo variant. Opt-in via the theme toggle (data-theme="dark"); Opal light is
+   the default (:root). Accent gold + states inherit from :root unless noted. */
+:root[data-theme="dark"] {
+  --surface-page:#0B0B0B; --surface-sunken:#111111; --surface:#171717; --surface-elevated:#1E1E1E;
   --bg:var(--surface-page); --bg2:var(--surface-sunken); --card:var(--surface); --card2:var(--surface-elevated);
-  --line:#E5E5E5; --line2:#D4D4D4; --line-hover:#B8B8B8;
-  --ink:#0B0B0B; --text-primary:#0B0B0B; --text-soft:#1A1A1A; --muted:#5A5A5A; --micro:#6A6A6A;
-  --teal-soft:rgba(255,90,31,.10);
-  --btn-text:#FFFFFF;
-  --shadow:0 8px 24px rgba(11,11,11,.08);
+  --line:#262626; --line2:#333333; --line-hover:#444444;
+  --ink:#FFFCF3; --text-primary:#FFFCF3; --text-soft:#E7E0CE; --muted:#A79E86; --micro:#8F876F;
+  --teal-soft:rgba(194,166,112,.14);
+  --btn-text:#1A1206;
+  --state-error:#D06A80; --state-success:#4FB06E;   /* lifted for legibility on black */
+  --shadow:0 8px 24px rgba(0,0,0,.45);
+  --shadow-toast:0 8px 32px rgba(0,0,0,.55);
+  --shadow-modal:0 24px 48px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05);
 }
 
 /* theme toggle */

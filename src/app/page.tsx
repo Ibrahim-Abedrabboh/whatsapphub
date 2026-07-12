@@ -48,7 +48,7 @@ export default function Landing() {
         <header className="dk-nav reveal">
           <div className="brand">
             <span className="mark" aria-hidden />
-            <span><span className="b1">whatsapp</span><span className="b2">hub</span></span>
+            <span><span className="b1">Opal</span><span className="b2"> Hotel</span></span>
           </div>
           <nav className="dk-nav__links">
             <a href="/tutorial.html"><T en="How it works" ar="كيف تعمل" /></a>
@@ -114,12 +114,12 @@ export default function Landing() {
         </section>
 
         <section className="dk-final">
-          <h2><T en="Start sending from your WhatsApp Hub." ar="ابدأ الإرسال من مركز واتساب." /></h2>
+          <h2><T en="Start sending from Opal Hotel Social Media Growth Hub." ar="ابدأ الإرسال من مركز أوبال هوتل." /></h2>
           <Link href="/login" className="dk-btn dk-btn--primary"><T en="Open the hub" ar="افتح المركز" /></Link>
         </section>
 
         <footer className="dk-foot">
-          <span><T en="© NazzilVideo · WhatsApp Hub" ar="© NazzilVideo · مركز واتساب" /></span>
+          <span><T en="© Opal Hotel · The True Meaning of Luxury" ar="© فندق أوبال · المعنى الحقيقي للفخامة" /></span>
           <span style={{ display: "inline-flex", gap: 18 }}>
             <a href="/tutorial.html"><T en="Tutorial" ar="الدليل التفاعلي" /></a>
             <Link href="/login"><T en="Log in" ar="تسجيل الدخول" /></Link>

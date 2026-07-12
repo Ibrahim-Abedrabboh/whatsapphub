@@ -6,9 +6,9 @@ import ClientSwitcher from "./ClientSwitcher";
 export default function Nav() {
   return (
     <nav className="nav">
-      <Link href="/dashboard" className="brand" aria-label="WhatsApp Hub home">
+      <Link href="/dashboard" className="brand" aria-label="Opal Hotel Social Media Growth Hub home">
         <span className="mark" aria-hidden />
-        <span><span className="b1">whatsapp</span><span className="b2">hub</span></span>
+        <span><span className="b1">Opal</span><span className="b2"> Hotel</span></span>
       </Link>
       <div className="nav__links">
         <Link href="/dashboard">Dashboard</Link>

@@ -49,7 +49,7 @@ export default function ChatbotMarketing() {
         <header className="dk-nav reveal">
           <div className="brand">
             <span className="mark" aria-hidden />
-            <span><span className="b1">whatsapp</span><span className="b2">hub</span></span>
+            <span><span className="b1">Opal</span><span className="b2"> Hotel</span></span>
           </div>
           <nav className="dk-nav__links">
             <a href="#how"><T en="How it works" ar="كيف تعمل" /></a>
@@ -119,7 +119,7 @@ export default function ChatbotMarketing() {
         </section>
 
         <footer className="dk-foot">
-          <span><T en="© NazzilVideo · WhatsApp Hub" ar="© NazzilVideo · مركز واتساب" /></span>
+          <span><T en="© Opal Hotel · The True Meaning of Luxury" ar="© فندق أوبال · المعنى الحقيقي للفخامة" /></span>
           <span style={{ display: "inline-flex", gap: 18 }}>
             <Link href="/"><T en="Home" ar="الرئيسية" /></Link>
             <Link href="/login"><T en="Log in" ar="تسجيل الدخول" /></Link>

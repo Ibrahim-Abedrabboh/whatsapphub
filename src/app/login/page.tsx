@@ -75,14 +75,14 @@ export default function LoginPage() {
             <span>Opt-outs honored automatically</span>
           </div>
         </div>
-        <p className="muted" style={{ fontSize: 13 }}>NazzilVideo · WhatsApp Cloud API</p>
+        <p className="muted" style={{ fontSize: 13 }}>Opal Hotel · The True Meaning of Luxury</p>
       </aside>
 
       <section className="auth__panel">
         <div className="auth__top"><ThemeToggle /></div>
         <form onSubmit={onSubmit} className="auth__form reveal">
           <h1>Welcome back</h1>
-          <p className="sub">Sign in to your WhatsApp Hub.</p>
+          <p className="sub">Sign in to Opal Hotel Social Media Growth Hub.</p>
           <div className="field">
             <label className="label" htmlFor="email">Email</label>
             <input id="email" data-test-id="login-email" className="input" type="email" value={email}

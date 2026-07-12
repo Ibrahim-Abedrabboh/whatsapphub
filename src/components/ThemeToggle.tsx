@@ -2,21 +2,21 @@
 
 import { useEffect, useState } from "react";
 
-// Dark is the default (no attribute). Light is opt-in, persisted in localStorage
-// and applied pre-paint by the inline script in layout.tsx.
+// Opal light is the default (no attribute). Dark (reversed black+gold) is opt-in,
+// persisted in localStorage and applied pre-paint by the inline script in layout.tsx.
 export default function ThemeToggle() {
-  const [light, setLight] = useState(false);
+  const [light, setLight] = useState(true);
 
   useEffect(() => {
-    setLight(document.documentElement.dataset.theme === "light");
+    setLight(document.documentElement.dataset.theme !== "dark");
   }, []);
 
   function toggle() {
-    const next = !light;
+    const next = !light; // next === true → light
     setLight(next);
     const root = document.documentElement;
-    if (next) root.dataset.theme = "light";
-    else delete root.dataset.theme;
+    if (next) delete root.dataset.theme;
+    else root.dataset.theme = "dark";
     try { localStorage.setItem("bc-theme", next ? "light" : "dark"); } catch { /* ignore */ }
   }
 
