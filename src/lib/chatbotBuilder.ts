@@ -30,7 +30,7 @@ export interface Block {
 export const BLOCK_META: Record<BlockType, { label: string; wait: boolean; help: string }> = {
   message: { label: "Send message", wait: false, help: "Send a text message to the customer, then continue." },
   question: { label: "Ask & wait", wait: true, help: "Ask a question and save the customer's reply to reuse later with {{yourVariable}}." },
-  buttons: { label: "Buttons / menu", wait: true, help: "Offer up to 3 tappable choices and branch on the one the customer picks." },
+  buttons: { label: "Buttons / menu", wait: true, help: "Offer up to 10 choices and branch on the one the customer picks." },
   branch: { label: "Branch on reply", wait: true, help: "Route the conversation based on keywords found in the customer's reply." },
   ai: { label: "AI answer", wait: false, help: "Answer the customer's last message from your uploaded knowledge, then continue." },
   aiAgent: { label: "AI Agent", wait: true, help: "Hand off to an autonomous AI agent that chats until its goal is met." },

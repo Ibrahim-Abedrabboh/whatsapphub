@@ -341,7 +341,7 @@ const ChatbotNodeSchema = z.discriminatedUnion("type", [
     options: z
       .array(z.object({ label: z.string().trim().min(1, "Add a label").max(24), nextId: z.string().min(1) }))
       .min(1, "Add at least one option")
-      .max(3, "WhatsApp allows up to 3 buttons"),
+      .max(10, "Up to 10 choices"),
   }),
   z.object({ id: z.string().min(1), type: z.literal("ai"), nextId: z.string().optional() }),
   z.object({
