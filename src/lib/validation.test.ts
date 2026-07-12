@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema, LeadSchema } from "./validation";
+import { PhoneSchema, ContactRowSchema, CreateContactSchema, composeName, CreateClientSchema, SegmentSchema, CreateBroadcastSchema, LeadSchema, ChatbotFlowSchema, CreateChatbotSchema } from "./validation";
 
 describe("PhoneSchema", () => {
   it("normalizes +966 50 000 0000 → 966500000000", () => {
@@ -177,5 +177,73 @@ describe("LeadSchema", () => {
   });
   it("rejects an overlong business name", () => {
     expect(LeadSchema.safeParse({ name: "Ahmed", phone: "966500000001", business: "x".repeat(121) }).success).toBe(false);
+  });
+});
+
+const linearFlow = {
+  startId: "n1",
+  nodes: {
+    n1: { id: "n1", type: "message", text: "Hi {{name}}!", nextId: "n2" },
+    n2: { id: "n2", type: "question", text: "What size?", saveAs: "size", nextId: "n3" },
+    n3: { id: "n3", type: "end" },
+  },
+};
+
+const branchFlow = {
+  startId: "b1",
+  nodes: {
+    b1: { id: "b1", type: "branch", cases: [{ keywords: ["yes", "y"], nextId: "b2" }], defaultNextId: "b3" },
+    b2: { id: "b2", type: "ai", nextId: "b3" },
+    b3: { id: "b3", type: "aiAgent", goal: "Close the sale", maxTurns: 6, nextId: "b4" },
+    b4: { id: "b4", type: "end" },
+  },
+};
+
+describe("ChatbotFlowSchema", () => {
+  it("accepts a valid linear flow", () => {
+    expect(ChatbotFlowSchema.safeParse(linearFlow).success).toBe(true);
+  });
+  it("accepts a valid branch + ai + aiAgent flow", () => {
+    expect(ChatbotFlowSchema.safeParse(branchFlow).success).toBe(true);
+  });
+  it("rejects a startId that is not a node", () => {
+    expect(ChatbotFlowSchema.safeParse({ ...linearFlow, startId: "ghost" }).success).toBe(false);
+  });
+  it("rejects a dangling nextId", () => {
+    const bad = { startId: "n1", nodes: { n1: { id: "n1", type: "message", text: "hi", nextId: "gone" } } };
+    expect(ChatbotFlowSchema.safeParse(bad).success).toBe(false);
+  });
+  it("rejects a dangling branch case nextId", () => {
+    const bad = {
+      startId: "b1",
+      nodes: { b1: { id: "b1", type: "branch", cases: [{ keywords: ["x"], nextId: "missing" }] } },
+    };
+    expect(ChatbotFlowSchema.safeParse(bad).success).toBe(false);
+  });
+  it("rejects a node whose key does not match its id", () => {
+    const bad = { startId: "n1", nodes: { n1: { id: "OTHER", type: "end" } } };
+    expect(ChatbotFlowSchema.safeParse(bad).success).toBe(false);
+  });
+  it("rejects a branch with no cases", () => {
+    const bad = { startId: "b1", nodes: { b1: { id: "b1", type: "branch", cases: [] } } };
+    expect(ChatbotFlowSchema.safeParse(bad).success).toBe(false);
+  });
+  it("rejects a question with an invalid saveAs name", () => {
+    const bad = { startId: "n1", nodes: { n1: { id: "n1", type: "question", text: "?", saveAs: "1bad" } } };
+    expect(ChatbotFlowSchema.safeParse(bad).success).toBe(false);
+  });
+});
+
+describe("CreateChatbotSchema", () => {
+  it("defaults status to DRAFT", () => {
+    const r = CreateChatbotSchema.parse({ name: "Order bot", flow: linearFlow });
+    expect(r.status).toBe("DRAFT");
+  });
+  it("rejects an empty name", () => {
+    expect(CreateChatbotSchema.safeParse({ name: "  ", flow: linearFlow }).success).toBe(false);
+  });
+  it("rejects a flow that fails ChatbotFlowSchema", () => {
+    const badFlow = { startId: "ghost", nodes: {} };
+    expect(CreateChatbotSchema.safeParse({ name: "Bot", flow: badFlow }).success).toBe(false);
   });
 });
