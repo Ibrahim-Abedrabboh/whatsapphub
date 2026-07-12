@@ -12,7 +12,7 @@ export interface ChatbotBuilderProps {
   onCancel: () => void;
 }
 
-const ADDABLE: BlockType[] = ["message", "question", "buttons", "branch", "ai", "aiAgent", "end"];
+const ADDABLE: BlockType[] = ["message", "question", "buttons", "branch", "delay", "ai", "aiAgent", "end"];
 
 export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBuilderProps) {
   const [name, setName] = useState(initial?.name ?? "");
@@ -120,6 +120,13 @@ export default function ChatbotBuilder({ initial, onDone, onCancel }: ChatbotBui
                   <input id={`turns-${b.id}`} className="input" type="number" min={1} max={20} value={b.maxTurns ?? ""} onChange={(e) => patch(b.id, { maxTurns: e.target.value ? Number(e.target.value) : undefined })} />
                 </div>
               </>
+            )}
+            {b.type === "delay" && (
+              <div className="field">
+                <label className="label" htmlFor={`seconds-${b.id}`}>Wait (seconds)</label>
+                <input id={`seconds-${b.id}`} className="input" type="number" min={1} max={86400} style={{ maxWidth: 140 }}
+                  value={b.seconds ?? 5} onChange={(e) => patch(b.id, { seconds: e.target.value ? Number(e.target.value) : undefined })} />
+              </div>
             )}
             {b.type === "ai" && <p className="note">Answers the customer&apos;s last message from your uploaded knowledge, then continues.</p>}
             {b.type === "end" && <p className="note">Ends the conversation.</p>}
