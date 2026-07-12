@@ -471,6 +471,24 @@ model Chatbot {
   @@index([clientId])
 }
 
+// A running instance of a Chatbot on one conversation (V2 M3 Phase 4). At most
+// one ACTIVE per conversation (enforced in app logic). variables holds captured
+// question answers + engine bookkeeping (keys prefixed __).
+model ChatbotSession {
+  id             String   @id @default(cuid())
+  clientId       String   @default("default")
+  conversationId String
+  chatbotId      String
+  currentNodeId  String
+  variables      Json     @default("{}")
+  status         String   @default("ACTIVE") // ACTIVE | DONE | ABANDONED
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([conversationId])
+  @@index([clientId])
+}
+
 // Reusable per-client reply snippet (V2 §2.3). Body may contain {{name}}/{{phone}}
 // placeholders substituted from the conversation's contact when inserted.
 model CannedReply {
