@@ -3,7 +3,8 @@ import { verifyToken, ACCESS_COOKIE } from "@/lib/auth";
 
 // Public paths that must NOT require auth. "/r/" is the tracked-link redirect
 // (V2 M4 §2.9) — trailing slash matters: a bare "/r" prefix would over-match.
-const PUBLIC_PREFIXES = ["/login", "/api/auth", "/api/webhooks", "/api/health", "/api/leads", "/r/", "/api/growth/qr"];
+const PUBLIC_PREFIXES = ["/login", "/api/auth", "/api/webhooks", "/api/health", "/api/leads", "/r/", "/api/growth/qr",
+  "/deploy", "/guide", "/features", "/connect"];
 // Public exact paths (prefix match would over-match, e.g. "/" matches everything).
 const PUBLIC_EXACT = new Set(["/", "/deploy", "/chatbots", "/contacts-template.csv", "/tutorial.html", "/USER-GUIDE.html", "/FeatureList.html", "/ConnectionChecklist.html", "/SelfHosting.html"]);
 

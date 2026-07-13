@@ -1,14 +1,9 @@
-import { readFile } from "fs/promises";
-import { join } from "path";
+import { guidePage } from "@/lib/guidePage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-static";
 
-/** GET /deploy — serves the self-hosting guide (public/SelfHosting.html) at a
- *  clean URL. Public (allowlisted in middleware); intentionally unlinked. */
+/** GET /deploy — self-hosting guide (English). Public, intentionally unlinked. */
 export async function GET() {
-  const html = await readFile(join(process.cwd(), "public", "SelfHosting.html"), "utf8");
-  return new Response(html, {
-    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "public, max-age=300" },
-  });
+  return guidePage("SelfHosting.html", "en");
 }

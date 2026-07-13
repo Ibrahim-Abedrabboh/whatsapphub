@@ -50,10 +50,7 @@ export default function Landing() {
             <span className="mark" aria-hidden />
             <span><span className="b1">Opal</span><span className="b2"> Hotel</span></span>
           </div>
-          <nav className="dk-nav__links">
-            <a href="/tutorial.html"><T en="How it works" ar="كيف تعمل" /></a>
-            <Link href="/dashboard"><T en="Dashboard" ar="لوحة التحكم" /></Link>
-          </nav>
+          <nav className="dk-nav__links" aria-hidden></nav>
           <div className="dk-nav__right">
             <LangToggle />
             <ThemeToggle />
