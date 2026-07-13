@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Self-Hosting &amp; Accounts — Opal Hotel Social Media Growth Hub</title>
+<title>Self-Hosting &amp; Accounts — Opal Hotel · الاستضافة الذاتية</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&family=Cormorant+Garamond:wght@600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
     --bg:#FFFCF3; --sunken:#F5F1E4; --card:#FFFFFF; --elevated:#FBF8EF;
@@ -16,8 +16,8 @@
     --green:#2E7D46; --green-bg:rgba(46,125,70,.08); --slate:#394E6C; --slate-bg:rgba(57,78,108,.06);
     --serif:"Libre Baskerville",Georgia,serif; --display:"Cormorant Garamond",serif;
     --sans:"Montserrat","Helvetica Neue",Arial,sans-serif; --mono:"JetBrains Mono","Courier New",monospace;
-    --code-bg:#2b2620; --code-ink:#f3ead6;
-    --radius:20px; --shadow:0 3px 18px rgba(44,44,44,.06);
+    --arabic:"Cairo","Segoe UI Arabic",Tahoma,sans-serif;
+    --code-bg:#2b2620; --code-ink:#f3ead6; --radius:20px; --shadow:0 3px 18px rgba(44,44,44,.06);
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#0B0B0B; --sunken:#111; --card:#171717; --elevated:#1E1E1E; --ink:#FFFCF3; --soft:#E7E0CE;
@@ -28,6 +28,27 @@
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font-family:var(--sans); font-size:15.5px; line-height:1.68; -webkit-font-smoothing:antialiased; }
   .wrap { max-width:880px; margin:0 auto; padding:0 24px 80px; }
+
+  /* bilingual */
+  html:not([lang="ar"]) [data-lang="ar"] { display:none; }
+  html[lang="ar"] [data-lang="en"] { display:none; }
+  html[lang="ar"] body, html[lang="ar"] .brand, html[lang="ar"] h2, html[lang="ar"] h3,
+  html[lang="ar"] .kicker, html[lang="ar"] .slogan, html[lang="ar"] td, html[lang="ar"] .call,
+  html[lang="ar"] p, html[lang="ar"] li, html[lang="ar"] footer .s { font-family:var(--arabic) !important; letter-spacing:normal; }
+  html[lang="ar"] .mark { font-family:var(--display); }
+  /* keep code, captions, diagram LTR even in RTL */
+  html[lang="ar"] .diagram, html[lang="ar"] .code, html[lang="ar"] code.inl { direction:ltr; text-align:left; unicode-bidi:isolate; }
+  html[lang="ar"] .code .cap { flex-direction:row; }
+  html[lang="ar"] .call { padding:12px 42px 12px 18px; }
+  html[lang="ar"] .call::before { left:auto; right:14px; }
+  html[lang="ar"] th { text-align:right; }
+  html[lang="ar"] ul, html[lang="ar"] ol { padding-left:0; padding-right:22px; }
+  html[lang="ar"] .kicker { letter-spacing:normal; }
+
+  .lang-toggle { position:fixed; top:14px; inset-inline-end:14px; z-index:50; font-family:var(--sans); font-weight:600; font-size:13px;
+    background:var(--card); color:var(--gold-deep); border:1px solid var(--gold); border-radius:999px; padding:8px 15px; cursor:pointer; box-shadow:var(--shadow); }
+  .lang-toggle:hover { background:rgba(187,139,65,.09); }
+
   header.top { text-align:center; padding:60px 24px 36px; border-bottom:1px solid var(--line); background:radial-gradient(130% 100% at 50% -25%, rgba(187,139,65,.12), transparent 60%), var(--bg); }
   .mark { width:78px; height:78px; margin:0 auto 20px; border-radius:50%; border:2px solid var(--gold); display:grid; place-items:center; font-family:var(--display); font-size:46px; color:var(--gold); line-height:1; }
   .brand { font-family:var(--display); font-weight:600; font-size:clamp(28px,4.6vw,40px); color:var(--ink); margin:0; }
@@ -35,9 +56,11 @@
   .kicker { letter-spacing:.3em; text-transform:uppercase; font-size:11.5px; color:var(--gold-deep); margin:10px 0 0; }
   .slogan { font-family:var(--serif); font-style:italic; color:var(--soft); font-size:17px; margin:14px 0 0; }
   h2 { font-family:var(--serif); font-weight:700; font-size:clamp(21px,3vw,27px); color:var(--ink); margin:52px 0 6px; }
-  h2 .num { color:var(--gold); font-weight:400; margin-right:10px; }
-  h3 { font-family:var(--serif); font-weight:700; font-size:17px; color:var(--ink); margin:26px 0 6px; }
+  h2 .num { color:var(--gold); font-weight:400; margin-inline-end:10px; }
+  h3 { font-family:var(--mono); font-weight:500; font-size:15px; color:var(--gold-deep); margin:26px 0 6px; }
+  h3.ar-serif { font-family:var(--serif); font-weight:700; color:var(--ink); font-size:17px; }
   .divider { height:1px; background:linear-gradient(90deg,var(--gold),transparent); margin:12px 0 22px; }
+  html[lang="ar"] .divider { background:linear-gradient(270deg,var(--gold),transparent); }
   p { margin:12px 0; } strong { color:var(--ink); } a { color:var(--gold-deep); }
   ul,ol { padding-left:22px; } li { margin:7px 0; }
   code.inl { background:var(--sunken); border:1px solid var(--line); border-radius:5px; padding:1px 5px; font-family:var(--mono); font-size:.85em; color:var(--gold-deep); }
@@ -46,8 +69,8 @@
   table { width:100%; border-collapse:collapse; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); overflow:hidden; }
   th,td { text-align:left; padding:10px 14px; border-bottom:1px solid var(--line); font-size:14px; vertical-align:top; }
   th { font-family:var(--sans); font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--gold-deep); background:var(--sunken); }
-  td.c,th.c { text-align:center; } tr:last-child td { border-bottom:0; }
-  .yes { color:var(--green); font-weight:700; } .no { color:var(--micro); }
+  html[lang="ar"] th { letter-spacing:normal; font-family:var(--arabic); }
+  tr:last-child td { border-bottom:0; }
 
   .call { border-radius:13px; padding:12px 18px 12px 42px; margin:16px 0; position:relative; border:1px solid var(--line); font-size:14.5px; }
   .call::before { position:absolute; left:14px; top:11px; font-size:15px; }
@@ -57,57 +80,58 @@
   .note{background:var(--slate-bg);border-color:rgba(57,78,108,.28)} .note::before{content:"\1F4DD"} .note .k{color:var(--slate)}
   .success{background:var(--green-bg);border-color:rgba(46,125,70,.3)} .success::before{content:"\2705"} .success .k{color:var(--green)}
 
-  /* diagram */
   .diagram { background:var(--code-bg); color:var(--code-ink); border-radius:var(--radius); padding:20px 22px; font-family:var(--mono); font-size:13px; line-height:1.5; overflow-x:auto; white-space:pre; margin:16px 0; }
 
-  /* code blocks with copy */
   .code { position:relative; margin:14px 0 22px; }
   .code .cap { display:flex; align-items:center; justify-content:space-between; background:var(--sunken); border:1px solid var(--line); border-bottom:0; border-radius:12px 12px 0 0; padding:8px 14px; font-family:var(--mono); font-size:12.5px; color:var(--gold-deep); font-weight:600; }
   .code .copy { font-family:var(--sans); font-weight:600; font-size:12px; background:var(--gold); color:#fff; border:0; border-radius:999px; padding:5px 14px; cursor:pointer; }
   .code .copy:hover { background:var(--gold-deep); }
   .code pre { margin:0; background:var(--code-bg); color:var(--code-ink); border-radius:0 0 12px 12px; padding:16px 18px; overflow-x:auto; font-family:var(--mono); font-size:12.5px; line-height:1.55; }
-  .code pre .c { color:#b7a179; } /* comment tint via spans if needed */
 
   footer { text-align:center; color:var(--muted); font-size:13px; margin-top:56px; padding-top:22px; border-top:1px solid var(--line); }
   footer .s { font-family:var(--serif); font-style:italic; color:var(--gold-deep); }
-  @media print { .copy { display:none; } body { background:#fff; color:#222; } }
+  @media print { .copy, .lang-toggle { display:none; } body { background:#fff; color:#222; } }
 </style>
 </head>
 <body>
 
+<button class="lang-toggle" onclick="toggleLang()" aria-label="Switch language">
+  <span data-lang="en">العربية</span><span data-lang="ar">English</span>
+</button>
+
 <header class="top">
   <div class="mark">O</div>
-  <h1 class="brand">Self-Hosting <span class="gold">&amp; Accounts</span></h1>
-  <p class="kicker">Opal Hotel Social Media Growth Hub</p>
-  <p class="slogan">The True Meaning of Luxury</p>
+  <h1 class="brand"><span data-lang="en">Self-Hosting <span class="gold">&amp; Accounts</span></span><span data-lang="ar">الاستضافة الذاتية <span class="gold">والحسابات</span></span></h1>
+  <p class="kicker"><span data-lang="en">Opal Hotel Social Media Growth Hub</span><span data-lang="ar">مركز أوبال هوتل للنمو عبر وسائل التواصل</span></p>
+  <p class="slogan"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></p>
 </header>
 
 <div class="wrap">
 
   <!-- 1 -->
-  <h2 id="accounts"><span class="num">1</span>Multiple Accounts &amp; WhatsApp Numbers</h2>
+  <h2 id="accounts"><span class="num">1</span><span data-lang="en">Multiple Accounts &amp; WhatsApp Numbers</span><span data-lang="ar">الحسابات المتعددة وأرقام واتساب</span></h2>
   <div class="divider"></div>
 
-  <h3>✅ Multiple accounts (businesses) — Yes, fully</h3>
-  <p>The platform is <strong>multi-tenant</strong>. Every record — contacts, conversations, templates, chatbots, orders, team, settings — is scoped to its owning account and <strong>completely isolated</strong>; one account can never see another's data. A <strong>super-admin</strong> switches between accounts with the client switcher in the top nav, and each account has its own team, WhatsApp number, Facebook Page, and Instagram.</p>
+  <h3 class="ar-serif"><span data-lang="en">✅ Multiple accounts (businesses) — Yes, fully</span><span data-lang="ar">✅ حسابات متعددة (أنشطة) — نعم، بالكامل</span></h3>
+  <p><span data-lang="en">The platform is <strong>multi-tenant</strong>. Every record — contacts, conversations, templates, chatbots, orders, team, settings — is scoped to its owning account and <strong>completely isolated</strong>; one account can never see another's data. A <strong>super-admin</strong> switches between accounts with the client switcher in the top nav, and each account has its own team, WhatsApp number, Facebook Page, and Instagram.</span><span data-lang="ar">المنصّة <strong>متعدّدة المستأجرين</strong>. كل سجلّ — جهات الاتصال، والمحادثات، والقوالب، والبوتات، والطلبات، والفريق، والإعدادات — مرتبط بحسابه المالك و<strong>معزول تمامًا</strong>؛ فلا يرى حساب بيانات حساب آخر أبدًا. يتنقّل <strong>المشرف العام</strong> بين الحسابات عبر مبدّل الحسابات في الشريط العلوي، ولكل حساب فريقه ورقم واتساب وصفحة فيسبوك وإنستغرام الخاصة به.</span></p>
 
-  <h3>✅ Multiple WhatsApp numbers — Yes: one number per account</h3>
-  <p>Each account connects <strong>exactly one</strong> WhatsApp number. Because you can create many accounts, the system as a whole runs <strong>many numbers side by side</strong>, and inbound messages <strong>route to the correct account automatically</strong> by their phone-number ID.</p>
+  <h3 class="ar-serif"><span data-lang="en">✅ Multiple WhatsApp numbers — Yes: one number per account</span><span data-lang="ar">✅ أرقام واتساب متعددة — نعم: رقم واحد لكل حساب</span></h3>
+  <p><span data-lang="en">Each account connects <strong>exactly one</strong> WhatsApp number. Because you can create many accounts, the system runs <strong>many numbers side by side</strong>, and inbound messages <strong>route to the correct account automatically</strong> by their phone-number ID.</span><span data-lang="ar">يربط كل حساب <strong>رقم واتساب واحدًا فقط</strong>. وبما أنك تستطيع إنشاء حسابات كثيرة، يُشغّل النظام <strong>أرقامًا كثيرة جنبًا إلى جنب</strong>، وتُوجَّه الرسائل الواردة <strong>إلى الحساب الصحيح تلقائيًا</strong> عبر معرّف رقم الهاتف.</span></p>
 
   <div class="tbl-wrap"><table>
-    <tr><th>You want</th><th>How</th></tr>
-    <tr><td>Run <strong>3 separate brands / numbers</strong></td><td>Create <strong>3 accounts</strong> (one number each) → switch between them in the nav</td></tr>
-    <tr><td>Facebook Page + Instagram per brand</td><td>One Page + one IG account <strong>per account</strong> (each channel config is unique per account)</td></tr>
-    <tr><td>All brands from one login</td><td>Sign in as <strong>super-admin</strong> and switch accounts — no re-login</td></tr>
+    <tr><th><span data-lang="en">You want</span><span data-lang="ar">ما تريده</span></th><th><span data-lang="en">How</span><span data-lang="ar">الطريقة</span></th></tr>
+    <tr><td><span data-lang="en">Run <strong>3 separate brands / numbers</strong></span><span data-lang="ar">تشغيل <strong>3 علامات / أرقام منفصلة</strong></span></td><td><span data-lang="en">Create <strong>3 accounts</strong> (one number each) → switch between them in the nav</span><span data-lang="ar">أنشئ <strong>3 حسابات</strong> (رقم لكل منها) ← وبدّل بينها من الشريط</span></td></tr>
+    <tr><td><span data-lang="en">Facebook Page + Instagram per brand</span><span data-lang="ar">صفحة فيسبوك + إنستغرام لكل علامة</span></td><td><span data-lang="en">One Page + one IG account <strong>per account</strong></span><span data-lang="ar">صفحة واحدة + حساب إنستغرام واحد <strong>لكل حساب</strong></span></td></tr>
+    <tr><td><span data-lang="en">All brands from one login</span><span data-lang="ar">كل العلامات من تسجيل دخول واحد</span></td><td><span data-lang="en">Sign in as <strong>super-admin</strong> and switch accounts — no re-login</span><span data-lang="ar">سجّل الدخول كـ<strong>مشرف عام</strong> وبدّل الحسابات — دون إعادة تسجيل</span></td></tr>
   </table></div>
 
-  <div class="call note"><span class="k">📝 Note:</span> Each account = one WhatsApp number + one Facebook Page + one Instagram, all flowing into that account's unified inbox.</div>
-  <div class="call warning"><span class="k">⚠️ The one limit:</span> the system does <strong>not</strong> currently support <strong>multiple WhatsApp numbers inside a single account</strong> (two numbers sharing one inbox). That specific setup would be a small schema change (making an account's WhatsApp connection one-to-many).</div>
+  <div class="call note"><span class="k"><span data-lang="en">📝 Note:</span><span data-lang="ar">📝 ملاحظة:</span></span> <span data-lang="en">Each account = one WhatsApp number + one Facebook Page + one Instagram, all flowing into that account's unified inbox.</span><span data-lang="ar">كل حساب = رقم واتساب واحد + صفحة فيسبوك واحدة + إنستغرام واحد، تتدفّق كلها إلى صندوق ذلك الحساب الموحّد.</span></div>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ The one limit:</span><span data-lang="ar">⚠️ القيد الوحيد:</span></span> <span data-lang="en">the system does <strong>not</strong> currently support <strong>multiple WhatsApp numbers inside a single account</strong> (two numbers sharing one inbox). That would be a small schema change.</span><span data-lang="ar">لا يدعم النظام حاليًا <strong>أرقام واتساب متعددة داخل حساب واحد</strong> (رقمان يتشاركان صندوقًا واحدًا). وهذا يتطلّب تعديلًا بسيطًا في المخطّط.</span></div>
 
   <!-- 2 -->
-  <h2 id="architecture"><span class="num">2</span>Recommended Hosting Setup</h2>
+  <h2 id="architecture"><span class="num">2</span><span data-lang="en">Recommended Hosting Setup</span><span data-lang="ar">إعداد الاستضافة الموصى به</span></h2>
   <div class="divider"></div>
-  <p><strong>The one constraint that shapes everything:</strong> Meta must reach your webhook over <strong>public HTTPS</strong>. Even though your devices are on the LAN, WhatsApp/Instagram/Messenger deliver inbound messages by calling <code class="inl">https://your-domain/api/webhooks/*</code> from the internet. So the design is “publicly-reachable webhook + your team uses the UI over HTTPS.”</p>
+  <p><span data-lang="en"><strong>The one constraint that shapes everything:</strong> Meta must reach your webhook over <strong>public HTTPS</strong>. Even though your devices are on the LAN, WhatsApp/Instagram/Messenger deliver inbound messages by calling <code class="inl">https://your-domain/api/webhooks/*</code> from the internet. So the design is “publicly-reachable webhook + your team uses the UI over HTTPS.”</span><span data-lang="ar"><strong>القيد الذي يحكم كل شيء:</strong> يجب أن تصل ميتا إلى الويب هوك عبر <strong>HTTPS عام</strong>. فحتى لو كانت أجهزتك على الشبكة المحلية، يُسلّم واتساب/إنستغرام/ماسنجر الرسائل الواردة باستدعاء <code class="inl">https://your-domain/api/webhooks/*</code> من الإنترنت. فالتصميم هو «ويب هوك متاح للعموم + فريقك يستخدم الواجهة عبر HTTPS».</span></p>
 
   <div class="diagram">  Meta (WhatsApp / IG / Messenger) ──HTTPS──▶ ┌────────────────────────────────┐
   Your team &amp; LAN devices        ──HTTPS──▶ │  Cloudflare Tunnel (edge TLS)  │
@@ -120,28 +144,28 @@
                                                   one docker compose stack</div>
 
   <ul>
-    <li><strong>Server:</strong> an always-on Linux box (Ubuntu) with Docker + Compose. For one hotel, <strong>2–4 vCPU / 8 GB RAM / SSD</strong> is plenty. On-prem or a small cloud VPS both work.</li>
-    <li><strong>Cloudflare Tunnel</strong> gives public HTTPS with <strong>no port-forwarding and no exposed LAN</strong> — the tunnel dials out; Meta and your team reach the app via a hostname like <code class="inl">hub.opalhotel.com</code>.</li>
-    <li><strong>Caddy</strong> is the internal reverse proxy (compression + security headers). Public TLS is handled at Cloudflare's edge, so Caddy runs plain HTTP inside.</li>
-    <li><strong>LAN devices</strong> just open <code class="inl">https://hub.opalhotel.com</code> in any browser — nothing to install, protected by the app's own login.</li>
+    <li><span data-lang="en"><strong>Server:</strong> an always-on Linux box (Ubuntu) with Docker + Compose. For one hotel, <strong>2–4 vCPU / 8 GB RAM / SSD</strong> is plenty. On-prem or a small cloud VPS both work.</span><span data-lang="ar"><strong>الخادم:</strong> جهاز لينكس دائم التشغيل (أوبونتو) مع Docker + Compose. لفندق واحد، <strong>2–4 نوى / 8 جيجابايت رام / SSD</strong> تكفي بوفرة. سواء محليًا أو على خادم سحابي صغير.</span></li>
+    <li><span data-lang="en"><strong>Cloudflare Tunnel</strong> gives public HTTPS with <strong>no port-forwarding and no exposed LAN</strong> — the tunnel dials out; Meta and your team reach the app via a hostname like <code class="inl">hub.opalhotel.com</code>.</span><span data-lang="ar"><strong>نفق Cloudflare</strong> يوفّر HTTPS عامًا <strong>بلا إعادة توجيه منافذ وبلا كشف الشبكة المحلية</strong> — يتّصل النفق للخارج؛ وتصل ميتا وفريقك للتطبيق عبر اسم مضيف مثل <code class="inl">hub.opalhotel.com</code>.</span></li>
+    <li><span data-lang="en"><strong>Caddy</strong> is the internal reverse proxy (compression + security headers). Public TLS is handled at Cloudflare's edge, so Caddy runs plain HTTP inside.</span><span data-lang="ar"><strong>Caddy</strong> هو الوكيل العكسي الداخلي (ضغط + ترويسات أمان). ويُدار TLS العام على حافة Cloudflare، فيعمل Caddy بـ HTTP بسيط داخليًا.</span></li>
+    <li><span data-lang="en"><strong>LAN devices</strong> just open <code class="inl">https://hub.opalhotel.com</code> in any browser — nothing to install, protected by the app's own login.</span><span data-lang="ar"><strong>أجهزة الشبكة</strong> تفتح <code class="inl">https://hub.opalhotel.com</code> في أي متصفّح — لا شيء يُثبَّت، ومحميّة بتسجيل دخول التطبيق نفسه.</span></li>
   </ul>
-  <div class="call tip"><span class="k">💡 Tip — keep LAN traffic local:</span> add split-horizon DNS (via your router or Pi-hole) so inside devices resolve <code class="inl">hub.opalhotel.com</code> to the server's LAN IP. Uncomment <code class="inl">ports: ["80:80"]</code> on the <code class="inl">caddy</code> service to reach it directly.</div>
+  <div class="call tip"><span class="k"><span data-lang="en">💡 Tip — keep LAN traffic local:</span><span data-lang="ar">💡 نصيحة — أبقِ حركة الشبكة محلية:</span></span> <span data-lang="en">add split-horizon DNS so inside devices resolve <code class="inl">hub.opalhotel.com</code> to the server's LAN IP. Uncomment <code class="inl">ports: ["80:80"]</code> on <code class="inl">caddy</code> to reach it directly.</span><span data-lang="ar">أضِف DNS بأفق منقسم لتترجم الأجهزة الداخلية <code class="inl">hub.opalhotel.com</code> إلى عنوان الخادم المحلي. وأزِل التعليق عن <code class="inl">ports: ["80:80"]</code> في <code class="inl">caddy</code> للوصول المباشر.</span></div>
 
   <!-- 3 -->
-  <h2 id="deploy"><span class="num">3</span>Deploy in 5 Steps</h2>
+  <h2 id="deploy"><span class="num">3</span><span data-lang="en">Deploy in 5 Steps</span><span data-lang="ar">النشر في 5 خطوات</span></h2>
   <div class="divider"></div>
   <ol>
-    <li><strong>Clone the repo</strong> onto the server: <code class="inl">git clone &lt;your-repo&gt; opal-hub &amp;&amp; cd opal-hub</code></li>
-    <li><strong>Add the three files below</strong> at the repo root: <code class="inl">docker-compose.prod.yml</code>, <code class="inl">Caddyfile</code>, and <code class="inl">.env</code> (they're also in the <code class="inl">deploy/</code> folder).</li>
-    <li><strong>Create a Cloudflare Tunnel</strong> (Zero Trust → Networks → Tunnels), map <code class="inl">hub.opalhotel.com</code> → <code class="inl">http://caddy:80</code>, and paste the token into <code class="inl">.env</code>.</li>
-    <li><strong>Fill every secret</strong> in <code class="inl">.env</code> (see the template). Generate the admin password hash with <code class="inl">node scripts/hash-password.mjs 'your-password'</code>.</li>
-    <li><strong>Launch:</strong> <code class="inl">docker compose -f docker-compose.prod.yml up -d --build</code> — migrations + admin seed run automatically, then web + worker start.</li>
+    <li><span data-lang="en"><strong>Clone the repo</strong>: <code class="inl">git clone &lt;your-repo&gt; opal-hub &amp;&amp; cd opal-hub</code></span><span data-lang="ar"><strong>استنسخ المستودع</strong>: <code class="inl">git clone &lt;your-repo&gt; opal-hub &amp;&amp; cd opal-hub</code></span></li>
+    <li><span data-lang="en"><strong>Add the three files below</strong> at the repo root (also in <code class="inl">deploy/</code>).</span><span data-lang="ar"><strong>أضِف الملفات الثلاثة أدناه</strong> في جذر المستودع (وهي أيضًا في <code class="inl">deploy/</code>).</span></li>
+    <li><span data-lang="en"><strong>Create a Cloudflare Tunnel</strong>, map <code class="inl">hub.opalhotel.com</code> → <code class="inl">http://caddy:80</code>, and paste the token into <code class="inl">.env</code>.</span><span data-lang="ar"><strong>أنشئ نفق Cloudflare</strong>، واربط <code class="inl">hub.opalhotel.com</code> ← <code class="inl">http://caddy:80</code>، وألصق الرمز في <code class="inl">.env</code>.</span></li>
+    <li><span data-lang="en"><strong>Fill every secret</strong> in <code class="inl">.env</code>. Hash the admin password: <code class="inl">node scripts/hash-password.mjs 'pw'</code>.</span><span data-lang="ar"><strong>املأ كل سرّ</strong> في <code class="inl">.env</code>. وجزّئ كلمة مرور المسؤول: <code class="inl">node scripts/hash-password.mjs 'pw'</code>.</span></li>
+    <li><span data-lang="en"><strong>Launch:</strong> <code class="inl">docker compose -f docker-compose.prod.yml up -d --build</code> — migrations + admin seed run automatically.</span><span data-lang="ar"><strong>شغّل:</strong> <code class="inl">docker compose -f docker-compose.prod.yml up -d --build</code> — تُطبَّق الترحيلات وبذرة المسؤول تلقائيًا.</span></li>
   </ol>
-  <div class="call success"><span class="k">✅ Then:</span> point each Meta webhook to <code class="inl">https://hub.opalhotel.com/api/webhooks/whatsapp</code> (and <code class="inl">/instagram</code>, <code class="inl">/messenger</code>) and whitelist the domain in your Meta app.</div>
+  <div class="call success"><span class="k"><span data-lang="en">✅ Then:</span><span data-lang="ar">✅ بعدها:</span></span> <span data-lang="en">point each Meta webhook to <code class="inl">https://hub.opalhotel.com/api/webhooks/whatsapp</code> (and <code class="inl">/instagram</code>, <code class="inl">/messenger</code>) and whitelist the domain in your Meta app.</span><span data-lang="ar">وجّه كل ويب هوك من ميتا إلى <code class="inl">https://hub.opalhotel.com/api/webhooks/whatsapp</code> (و<code class="inl">/instagram</code> و<code class="inl">/messenger</code>) وأضِف النطاق للقائمة المسموحة في تطبيق ميتا.</span></div>
 
   <h3>docker-compose.prod.yml</h3>
   <div class="code">
-    <div class="cap"><span>docker-compose.prod.yml</span><button class="copy" onclick="cp(this)">Copy</button></div>
+    <div class="cap"><span>docker-compose.prod.yml</span><button class="copy" onclick="cp(this)"><span data-lang="en">Copy</span><span data-lang="ar">نسخ</span></button></div>
 <pre>name: opal-hub
 
 x-app: &amp;app
@@ -225,7 +249,7 @@ volumes:
 
   <h3>Caddyfile</h3>
   <div class="code">
-    <div class="cap"><span>Caddyfile</span><button class="copy" onclick="cp(this)">Copy</button></div>
+    <div class="cap"><span>Caddyfile</span><button class="copy" onclick="cp(this)"><span data-lang="en">Copy</span><span data-lang="ar">نسخ</span></button></div>
 <pre># Cloudflare terminates public TLS at the edge and forwards to Caddy on :80.
 # Caddy adds compression + security headers, then proxies to the Next.js app.
 :80 {
@@ -242,7 +266,7 @@ volumes:
 
   <h3>.env</h3>
   <div class="code">
-    <div class="cap"><span>.env</span><button class="copy" onclick="cp(this)">Copy</button></div>
+    <div class="cap"><span>.env</span><button class="copy" onclick="cp(this)"><span data-lang="en">Copy</span><span data-lang="ar">نسخ</span></button></div>
 <pre># ── Database (Postgres container) ──
 POSTGRES_USER=opal
 POSTGRES_PASSWORD=REPLACE_with_a_strong_password
@@ -284,28 +308,34 @@ CLOUDFLARE_TUNNEL_TOKEN=</pre>
   </div>
 
   <!-- 4 -->
-  <h2 id="ops"><span class="num">4</span>Access, Security &amp; Backups</h2>
+  <h2 id="ops"><span class="num">4</span><span data-lang="en">Access, Security &amp; Backups</span><span data-lang="ar">الوصول والأمان والنسخ الاحتياطي</span></h2>
   <div class="divider"></div>
   <ul>
-    <li><strong>Firewall:</strong> with Cloudflare Tunnel you can close all inbound ports — only allow <code class="inl">22</code> (SSH). Nothing else needs to be open.</li>
-    <li><strong>Security:</strong> the app's own <strong>login</strong> is the primary gate. For extra protection you can add <strong>Cloudflare Access</strong> (email/SSO) in front of the UI — but leave <code class="inl">/api/webhooks/*</code> and the OAuth callback open so Meta can reach them.</li>
-    <li><strong>Backups:</strong> the <code class="inl">pgdata</code> volume holds everything. Nightly dump: <code class="inl">docker compose exec postgres pg_dump -U opal opalhub | gzip &gt; backup-$(date +%F).sql.gz</code> — send it off-box.</li>
-    <li><strong>Updates:</strong> <code class="inl">git pull &amp;&amp; docker compose -f docker-compose.prod.yml up -d --build</code> — migrations re-run automatically.</li>
-    <li><strong>Scale:</strong> add worker replicas if broadcast volume grows — keep <code class="inl">WA_MPS × workers ≤</code> your Meta messaging tier.</li>
+    <li><span data-lang="en"><strong>Firewall:</strong> with Cloudflare Tunnel you can close all inbound ports — only allow <code class="inl">22</code> (SSH).</span><span data-lang="ar"><strong>الجدار الناري:</strong> مع نفق Cloudflare يمكنك إغلاق كل المنافذ الواردة — واسمح فقط بالمنفذ <code class="inl">22</code> (SSH).</span></li>
+    <li><span data-lang="en"><strong>Security:</strong> the app's own <strong>login</strong> is the primary gate. For extra protection add <strong>Cloudflare Access</strong> in front of the UI — but leave <code class="inl">/api/webhooks/*</code> and the OAuth callback open.</span><span data-lang="ar"><strong>الأمان:</strong> <strong>تسجيل دخول</strong> التطبيق هو الحاجز الأساسي. ولمزيد من الحماية أضِف <strong>Cloudflare Access</strong> أمام الواجهة — مع إبقاء <code class="inl">/api/webhooks/*</code> ومسار OAuth مفتوحين.</span></li>
+    <li><span data-lang="en"><strong>Backups:</strong> the <code class="inl">pgdata</code> volume holds everything. Nightly dump: <code class="inl">docker compose exec postgres pg_dump -U opal opalhub | gzip &gt; backup.sql.gz</code> — send it off-box.</span><span data-lang="ar"><strong>النسخ الاحتياطي:</strong> حجم <code class="inl">pgdata</code> يحوي كل شيء. نسخة ليلية: <code class="inl">docker compose exec postgres pg_dump -U opal opalhub | gzip &gt; backup.sql.gz</code> — واحفظها خارج الخادم.</span></li>
+    <li><span data-lang="en"><strong>Updates:</strong> <code class="inl">git pull &amp;&amp; docker compose -f docker-compose.prod.yml up -d --build</code> — migrations re-run automatically.</span><span data-lang="ar"><strong>التحديثات:</strong> <code class="inl">git pull &amp;&amp; docker compose -f docker-compose.prod.yml up -d --build</code> — تُعاد الترحيلات تلقائيًا.</span></li>
+    <li><span data-lang="en"><strong>Scale:</strong> add worker replicas as volume grows — keep <code class="inl">WA_MPS × workers ≤</code> your Meta tier.</span><span data-lang="ar"><strong>التوسّع:</strong> أضِف نسخ عامل مع نموّ الحجم — مع إبقاء <code class="inl">WA_MPS × workers ≤</code> فئتك في ميتا.</span></li>
   </ul>
-  <div class="call warning"><span class="k">⚠️ Don't</span> make the whole app LAN-only — Meta's webhook and the OAuth callback must stay publicly reachable over HTTPS. Keep the app behind HTTPS + login; optionally restrict the UI with Cloudflare Access.</div>
+  <div class="call warning"><span class="k"><span data-lang="en">⚠️ Don't</span><span data-lang="ar">⚠️ لا</span></span> <span data-lang="en">make the whole app LAN-only — Meta's webhook and the OAuth callback must stay publicly reachable over HTTPS.</span><span data-lang="ar">تجعل التطبيق كلّه محليًا فقط — فويب هوك ميتا ومسار OAuth يجب أن يبقيا متاحين للعموم عبر HTTPS.</span></div>
 
   <footer>
-    Opal Hotel Social Media Growth Hub &nbsp;·&nbsp; <span class="s">The True Meaning of Luxury</span> &nbsp;·&nbsp; Self-Hosting Guide
+    <span data-lang="en">Opal Hotel Social Media Growth Hub</span><span data-lang="ar">مركز أوبال هوتل للنمو عبر وسائل التواصل</span> &nbsp;·&nbsp; <span class="s"><span data-lang="en">The True Meaning of Luxury</span><span data-lang="ar">المعنى الحقيقي للفخامة</span></span>
   </footer>
 </div>
 
 <script>
+  function toggleLang() {
+    var h = document.documentElement, ar = h.lang !== 'ar';
+    h.lang = ar ? 'ar' : 'en'; h.dir = ar ? 'rtl' : 'ltr';
+    try { localStorage.setItem('opal-deploy-lang', h.lang); } catch (e) {}
+  }
+  try { if (localStorage.getItem('opal-deploy-lang') === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; } } catch (e) {}
   function cp(btn) {
     var pre = btn.closest('.code').querySelector('pre');
     navigator.clipboard.writeText(pre.textContent).then(function () {
-      var t = btn.textContent; btn.textContent = 'Copied ✓';
-      setTimeout(function () { btn.textContent = t; }, 1500);
+      var s = btn.querySelector('[data-lang]:not([style*="none"])'); var t = btn.innerHTML;
+      btn.textContent = '✓'; setTimeout(function () { btn.innerHTML = t; }, 1200);
     }).catch(function () {});
   }
 </script>

@@ -14,10 +14,6 @@ const nextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
-  // Clean URL for the self-hosting guide (public, but not linked from the landing).
-  async rewrites() {
-    return [{ source: "/deploy", destination: "/SelfHosting.html" }];
-  },
 };
 
 export default nextConfig;
