@@ -292,13 +292,14 @@
 
 <script>
   function toggleLang() {
-    var html = document.documentElement;
-    var ar = html.lang !== 'ar';
-    html.lang = ar ? 'ar' : 'en';
-    html.dir = ar ? 'rtl' : 'ltr';
-    try { localStorage.setItem('opal-guide-lang', html.lang); } catch (e) {}
+    var p = (location.pathname.replace(/\/+$/, '') || '/');
+    if (location.protocol.indexOf('http') === 0 && !/\.html$/.test(p)) {
+      location.href = /^\/ar(\/|$)/.test(p) ? (p.replace(/^\/ar/, '') || '/') : ('/ar' + p);
+      return;
+    }
+    var h = document.documentElement, ar = h.lang !== 'ar';
+    h.lang = ar ? 'ar' : 'en'; h.dir = ar ? 'rtl' : 'ltr';
   }
-  try { if (localStorage.getItem('opal-guide-lang') === 'ar') { document.documentElement.lang = 'ar'; document.documentElement.dir = 'rtl'; } } catch (e) {}
 </script>
 </body>
 </html>
