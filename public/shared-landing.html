@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة واتساب مفتوحة المصدر لمنطقة MENA</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif; background: #0a0a0a; color: #e0e0e0; line-height: 1.8; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+    header { background: linear-gradient(135deg, #0d9488 0%, #25d366 50%, #128c7e 100%); padding: 80px 0; text-align: center; }
+    header h1 { font-size: 3.5rem; color: white; margin-bottom: 20px; font-weight: 700; }
+    header p { font-size: 1.4rem; color: rgba(255,255,255,0.95); max-width: 800px; margin: 0 auto 30px; }
+    .cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+    .btn { padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1.1rem; transition: all 0.3s; display: inline-block; }
+    .btn-primary { background: white; color: #0d9488; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+    .btn-secondary { background: transparent; color: white; border: 2px solid white; }
+    section { padding: 80px 0; }
+    .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 20px; background: linear-gradient(135deg, #0d9488, #25d366); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .section-subtitle { text-align: center; color: rgba(224,224,224,0.7); margin-bottom: 50px; font-size: 1.1rem; }
+    .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 40px; margin-top: 40px; }
+    .project-card { background: rgba(13,148,136,0.05); border: 1px solid rgba(13,148,136,0.2); border-radius: 16px; padding: 40px; transition: all 0.3s; position: relative; overflow: hidden; }
+    .project-card:hover { transform: translateY(-5px); border-color: #0d9488; box-shadow: 0 20px 40px rgba(13,148,136,0.1); }
+    .project-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #0d9488, #25d366); }
+    .project-badge { display: inline-block; background: rgba(13,148,136,0.2); color: #25d366; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; margin-bottom: 15px; }
+    .project-card h3 { font-size: 1.8rem; margin-bottom: 15px; color: #25d366; }
+    .project-card p { color: rgba(224,224,224,0.8); margin-bottom: 20px; }
+    .project-features { list-style: none; margin-bottom: 25px; }
+    .project-features li { padding: 8px 0; display: flex; align-items: center; gap: 10px; color: rgba(224,224,224,0.9); }
+    .project-features li::before { content: "✓"; color: #25d366; font-weight: bold; }
+    .project-links { display: flex; gap: 15px; }
+    .project-link { padding: 10px 25px; border-radius: 6px; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: all 0.3s; }
+    .project-link-primary { background: #0d9488; color: white; }
+    .project-link-primary:hover { background: #0f766e; }
+    .project-link-secondary { background: transparent; color: #25d366; border: 1px solid rgba(37,211,102,0.3); }
+    .project-link-secondary:hover { border-color: #25d366; }
+    .comparison { background: rgba(13,148,136,0.03); }
+    .comparison-table { width: 100%; border-collapse: collapse; margin-top: 30px; }
+    .comparison-table th, .comparison-table td { padding: 15px 20px; text-align: center; border-bottom: 1px solid rgba(13,148,136,0.1); }
+    .comparison-table th { color: #25d366; font-weight: 600; }
+    .comparison-table td:first-child { text-align: right; color: rgba(224,224,224,0.9); }
+    .check { color: #25d366; font-weight: bold; }
+    .shared-features { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; margin-top: 40px; }
+    .shared-feature { background: rgba(13,148,136,0.05); border: 1px solid rgba(13,148,136,0.15); border-radius: 12px; padding: 25px; text-align: center; }
+    .shared-feature-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .shared-feature h4 { color: #25d366; margin-bottom: 8px; }
+    .shared-feature p { color: rgba(224,224,224,0.7); font-size: 0.9rem; }
+    .quick-start { background: #111; border-radius: 12px; padding: 30px; max-width: 700px; margin: 0 auto; }
+    .quick-start pre { background: #0a0a0a; border: 1px solid rgba(13,148,136,0.2); border-radius: 8px; padding: 20px; overflow-x: auto; direction: ltr; text-align: left; }
+    .quick-start code { color: #25d366; font-family: 'Fira Code', monospace; font-size: 0.9rem; }
+    .compliance { text-align: center; }
+    .compliance-badges { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 20px; }
+    .compliance-badge { background: rgba(13,148,136,0.1); border: 1px solid rgba(13,148,136,0.3); padding: 15px 25px; border-radius: 8px; }
+    .compliance-badge strong { color: #25d366; display: block; }
+    footer { background: #050505; padding: 40px 0; text-align: center; color: rgba(224,224,224,0.5); }
+    footer a { color: #25d366; text-decoration: none; }
+    @media (max-width: 768px) { header h1 { font-size: 2rem; } .projects-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>🚀 منصة واتساب لمنطقة MENA</h1>
+      <p>حلان مفتوحا المصدر لرسائل واتساب — استضافة ذاتية، دعم عربي كامل، ومتعددة المستأجرين</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/Ibrahim-Abedrabboh/wa-broadcast" class="btn btn-primary">WA Broadcast</a>
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub" class="btn btn-secondary">WhatsApp Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">مشروعان، هدف واحد</h2>
+      <p class="section-subtitle">منصة أساسية قوية + واجهة مستخدم محسّنة — كلاهما مفتوح المصدر</p>
+      <div class="projects-grid">
+        <div class="project-card">
+          <span class="project-badge">المحرك الأساسي</span>
+          <h3>WA Broadcast</h3>
+          <p>منصة رسائل واتساب متعددة المستأجرين ومستضافة ذاتياً على Meta Cloud API. المحرك القوي خلف كل شيء.</p>
+          <ul class="project-features">
+            <li>تعدد عملاء كامل (كل عميل له رقمه)</li>
+            <li>صندوق وارد ثنائي الاتجاه</li>
+            <li>قوالب غنية (وسائط، كوبونات، شرائط)</li>
+            <li>جدولة حملات متكررة</li>
+            <li>تحليلات مفصلة وقمع تسليم</li>
+            <li>Node.js + PostgreSQL + Redis</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/Ibrahim-Abedrabboh/wa-broadcast" class="project-link project-link-primary">GitHub →</a>
+            <a href="https://ibrahim-abedrabboh.github.io/wa-broadcast/landing-ar.html" class="project-link project-link-secondary">المزيد</a>
+          </div>
+        </div>
+        <div class="project-card">
+          <span class="project-badge">الواجهة المحسّنة</span>
+          <h3>WhatsApp Hub</h3>
+          <p>واجهة مستخدم محسّنة مبنية على كود WA Broadcast. تجربة مستخدم أفضل مع نفس القوة تحت الغطاء.</p>
+          <ul class="project-features">
+            <li>لوحة تحكم تحليلية متقدمة</li>
+            <li>تصميم عصري داكن (Teal/Green)</li>
+            <li>دعم RTL كامل للعربية</li>
+            <li>نظام تصميم موحد</li>
+            <li>صفحة هبوط ثنائية اللغة</li>
+            <li>Next.js 15 + TypeScript</li>
+          </ul>
+          <div class="project-links">
+            <a href="https://github.com/Ibrahim-newaeon/whatsapphub" class="project-link project-link-primary">GitHub →</a>
+            <a href="https://ibrahim-newaeon.github.io/whatsapphub/landing-ar.html" class="project-link project-link-secondary">المزيد</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="comparison">
+    <div class="container">
+      <h2 class="section-title">أيهم تختار؟</h2>
+      <p class="section-subtitle">كلا المشروعين مجانيان تحت رخصة MIT</p>
+      <table class="comparison-table">
+        <thead>
+          <tr><th>الميزة</th><th>WA Broadcast</th><th>WhatsApp Hub</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>تعدد المستأجرين</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>صندوق وارد ثنائي</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>قوالب غنية</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>دعم عربي RTL</td><td class="check">✓</td><td class="check">✓ محسّن</td></tr>
+          <tr><td>تصميم عصري</td><td>أساسي</td><td class="check">✓ متقدم</td></tr>
+          <tr><td>لوحة تحليلات</td><td>أساسية</td><td class="check">✓ متقدمة</td></tr>
+          <tr><td>صفحة هبوط</td><td class="check">✓</td><td class="check">✓</td></tr>
+          <tr><td>مثالي لـ</td><td>المطورين</td><td>المستخدمين النهائيين</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">مميزات مشتركة</h2>
+      <div class="shared-features">
+        <div class="shared-feature">
+          <div class="shared-feature-icon">🔒</div>
+          <h4>استضافة ذاتية</h4>
+          <p>بياناتك تبقى في بلدك</p>
+        </div>
+        <div class="shared-feature">
+          <div class="shared-feature-icon">🌍</div>
+          <h4>دعم عربي كامل</h4>
+          <p>واجهة AR/EN مع RTL</p>
+        </div>
+        <div class="shared-feature">
+          <div class="shared-feature-icon">👥</div>
+          <h4>مستخدمين لا محدود</h4>
+          <p>لا قيود على العملاء</p>
+        </div>
+        <div class="shared-feature">
+          <div class="shared-feature-icon">📊</div>
+          <h4>تحليلات</h4>
+          <p>قمع تسليم ومعدلات قراءة</p>
+        </div>
+        <div class="shared-feature">
+          <div class="shared-feature-icon">🔐</div>
+          <h4>أمان</h4>
+          <p>JWT + HMAC + Rate Limiting</p>
+        </div>
+        <div class="shared-feature">
+          <div class="shared-feature-icon">📱</div>
+          <h4>Meta Cloud API</h4>
+          <p>تكامل رسمي مع واتساب</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <h2 class="section-title">ابدأ في 5 دقائق</h2>
+      <div class="quick-start">
+        <pre><code># WA Broadcast
+git clone https://github.com/Ibrahim-Abedrabboh/wa-broadcast
+cd wa-broadcast && docker compose up --build
+
+# أو WhatsApp Hub
+git clone https://github.com/Ibrahim-newaeon/whatsapphub
+cd whatsapphub && docker compose up --build</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <section class="compliance">
+    <div class="container">
+      <h2 class="section-title">الامتثال للأنظمة المحلية</h2>
+      <p style="color: rgba(224,224,224,0.7);">بياناتك تبقى في بلدك — مثالي للامتثال</p>
+      <div class="compliance-badges">
+        <div class="compliance-badge"><strong>🇸🇦 السعودية</strong>PDPL</div>
+        <div class="compliance-badge"><strong>🇦🇪 الإمارات</strong>DPL</div>
+        <div class="compliance-badge"><strong>🇯🇴 الأردن</strong>Privacy Law</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>مشروعان مفتوحا المصدر تحت رخصة MIT — صنع بـ ❤️ لمنطقة MENA</p>
+      <p style="margin-top: 15px;">
+        <a href="https://github.com/Ibrahim-Abedrabboh">Ibrahim-Abedrabboh</a> ·
+        <a href="https://github.com/Ibrahim-newaeon">Ibrahim-newaeon</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

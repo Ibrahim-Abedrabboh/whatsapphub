@@ -1,0 +1,158 @@
+# Demo Video Script - WhatsApp Platform for MENA
+# سكريبت فيديو تعريفي - منصة واتساب لمنطقة MENA
+# Duration: 45-60 seconds
+
+---
+
+## Scene 1: Problem (0-10s)
+**Visual:** Dark screen with red X marks appearing one by one
+**Text on screen (Arabic):**
+```
+❌ $500-$2000/شهر لحلول WhatsApp
+❌ البيانات تطلع برا البلد
+❌ ما في دعم عربي
+❌ صعب تدير عدة عملاء
+```
+**Voiceover (optional):** "الشركات في الخليج والأردن تواجه مشاكل مع حلول واتساب..."
+
+---
+
+## Scene 2: Solution (10-20s)
+**Visual:** Logo reveal — both WA Broadcast + WhatsApp Hub logos side by side with green gradient
+**Text on screen:**
+```
+🚀 حل مفتوح المصدر
+WA Broadcast + WhatsApp Hub
+```
+**Transition:** Green sweep animation
+
+---
+
+## Scene 3: Dashboard Demo (20-35s)
+**Visual:** Screen recording of the dashboard
+- Show stats cards (messages sent, delivered, read rates)
+- Show the sidebar navigation in Arabic
+- Show the delivery funnel chart
+- Show the two-way inbox with a conversation
+
+**Text overlay (appears sequentially):**
+```
+✓ لوحة تحكم تحليلية
+✓ صندوق وارد ثنائي الاتجاه
+✓ دعم عربي كامل
+```
+
+---
+
+## Scene 4: Multi-Tenancy (35-45s)
+**Visual:** Show the client switcher in the nav
+- Click to switch between clients
+- Show each client has their own contacts, templates
+- Show the team management
+
+**Text overlay:**
+```
+🏢 كل عميل له:
+  • رقم واتساب خاص
+  • جهات اتصال
+  • قوالب مخصصة
+  • فريق مستقل
+```
+
+---
+
+## Scene 5: Quick Start (45-55s)
+**Visual:** Terminal with commands being typed
+```bash
+git clone https://github.com/Ibrahim-Abedrabboh/wa-broadcast
+cd wa-broadcast
+docker compose up --build
+```
+**Text overlay:** "ابدأ في 5 دقائق ✓"
+
+---
+
+## Scene 6: Compliance + CTA (55-60s)
+**Visual:** Three compliance badges appearing
+```
+🇸🇦 السعودية PDPL
+🇦🇪 الإمارات DPL
+🇯🇴 الأردن Privacy Law
+```
+
+**Final screen:**
+```
+MIT License — مجاني 100%
+
+⭐ github.com/Ibrahim-Abedrabboh/wa-broadcast
+⭐ github.com/Ibrahim-newaeon/whatsapphub
+```
+
+---
+
+## Recording Instructions
+
+### Screen Recording Setup
+1. **Resolution:** 1920x1080 or 2560x1440
+2. **Browser:** Chrome with dark mode
+3. **Language:** Set to Arabic (ar) for RTL demo
+4. **Tool:** OBS, ScreenFlow, or Loom
+
+### Pages to Record
+1. `/dashboard` — show stats and charts
+2. `/inbox` — show two-way conversation
+3. `/contacts` — show contact list
+4. `/templates` — show template builder
+5. `/settings` — show client switcher (if SUPERADMIN)
+
+### Music
+- Background: Lo-fi or ambient tech music (royalty-free)
+- Volume: 20-30% under voiceover
+
+### Tools
+- **Recording:** OBS Studio (free) or ScreenFlow
+- **Editing:** DaVinci Resolve (free) or iMovie
+- **Music:** Pixabay Music or Uppbeat (free tier)
+
+### Export Settings
+- **Format:** MP4 (H.264)
+- **Resolution:** 1080p
+- **Frame rate:** 30fps
+- **Bitrate:** 8-12 Mbps
+
+---
+
+## Social Media Versions
+
+### Twitter/X (30s cut)
+- Scene 1 (5s) → Scene 2 (5s) → Scene 3 (10s) → Scene 6 (10s)
+- Skip detailed demos, focus on problem → solution → CTA
+
+### LinkedIn (60s full)
+- Use full script
+- Add captions/subtitles
+- Professional tone
+
+### Instagram Reels (30s vertical)
+- Crop to 9:16
+- Scene 1 (5s) → Scene 3 (15s) → Scene 6 (10s)
+- Add trending audio
+
+---
+
+## Thumbnail Ideas
+
+### Option 1: Problem/Solution Split
+- Left side (red): "❌ $2000/شهر"
+- Right side (green): "✓ مجاني"
+- Center: WhatsApp logo
+
+### Option 2: Dashboard Preview
+- Screenshot of dashboard with stats
+- Overlay text: "منصة واتساب مفتوحة المصدر"
+- GitHub stars badge
+
+### Option 3: MENA Focus
+- Map of Saudi/UAE/Jordan
+- Flags with compliance badges
+- "بياناتك تبقى في بلدك"
