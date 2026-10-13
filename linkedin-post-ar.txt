@@ -1,0 +1,174 @@
+=== منشور LinkedIn - Arabic LinkedIn Post ===
+
+🚀 أطلقنا أول منصة رسائل واتساب مفتوحة المصدر لمنطقة MENA
+
+بعد سنوات من العمل مع شركات في السعودية والإمارات والأردن، لاحظت نمط متكرر:
+
+❌ الشركات تدفع مبالغ طائلة لحلول WhatsApp خارجية
+❌ البيانات تطلع برا البلد (مشكلة امتثال حقيقية!)
+❌ ما في دعم عربي حقيقي
+❌ قيود على عدد المستخدمين والعملاء
+❌ صعوبة التوسع مع عدة عملاء
+
+قررت أبني الحل بنفسي.
+
+---
+
+✅ تقديم: WhatsApp Hub
+
+منصة رسائل واتساب مفتوحة المصدر، متعددة المستأجرين، ومستضافة ذاتياً على Meta Cloud API.
+
+---
+
+💡 ليش مختلفة؟
+
+🔒 بياناتك تبقى لديك وتحت تصرفك
+استضافة ذاتية كاملة — بياناتك ما تطلع من بلدك. مثالي للامتثال لـ:
+• نظام حماية البيانات الشخصي (السعودية PDPL)
+• قانون حماية البيانات (الإمارات DPL)
+• قانون الخصوصية (الأردن)
+
+👥 عدد مستخدمين لا محدود
+لا قيود على عدد المستخدمين، العملاء، أو جهات الاتصال. صممتها للتوسع مع نمو أعمالك، مو العكس.
+
+🌍 دعم عربي كامل
+واجهة عربية/إنجليزية كاملة مع دعم RTL. مو مجرد ترجمة — مصممة من الأساس لفهم احتياجات السوق المحلي.
+
+---
+
+🎯 مين يستفيد منها؟
+
+✓ شركات التسويق الرقمي
+✓ وكالات التواصل الاجتماعي
+✓ مزودي الحلول التقنية (SaaS)
+✓ الشركات اللي تدير واتساب لعدة عملاء
+✓ أي شركة تبي حل واتساب احترافي بدون قيود
+
+---
+
+⚡ المميزات التقنية
+
+• صندوق وارد ثنائي الاتجاه (رد على عملائك مباشرة)
+• قوالب غنية (صور، فيديو، أكواد كوبونات، شرائط عرض)
+• جدولة الحملات المتكررة
+• تحليلات مفصلة (قمع التسليم، معدلات القراءة)
+• تعدد العملاء (كل عميل له رقمه وجهاته)
+• تشفير كامل وأمان على مستوى المؤسسة
+
+---
+
+🛠 التقنيات
+
+Next.js 14 · TypeScript · PostgreSQL · Redis · BullMQ · Docker · Meta Cloud API
+
+---
+
+💰 التكلفة؟
+
+مفتوحة المصدر تحت رخصة MIT = مجانية 100%
+
+بدل ما تدفع $500-$2000/شهر لحلول خارجية، استضف المنصة عندك مجاناً.
+
+---
+
+🚀 ابدأ في 5 دقائق
+
+```bash
+git clone https://github.com/Ibrahim-newaeon/whatsapphub
+cd whatsapphub
+docker compose up --build
+```
+
+بس! المنصة شغالة.
+
+---
+
+🔗 الروابط
+
+• GitHub: https://github.com/Ibrahim-newaeon/whatsapphub
+• التوثيق بالعربية: https://github.com/Ibrahim-newaeon/whatsapphub/blob/main/README.ar.md
+• الصفحة التعريفية: https://ibrahim-newaeon.github.io/whatsapphub/landing-ar.html
+
+---
+
+🤝 المساهمات
+
+المشروع مفتوح المصدر ومحتاج دعم المجتمع:
+
+• جرب المنصة وأخبرنا رأيك
+• ساهم في الكود (PRs مرحب بها!)
+• شارك المشروع مع فريقك
+• أضف نجمة على GitHub إذا أعجبك
+
+---
+
+🎯 الرؤية
+
+هدفي أبني أفضل منصة واتساب مفتوحة المصدر للعالم العربي. منصة تفهم احتياجات السوق المحلي، تحترم خصوصية البيانات، وتكون في متناول الجميع.
+
+عندك فكرة أو ملاحظة؟ افتح issue على GitHub أو تواصل معي مباشرة.
+
+---
+
+#WhatsApp #OpenSource #MENA #Saudi #UAE #Jordan #Tech #SelfHosted #DataPrivacy #Arabic #SaaS #Startup #Developer #Innovation #DigitalTransformation
+
+---
+
+=== ملاحظات للنشر (Posting Notes) ===
+
+**أفضل وقت للنشر:**
+- الأحد-الخميس: 8-10 صباحاً أو 2-4 عصراً
+- تجنب الجمعة والسبت (أقل تفاعل)
+
+**تحسين التفاعل:**
+1. أضف صورة من المنصة (dashboard-screenshot.png)
+2. أضف فيديو قصير (30-60 ثانية) يوضح المميزات
+3. اسأل سؤال في النهاية: "ما أكبر تحدي تواجهه مع WhatsApp في شركتك؟"
+4. رد على كل تعليق خلال أول ساعتين
+
+**استهداف الجمهور:**
+- Tag شركات في السعودية والإمارات والأردن
+- شارك في مجموعات LinkedIn التقنية المحلية
+- أرسل لـ CTOs و Tech Leads في الشركات المستهدفة
+
+**متابعة:**
+- انشر منشور متابعة بعد أسبوع بالأرقام (stars, forks, downloads)
+- شارك case studies إذا استخدمها أحد
+- انشر updates عن المميزات الجديدة
+
+=== نسخة إنجليزية اختيارية (Optional English Version) ===
+
+🚀 Introducing WhatsApp Hub - The First Open-Source WhatsApp Platform for MENA
+
+After years of working with companies in Saudi Arabia, UAE, and Jordan, I noticed a pattern:
+
+❌ Companies paying huge amounts for external WhatsApp solutions
+❌ Data leaving the country (real compliance issues!)
+❌ No real Arabic support
+❌ Limits on users and clients
+❌ Hard to scale with multiple clients
+
+I decided to build the solution myself.
+
+---
+
+✅ Introducing: WhatsApp Hub
+
+Open-source, multi-tenant, self-hosted WhatsApp messaging platform on Meta Cloud API.
+
+💡 What makes it different?
+
+🔒 Your data stays with you
+Self-hosted — your data never leaves your country. Perfect for compliance with Saudi PDPL, UAE DPL, and Jordan Privacy Law.
+
+👥 Unlimited users
+No limits on users, clients, or contacts. Built to scale with your business.
+
+🌍 Full Arabic support
+Complete Arabic/English interface with RTL. Not just translation — designed from the ground up for MENA market needs.
+
+---
+
+🔗 GitHub: https://github.com/Ibrahim-newaeon/whatsapphub
+
+#WhatsApp #OpenSource #MENA #DataPrivacy #SelfHosted #SaaS
