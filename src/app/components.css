@@ -123,8 +123,8 @@
   border-radius: var(--radius-lg);
   padding: var(--space-5);
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+  align-items: flex-start;
+  gap: var(--space-4);
   transition: all var(--transition-base);
 }
 
@@ -132,6 +132,20 @@
   border-color: var(--teal-500);
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
+}
+
+.stat-card--sm {
+  padding: var(--space-4);
+}
+
+.stat-card--sm .stat-card__icon {
+  width: 40px;
+  height: 40px;
+  font-size: 1.25rem;
+}
+
+.stat-card--sm .stat-card__value {
+  font-size: 1.5rem;
 }
 
 .stat-card__icon {
@@ -143,6 +157,12 @@
   place-items: center;
   color: var(--text-primary);
   font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.stat-card__body {
+  flex: 1;
+  min-width: 0;
 }
 
 .stat-card__value {
@@ -156,14 +176,23 @@
   font-size: 0.875rem;
   color: var(--text-muted);
   font-weight: 500;
+  margin-top: var(--space-1);
+}
+
+.stat-card__subtitle {
+  font-size: 0.8125rem;
+  color: var(--teal-500);
+  font-weight: 600;
+  margin-top: var(--space-1);
 }
 
 .stat-card__trend {
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   font-weight: 600;
+  margin-top: var(--space-1);
 }
 
 .stat-card__trend--up {
@@ -507,4 +536,270 @@
   .card {
     padding: var(--space-4);
   }
+}
+
+/* ============================================================
+   Dashboard — Phase 2 Analytics
+   ============================================================ */
+
+/* ── Dashboard Layout ── */
+.dashboard-new {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.dashboard-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 var(--space-1) 0;
+}
+
+.dashboard-subtitle {
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+/* ── Stats Grid ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+}
+
+.stats-grid--secondary {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Chart Card ── */
+.chart-card {
+  padding: var(--space-5);
+}
+
+.chart-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+}
+
+.chart-card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chart-card__period {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  padding: var(--space-1) var(--space-3);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-pill);
+}
+
+.chart-container {
+  width: 100%;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+}
+
+.chart-label {
+  font-family: var(--font-en);
+}
+
+.chart-legend {
+  display: flex;
+  gap: var(--space-5);
+  justify-content: center;
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-primary);
+}
+
+.chart-legend__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.chart-legend__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.chart-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 280px;
+  color: var(--text-muted);
+  gap: var(--space-3);
+}
+
+.chart-empty__icon {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+/* ── Broadcasts Card ── */
+.broadcasts-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.broadcasts-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-5);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.broadcasts-card__title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.broadcasts-card__link {
+  font-size: 0.875rem;
+  color: var(--teal-500);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.broadcasts-card__link:hover {
+  color: var(--green-500);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table--new {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table--new th {
+  text-align: left;
+  padding: var(--space-3) var(--space-4);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border-secondary);
+}
+
+.table--new td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border-primary);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.table--new tr:hover td {
+  background: var(--bg-tertiary);
+}
+
+.table--new tr:last-child td {
+  border-bottom: none;
+}
+
+.broadcast-link {
+  color: var(--text-primary);
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.broadcast-link:hover {
+  color: var(--teal-500);
+}
+
+.badge--variant {
+  margin-left: var(--space-2);
+  font-size: 0.6875rem;
+  padding: 2px 6px;
+  background: var(--info-bg);
+  color: var(--info);
+  border-radius: var(--radius-sm);
+}
+
+.table-empty {
+  text-align: center;
+  padding: var(--space-8) var(--space-4) !important;
+  color: var(--text-muted);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+/* ── Badge Status Colors ── */
+.badge--completed {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.badge--sending {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+.badge--scheduled {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+
+.badge--draft {
+  background: var(--bg-tertiary);
+  color: var(--text-muted);
+}
+
+.badge--failed {
+  background: var(--error-bg);
+  color: var(--error);
+}
+
+.badge--queued {
+  background: var(--info-bg);
+  color: var(--info);
 }
