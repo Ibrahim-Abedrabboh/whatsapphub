@@ -2,7 +2,11 @@
 
 A self-hosted, **multi-tenant** WhatsApp messaging platform on Meta's **Cloud API** — the **Phase 2** product, a clean-slate fork seeded from the green V1 `wa-broadcast` codebase. Upload contacts → pick an approved template → broadcast → track delivery & opt-outs → reply two-way in a live inbox, evolving into a full **conversational engagement hub**.
 
-> **Roadmap & full feature spec:** [`whatsapphub-V2.md`](./whatsapphub-V2.md) (HTML: `public/whatsapphub-v2.html`, Arabic `…-ar.html`). See also [`CLAUDE.md`](./CLAUDE.md).
+<p align="center">
+  <img src="docs/dashboard-screenshot.png" alt="WhatsApp Hub Dashboard" width="800" />
+</p>
+
+> **Roadmap & full feature spec:** [`whatsapphub-V2.md`](./whatsapphub-V2.md) (HTML: `public/whatsapphub-v2.html`, Arabic `…-ar.html`). See also [`CLAUDE.md`](./CLAUDE.md`).
 
 Highlights: **multi-client tenancy** (each client = its own contacts, templates, number, team — see [Multi-tenancy](#multi-tenancy)), a **two-way inbox** ([Inbox](#two-way-inbox)), **rich templates** (media headers, coupon copy-code, carousels — see [Templates](#templates)), scheduling + recurring campaigns, and per-broadcast analytics.
 
