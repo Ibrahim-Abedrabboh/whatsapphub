@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WA Broadcast - Demo Video</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #000; color: #fff; overflow: hidden; width: 100vw; height: 100vh; }
+    .video-container { width: 100vw; height: 100vh; position: relative; }
+    .scene { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.8s ease; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+    .scene.active { opacity: 1; }
+    .scene img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; }
+    .overlay { position: relative; z-index: 2; text-align: center; padding: 40px; }
+    .overlay h1 { font-size: 3.5rem; margin-bottom: 20px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+    .overlay h2 { font-size: 2.5rem; margin-bottom: 15px; text-shadow: 0 4px 20px rgba(0,0,0,0.8); }
+    .overlay p { font-size: 1.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .overlay ul { list-style: none; text-align: right; font-size: 1.3rem; }
+    .overlay ul li { padding: 8px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+    .overlay ul li::before { content: "✓ "; color: #25d366; font-weight: bold; }
+    .overlay code { background: rgba(0,0,0,0.7); padding: 20px 30px; border-radius: 8px; font-size: 1.2rem; display: block; direction: ltr; text-align: left; font-family: monospace; color: #25d366; border: 1px solid rgba(37,211,102,0.3); }
+    .badge { display: inline-block; background: rgba(37,211,102,0.2); border: 1px solid rgba(37,211,102,0.5); padding: 15px 30px; border-radius: 8px; margin: 10px; font-size: 1.2rem; }
+    .badge strong { color: #25d366; display: block; font-size: 1.4rem; }
+    .red-x { color: #ff4444; font-size: 2rem; }
+    .problem-item { font-size: 1.5rem; padding: 10px 0; }
+    .cta { margin-top: 30px; }
+    .cta a { display: inline-block; background: #25d366; color: #000; padding: 15px 40px; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 1.3rem; margin: 0 10px; }
+    .progress-bar { position: fixed; bottom: 0; left: 0; height: 4px; background: #25d366; z-index: 100; transition: width linear; }
+    .controls { position: fixed; bottom: 20px; right: 20px; z-index: 100; }
+    .controls button { background: rgba(37,211,102,0.3); border: 1px solid #25d366; color: #25d366; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-family: 'Cairo', sans-serif; font-size: 1rem; margin: 0 5px; }
+    .controls button:hover { background: rgba(37,211,102,0.5); }
+    .scene-bg { background: linear-gradient(135deg, #06140d 0%, #0a1f14 100%); }
+    .fade-in { animation: fadeIn 0.8s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .slide-up { animation: slideUp 0.6s ease forwards; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+  </style>
+</head>
+<body>
+  <div class="video-container">
+    <!-- Scene 1: Problem (0-10s) -->
+    <div class="scene scene-bg" id="scene1">
+      <div class="overlay">
+        <h1 style="color: #ff4444;">❌ المشاكل الحالية</h1>
+        <div class="problem-item fade-in" style="animation-delay: 0.5s"><span class="red-x">❌</span> $500-$2000/شهر لحلول WhatsApp</div>
+        <div class="problem-item fade-in" style="animation-delay: 1.5s"><span class="red-x">❌</span> البيانات تطلع برا البلد</div>
+        <div class="problem-item fade-in" style="animation-delay: 2.5s"><span class="red-x">❌</span> ما في دعم عربي حقيقي</div>
+        <div class="problem-item fade-in" style="animation-delay: 3.5s"><span class="red-x">❌</span> صعب تدير عدة عملاء</div>
+      </div>
+    </div>
+
+    <!-- Scene 2: Solution (10-20s) -->
+    <div class="scene" id="scene2" style="background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);">
+      <div class="overlay">
+        <h1 class="fade-in">🚀 الحل</h1>
+        <h2 class="fade-in" style="animation-delay: 0.5s; font-size: 2rem;">منصة مفتوحة المصدر</h2>
+        <div class="fade-in" style="animation-delay: 1s; font-size: 1.8rem; margin-top: 20px;">
+          <strong>WA Broadcast</strong> + <strong>WhatsApp Hub</strong>
+        </div>
+        <p class="fade-in" style="animation-delay: 1.5s; margin-top: 15px;">استضافة ذاتية · دعم عربي · متعددة المستأجرين</p>
+      </div>
+    </div>
+
+    <!-- Scene 3: Dashboard (20-35s) -->
+    <div class="scene" id="scene3">
+      <img src="demo-storyboard/demo-scene3-dashboard_1791925032888_8a44814e.png" alt="Dashboard">
+      <div class="overlay" style="background: rgba(0,0,0,0.6); border-radius: 12px; max-width: 500px;">
+        <ul>
+          <li class="slide-up" style="animation-delay: 0.3s">لوحة تحكم تحليلية</li>
+          <li class="slide-up" style="animation-delay: 0.8s">صندوق وارد ثنائي الاتجاه</li>
+          <li class="slide-up" style="animation-delay: 1.3s">دعم عربي كامل</li>
+          <li class="slide-up" style="animation-delay: 1.8s">تحليلات مفصلة</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Scene 4: Multi-Tenancy (35-45s) -->
+    <div class="scene" id="scene4">
+      <img src="demo-storyboard/demo-scene4-multitenant_1791925075196_25e0f669.png" alt="Multi-tenancy">
+      <div class="overlay" style="background: rgba(0,0,0,0.7); border-radius: 12px; max-width: 500px;">
+        <h2 style="color: #25d366;">🏢 كل عميل له:</h2>
+        <ul style="margin-top: 15px;">
+          <li class="slide-up" style="animation-delay: 0.3s">رقم واتساب خاص</li>
+          <li class="slide-up" style="animation-delay: 0.8s">جهات اتصال منفصلة</li>
+          <li class="slide-up" style="animation-delay: 1.3s">قوالب مخصصة</li>
+          <li class="slide-up" style="animation-delay: 1.8s">فريق مستقل</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Scene 5: Quick Start (45-55s) -->
+    <div class="scene" id="scene5">
+      <img src="demo-storyboard/demo-scene5-quickstart_1791925112488_9eba0a78.png" alt="Quick Start">
+      <div class="overlay" style="background: rgba(0,0,0,0.7); border-radius: 12px; max-width: 600px;">
+        <h2 style="color: #25d366;">🚀 ابدأ في 5 دقائق</h2>
+        <code class="slide-up" style="animation-delay: 0.5s; margin-top: 20px;">
+git clone https://github.com/Ibrahim-Abedrabboh/wa-broadcast<br>
+cd wa-broadcast<br>
+docker compose up --build
+        </code>
+        <p class="fade-in" style="animation-delay: 1.5s; margin-top: 15px; color: #25d366;">✓ بس! المنصة شغالة</p>
+      </div>
+    </div>
+
+    <!-- Scene 6: Compliance + CTA (55-60s) -->
+    <div class="scene" id="scene6" style="background: linear-gradient(135deg, #06140d 0%, #0a1f14 100%);">
+      <div class="overlay">
+        <h2 class="fade-in" style="color: #25d366;">🔒 الامتثال للأنظمة المحلية</h2>
+        <div style="margin: 25px 0;">
+          <div class="badge fade-in" style="animation-delay: 0.3s"><strong>🇸🇦 السعودية</strong>PDPL</div>
+          <div class="badge fade-in" style="animation-delay: 0.6s"><strong>🇦🇪 الإمارات</strong>DPL</div>
+          <div class="badge fade-in" style="animation-delay: 0.9s"><strong>🇯🇴 الأردن</strong>Privacy Law</div>
+        </div>
+        <div class="cta fade-in" style="animation-delay: 1.5s;">
+          <p style="font-size: 1.5rem; margin-bottom: 15px;">MIT License — مجاني 100%</p>
+          <a href="https://github.com/Ibrahim-Abedrabboh/wa-broadcast">⭐ Star on GitHub</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-bar" id="progress"></div>
+  <div class="controls">
+    <button onclick="playVideo()">▶ تشغيل</button>
+    <button onclick="pauseVideo()">⏸ إيقاف</button>
+    <button onclick="restartVideo()">⏮ إعادة</button>
+  </div>
+
+  <script>
+    const scenes = ['scene1', 'scene2', 'scene3', 'scene4', 'scene5', 'scene6'];
+    const durations = [10000, 10000, 15000, 10000, 10000, 5000]; // ms per scene
+    const totalDuration = durations.reduce((a, b) => a + b, 0);
+    let currentScene = 0;
+    let timer = null;
+    let startTime = 0;
+    let elapsedTime = 0;
+    let isPaused = false;
+
+    function showScene(index) {
+      scenes.forEach((id, i) => {
+        const el = document.getElementById(id);
+        if (i === index) {
+          el.classList.add('active');
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    }
+
+    function updateProgress() {
+      if (isPaused) return;
+      const now = Date.now();
+      elapsedTime += (now - startTime);
+      startTime = now;
+      const progress = (elapsedTime / totalDuration) * 100;
+      document.getElementById('progress').style.width = Math.min(progress, 100) + '%';
+      if (progress < 100) requestAnimationFrame(updateProgress);
+    }
+
+    function playVideo() {
+      if (isPaused) {
+        isPaused = false;
+        startTime = Date.now();
+        updateProgress();
+        nextScene();
+        return;
+      }
+      currentScene = 0;
+      elapsedTime = 0;
+      startTime = Date.now();
+      isPaused = false;
+      showScene(0);
+      updateProgress();
+      nextScene();
+    }
+
+    function nextScene() {
+      if (isPaused) return;
+      if (currentScene >= scenes.length) {
+        document.getElementById('progress').style.width = '100%';
+        return;
+      }
+      showScene(currentScene);
+      timer = setTimeout(() => {
+        currentScene++;
+        nextScene();
+      }, durations[currentScene]);
+    }
+
+    function pauseVideo() {
+      isPaused = true;
+      clearTimeout(timer);
+    }
+
+    function restartVideo() {
+      clearTimeout(timer);
+      isPaused = false;
+      playVideo();
+    }
+
+    // Auto-play on load
+    window.addEventListener('load', () => {
+      setTimeout(playVideo, 500);
+    });
+  </script>
+</body>
+</html>
