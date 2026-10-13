@@ -60,9 +60,9 @@ export default function DeliveryChart({ data, height = 280 }: Props) {
     <div className="chart-container">
       <svg viewBox={`0 0 ${width} ${height}`} className="chart-svg" preserveAspectRatio="xMidYMid meet">
         {/* Grid lines */}
-        {yTickValues.map((v) => (
+        {yTickValues.map((v, i) => (
           <line
-            key={v}
+            key={`grid-${i}`}
             x1={padding.left}
             y1={toY(v)}
             x2={width - padding.right}
@@ -74,9 +74,9 @@ export default function DeliveryChart({ data, height = 280 }: Props) {
         ))}
 
         {/* Y-axis labels */}
-        {yTickValues.map((v) => (
+        {yTickValues.map((v, i) => (
           <text
-            key={`label-${v}`}
+            key={`ylabel-${i}`}
             x={padding.left - 8}
             y={toY(v) + 4}
             textAnchor="end"

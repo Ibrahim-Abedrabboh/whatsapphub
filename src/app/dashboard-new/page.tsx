@@ -33,7 +33,7 @@ export default async function DashboardNew() {
       where: { broadcast: { clientId }, status: "READ" },
     }),
     prisma.broadcastRecipient.count({
-      where: { broadcast: { clientId }, status: "FAILED" } },
+      where: { broadcast: { clientId }, status: "FAILED" },
     }),
     prisma.conversation.count({
       where: {
