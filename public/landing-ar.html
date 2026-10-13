@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Hub - منصة رسائل واتساب مفتوحة المصدر</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+      padding: 60px 0;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      color: white;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    header p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.95);
+      max-width: 800px;
+      margin: 0 auto 30px;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 15px 40px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .btn-primary {
+      background: white;
+      color: #0d9488;
+    }
+
+    .btn-primary:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+    }
+
+    .btn-secondary:hover {
+      background: white;
+      color: #0d9488;
+    }
+
+    /* Features */
+    .features {
+      padding: 80px 0;
+      background: #1a1a1a;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 60px;
+      color: #10b981;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    .feature-card {
+      background: #2a2a2a;
+      padding: 40px;
+      border-radius: 12px;
+      border: 1px solid #3a3a3a;
+      transition: all 0.3s;
+    }
+
+    .feature-card:hover {
+      border-color: #10b981;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
+    }
+
+    .feature-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #10b981;
+    }
+
+    .feature-card p {
+      color: #b0b0b0;
+      line-height: 1.8;
+    }
+
+    /* Stats */
+    .stats {
+      padding: 80px 0;
+      background: #0a0a0a;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 40px;
+      text-align: center;
+    }
+
+    .stat-item h3 {
+      font-size: 3rem;
+      color: #10b981;
+      margin-bottom: 10px;
+    }
+
+    .stat-item p {
+      font-size: 1.2rem;
+      color: #b0b0b0;
+    }
+
+    /* Tech Stack */
+    .tech-stack {
+      padding: 80px 0;
+      background: #1a1a1a;
+    }
+
+    .tech-stack h2 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 60px;
+      color: #10b981;
+    }
+
+    .tech-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .tech-badge {
+      background: #2a2a2a;
+      padding: 15px 30px;
+      border-radius: 8px;
+      border: 1px solid #3a3a3a;
+      font-size: 1.1rem;
+      color: #e0e0e0;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 100px 0;
+      background: linear-gradient(135deg, #0d9488 0%, #10b981 100%);
+      text-align: center;
+    }
+
+    .cta-section h2 {
+      font-size: 2.5rem;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    .cta-section p {
+      font-size: 1.3rem;
+      color: rgba(255, 255, 255, 0.95);
+      margin-bottom: 40px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* Footer */
+    footer {
+      background: #0a0a0a;
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid #2a2a2a;
+    }
+
+    footer p {
+      color: #808080;
+    }
+
+    footer a {
+      color: #10b981;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+
+      header p {
+        font-size: 1.1rem;
+      }
+
+      .features h2,
+      .tech-stack h2,
+      .cta-section h2 {
+        font-size: 2rem;
+      }
+
+      .features-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>🚀 WhatsApp Hub</h1>
+      <p>منصة رسائل واتساب مفتوحة المصدر، متعددة المستأجرين، ومستضافة ذاتياً على Meta Cloud API</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub" class="btn btn-primary">⭐ احصل على الكود</a>
+        <a href="#features" class="btn btn-secondary">اكتشف المميزات</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="features" id="features">
+    <div class="container">
+      <h2>لماذا WhatsApp Hub؟</h2>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🏢</div>
+          <h3>متعدد العملاء</h3>
+          <p>كل عميل لديه جهات الاتصال، القوالب، الرقم، والفريق الخاص به. مثالي لشركات الخدمات والحلول.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>صندوق وارد ثنائي الاتجاه</h3>
+          <p>محادثات حية مع تتبع النوافذ الخدمية 24 ساعة. رد على العملاء مباشرة من المنصة.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎨</div>
+          <h3>قوالب غنية</h3>
+          <p>رؤوس وسائط، أكواد كوبونات، شرائط عرض، أزرار تفاعلية. كل ما تحتاجه لحملات احترافية.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>تحليلات مفصلة</h3>
+          <p>قمع التسليم، معدلات القراءة، تتبع أحداث الأزرار. اعرف بالضبط كيف تتفاعل جمهورك.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <h3>استضافة ذاتية</h3>
+          <p>بياناتك تبقى تحت سيطرتك. لا اعتماد على خدمات خارجية. مثالي للامتثال للأنظمة المحلية.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🌍</div>
+          <h3>ثنائي اللغة</h3>
+          <p>واجهة عربية/إنجليزية كاملة. مصمم لمنطقة MENA مع دعم RTL كامل.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>100%</h3>
+          <p>مفتوح المصدر</p>
+        </div>
+        <div class="stat-item">
+          <h3>∞</h3>
+          <p>عدد العملاء</p>
+        </div>
+        <div class="stat-item">
+          <h3>24/7</h3>
+          <p>صندوق وارد حي</p>
+        </div>
+        <div class="stat-item">
+          <h3>🇸🇦 🇦🇪 🇯🇴</h3>
+          <p>مصمم للخليج</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tech-stack">
+    <div class="container">
+      <h2>التقنيات المستخدمة</h2>
+      <div class="tech-list">
+        <div class="tech-badge">Next.js 14</div>
+        <div class="tech-badge">TypeScript</div>
+        <div class="tech-badge">PostgreSQL</div>
+        <div class="tech-badge">Redis</div>
+        <div class="tech-badge">BullMQ</div>
+        <div class="tech-badge">Prisma</div>
+        <div class="tech-badge">Docker</div>
+        <div class="tech-badge">Meta Cloud API</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <h2>جاهز للبدء؟</h2>
+      <p>ابدأ في دقائق مع Docker. لا حاجة لبطاقة ائتمان. لا قيود.</p>
+      <div class="cta-buttons">
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub#quick-start-docker" class="btn btn-primary">📖 دليل البدء السريع</a>
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub" class="btn btn-secondary">⭐ نجمة على GitHub</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>صنع بـ ❤️ للمجتمع التقني العربي</p>
+      <p style="margin-top: 10px;">
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub">GitHub</a> ·
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub/blob/main/README.ar.md">التوثيق بالعربية</a> ·
+        <a href="https://github.com/Ibrahim-newaeon/whatsapphub/issues">المشاكل</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

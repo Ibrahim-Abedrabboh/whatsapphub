@@ -1,5 +1,7 @@
 # WhatsApp Hub (V2)
 
+**[العربية](./README.ar.md)** | English
+
 A self-hosted, **multi-tenant** WhatsApp messaging platform on Meta's **Cloud API** — the **Phase 2** product, a clean-slate fork seeded from the green V1 `wa-broadcast` codebase. Upload contacts → pick an approved template → broadcast → track delivery & opt-outs → reply two-way in a live inbox, evolving into a full **conversational engagement hub**.
 
 <p align="center">
