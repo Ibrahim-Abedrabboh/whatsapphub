@@ -1,0 +1,305 @@
+# WhatsApp Hub - 4-Week Content Calendar
+# تقويم المحتوى - 4 أسابيع
+
+---
+
+## Week 1: Launch Week (أسبوع الإطلاق)
+
+### Sunday (الأحد) - LinkedIn Launch
+**Topic:** Official launch announcement
+**Content:** Use linkedin-post-ar.txt
+**Platforms:** LinkedIn, Twitter
+**Time:** 9:00 AM Jordan time
+**CTA:** Star on GitHub, try the platform
+
+### Monday (الاثنين) - Twitter Thread
+**Topic:** Why I built WhatsApp Hub
+**Content:** Twitter thread (tweets 1-5)
+**Platforms:** Twitter/X
+**Time:** 10:00 AM Jordan time
+**CTA:** Share your WhatsApp challenges
+
+### Tuesday (الثلاثاء) - Feature Spotlight
+**Topic:** Multi-tenancy deep dive
+**Content:** "كيف تدير عدة عملاء على واتساب بسهولة"
+- Explain multi-client architecture
+- Show screenshots of client switcher
+- Use case: Marketing agencies
+**Platforms:** LinkedIn, Twitter
+**Time:** 2:00 PM Jordan time
+**CTA:** Tag someone who manages multiple clients
+
+### Wednesday (الأربعاء) - Technical Deep Dive
+**Topic:** Tech stack breakdown
+**Content:** "التقنيات المستخدمة في WhatsApp Hub"
+- Next.js 14, TypeScript, PostgreSQL
+- Why we chose each technology
+- Performance benchmarks
+**Platforms:** LinkedIn (dev community), Twitter, Dev.to
+**Time:** 11:00 AM Jordan time
+**CTA:** What's your favorite tech stack?
+
+### Thursday (الخميس) - Use Case
+**Topic:** Marketing agency use case
+**Content:** "كيف تستخدم وكالات التسويق WhatsApp Hub"
+- Manage 10+ clients from one platform
+- Separate templates per client
+- Team collaboration
+**Platforms:** LinkedIn, Facebook groups
+**Time:** 3:00 PM Jordan time
+**CTA:** Download and try it
+
+### Friday (الجمعة) - Weekend Engagement
+**Topic:** Community question
+**Content:** "ما أكبر تحدي تواجهه مع WhatsApp Business؟"
+**Platforms:** Twitter, LinkedIn
+**Time:** 10:00 AM Jordan time
+**CTA:** Comment with your challenges
+
+---
+
+## Week 2: Features Week (أسبوع المميزات)
+
+### Sunday - Two-Way Inbox
+**Topic:** Live conversations feature
+**Content:** "صندوق وارد ثنائي الاتجاه - رد على عملائك مباشرة"
+- Demo video (30 sec)
+- 24-hour window explanation
+- Media attachments support
+**Platforms:** LinkedIn, Twitter
+**Time:** 9:00 AM
+**CTA:** Try the inbox feature
+
+### Monday - Templates
+**Topic:** Rich templates
+**Content:** "قوالب واتساب الاحترافية - صور، فيديو، أكواد كوبونات"
+- Template builder screenshots
+- Media header examples
+- Button types (call, URL, copy-code)
+**Platforms:** LinkedIn, Twitter, Instagram Stories
+**Time:** 10:00 AM
+**CTA:** Create your first template
+
+### Tuesday - Analytics
+**Topic:** Analytics & insights
+**Content:** "تحليلات مفصلة - اعرف بالضبط إيش يصير"
+- Delivery funnel visualization
+- Read rates tracking
+- Button event tracking
+**Platforms:** LinkedIn, Twitter
+**Time:** 2:00 PM
+**CTA:** What metrics matter most to you?
+
+### Wednesday - Data Privacy
+**Topic:** Self-hosted = data control
+**Content:** "بياناتك تبقى لديك - الامتثال للأنظمة المحلية"
+- Saudi PDPL compliance
+- UAE DPL compliance
+- Jordan Privacy Law
+**Platforms:** LinkedIn (business audience)
+**Time:** 11:00 AM
+**CTA:** Tag your compliance officer
+
+### Thursday - Scheduling
+**Topic:** Campaign scheduling
+**Content:** "جدولة الحملات - أرسل في الوقت المثالي"
+- Recurring campaigns
+- Timezone support
+- Cron-based scheduling
+**Platforms:** LinkedIn, Twitter
+**Time:** 3:00 PM
+**CTA:** Schedule your first campaign
+
+### Friday - Community Spotlight
+**Topic:** Early adopters
+**Content:** Share any feedback/usage from community
+**Platforms:** Twitter, LinkedIn
+**Time:** 10:00 AM
+**CTA:** Share your experience
+
+---
+
+## Week 3: Tutorials Week (أسبوع الدروس)
+
+### Sunday - Quick Start Guide
+**Topic:** 5-minute setup
+**Content:** "ابدأ في 5 دقائق - دليل المبتدئين"
+- Step-by-step with screenshots
+- Docker setup
+- First broadcast
+**Platforms:** LinkedIn, Twitter, YouTube (video)
+**Time:** 9:00 AM
+**CTA:** Follow along and share results
+
+### Monday - Meta Setup
+**Topic:** WhatsApp Business API setup
+**Content:** "كيف تحصل على WhatsApp Business API"
+- Create Meta Business Account
+- Get phone number
+- Request API access
+**Platforms:** LinkedIn, Twitter
+**Time:** 10:00 AM
+**CTA:** Save this for later
+
+### Tuesday - First Broadcast
+**Topic:** Send your first broadcast
+**Content:** "أرسل أول بث جماعي - خطوة بخطوة"
+- Upload contacts
+- Select template
+- Variable mapping
+- Send and track
+**Platforms:** LinkedIn, Twitter
+**Time:** 2:00 PM
+**CTA:** Share your first broadcast screenshot
+
+### Wednesday - Team Management
+**Topic:** Multi-user setup
+**Content:** "إدارة الفريق - أضف أعضاء فريقك"
+- Create users
+- Role permissions (SUPERADMIN, ADMIN, MEMBER)
+- Team collaboration
+**Platforms:** LinkedIn
+**Time:** 11:00 AM
+**CTA:** Tag your team
+
+### Thursday - Webhooks
+**Topic:** Advanced integration
+**Content:** "Webhooks - تكامل مع أنظمة أخرى"
+- Webhook setup
+- Event types
+- Integration examples (CRM, etc.)
+**Platforms:** LinkedIn (dev), Twitter, Dev.to
+**Time:** 3:00 PM
+**CTA:** What will you integrate with?
+
+### Friday - Q&A Session
+**Topic:** Answer community questions
+**Content:** Compile questions from previous posts
+**Platforms:** Twitter thread, LinkedIn
+**Time:** 10:00 AM
+**CTA:** Ask more questions
+
+---
+
+## Week 4: Growth Week (أسبوع النمو)
+
+### Sunday - Comparison
+**Topic:** vs paid solutions
+**Content:** "WhatsApp Hub vs الحلول المدفوعة - مقارنة شاملة"
+- Cost comparison ($0 vs $500-2000/month)
+- Feature comparison
+- Control & privacy
+**Platforms:** LinkedIn, Twitter
+**Time:** 9:00 AM
+**CTA:** Calculate your savings
+
+### Monday - Success Stories
+**Topic:** Use cases collection
+**Content:** "قصص نجاح - كيف يستخدم الناس WhatsApp Hub"
+- Collect and share community stories
+- Different industries
+- Creative use cases
+**Platforms:** LinkedIn, Twitter
+**Time:** 10:00 AM
+**CTA:** Share your story
+
+### Tuesday - Roadmap
+**Topic:** What's next
+**Content:** "خريطة الطريق - المميزات القادمة"
+- CRM integrations
+- AI chatbots
+- Advanced analytics
+- More languages
+**Platforms:** LinkedIn, Twitter
+**Time:** 2:00 PM
+**CTA:** What feature do you want next?
+
+### Wednesday - Contribution Guide
+**Topic:** Open source contribution
+**Content:** "كيف تساهم في WhatsApp Hub"
+- Code contributions
+- Documentation
+- Bug reports
+- Feature requests
+**Platforms:** LinkedIn (dev), Twitter, GitHub
+**Time:** 11:00 AM
+**CTA:** Star and fork the repo
+
+### Thursday - Milestone Celebration
+**Topic:** Community growth
+**Content:** "شكراً للمجتمع - إنجازات الشهر الأول"
+- Stars count
+- Downloads
+- Contributors
+- Feedback highlights
+**Platforms:** LinkedIn, Twitter
+**Time:** 3:00 PM
+**CTA:** Join the community
+
+### Friday - Next Month Preview
+**Topic:** What's coming
+**Content:** "الشهر القادم - ماذا تتوقع"
+- New features
+- Tutorials planned
+- Community events
+**Platforms:** LinkedIn, Twitter
+**Time:** 10:00 AM
+**CTA:** Stay tuned!
+
+---
+
+## Content Types Mix
+
+**Weekly Distribution:**
+- 40% Educational (tutorials, guides)
+- 30% Feature highlights
+- 20% Community engagement
+- 10% Promotional
+
+**Platform Strategy:**
+- **LinkedIn:** Professional, business-focused, long-form
+- **Twitter:** Quick tips, threads, engagement
+- **Facebook:** Community groups, regional targeting
+- **Dev.to:** Technical deep dives
+- **YouTube:** Video tutorials (optional)
+
+**Hashtag Strategy:**
+Primary: #WhatsApp #OpenSource #MENA
+Regional: #Saudi #UAE #Jordan #Tech
+Technical: #NextJS #TypeScript #SelfHosted
+
+---
+
+## Engagement Tactics
+
+**Daily:**
+- Respond to all comments within 2 hours
+- Share relevant community content
+- Engage with similar projects
+
+**Weekly:**
+- Sunday: Plan and schedule posts
+- Friday: Review analytics, adjust strategy
+- Weekend: Light engagement only
+
+**Monthly:**
+- Review top-performing content
+- Adjust content mix based on data
+- Plan next month's themes
+
+---
+
+## Success Metrics
+
+**Track:**
+- GitHub stars (target: 100 in month 1)
+- Forks and downloads
+- Social media engagement rate
+- Comments and questions
+- Issues opened (shows interest)
+- Pull requests (shows contribution)
+
+**Adjust:**
+- Double down on what works
+- Drop what doesn't
+- Ask community what they want
